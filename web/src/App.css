@@ -8,6 +8,7 @@
 :root {
   --radius: 0.625rem;
   --background: #fef7f2;
+  --text: #1b150f;
   --foreground: #333235;
   --card: #ffffff;
   --card-foreground: #333235;
@@ -46,6 +47,7 @@
 .dark {
   --background: #110907;
   --foreground: #f2f2f5;
+  --text: #f4ede8;
   --card: #2d2d31;
   --card-foreground: #f2f2f5;
   --popover: #323235;
@@ -80,21 +82,6 @@
   --sidebar-ring: #b0a5c2;
 }
 
-body {
-  background-color: #fef7f2;
-  color: #1b150f;
-  font-feature-settings:
-    'rlig' 1,
-    'calt' 1;
-  border-color: #e3ddd8;
-}
-
-.dark body {
-  background-color: #110907;
-  color: #f4ede8;
-  border-color: #281f1c;
-}
-
 .navbar {
   position: fixed;
   top: 0;
@@ -124,7 +111,6 @@ body {
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
-
 .clickable-item {
   cursor: pointer;
 }
