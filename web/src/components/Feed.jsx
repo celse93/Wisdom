@@ -114,7 +114,7 @@ export const Feed = () => {
         <Typography sx={{ color: 'text.primary' }}>Loading...</Typography>
       ) : bookDetails.length == 0 && fetchComplete ? (
         <Box>
-          <Typography variant="h5"> No posts yet</Typography>
+          <Typography variant="h5">No posts yet</Typography>
         </Box>
       ) : (
         <Box>
