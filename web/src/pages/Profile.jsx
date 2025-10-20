@@ -2,6 +2,8 @@ import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { UserContext } from '../context/UserContext';
 import { getUserStats } from '../services/api/follows';
+import { CreatePosts } from '../components/CreatePosts';
+import { FeedTab } from '../components/FeedBar';
 
 export const Profile = () => {
   const { profile } = useContext(UserContext);
@@ -120,6 +122,9 @@ export const Profile = () => {
           </div>
         </div>
       </div>
+      <div style={{ height: '50px' }}></div>
+      <CreatePosts />
+      <FeedTab />
     </div>
   );
 };
