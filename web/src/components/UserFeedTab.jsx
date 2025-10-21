@@ -28,7 +28,7 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import StarIcon from '@mui/icons-material/Star';
 import BookIcon from '@mui/icons-material/Book';
 
-export const FeedTab = () => {
+export const UserFeedTab = () => {
   const [booksData, setBooksData] = useState([]);
   const [bookDetails, setBookDetails] = useState([]);
   const [recommendations, setRecommendations] = useState([]);

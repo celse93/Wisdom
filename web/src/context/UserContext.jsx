@@ -3,6 +3,12 @@ import { postLogin, postLogout, postRegister } from '../services/api/auth';
 import { useNavigate } from 'react-router';
 import { getAuthorDetail, getBooksDetail } from '../services/api/books';
 import { getCurrentProfile } from '../services/api/users';
+import {
+  getAllQuotes,
+  getAllReviews,
+  getAllReadingLists,
+  getAllRecommendations,
+} from '../services/api/feed';
 
 export const UserContext = createContext({
   user: {},
@@ -19,11 +25,31 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [profile, setProfile] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [feedData, setFeedData] = useState([]);
   const navigate = useNavigate();
   const [selectedBook, setSelectedBook] = useState({
     book: null,
     author: null,
   });
+
+  const fetchFeedData = async () => {
+    try {
+      const dataRecommendations = await getAllRecommendations();
+      const dataReadingList = await getAllReadingLists();
+      const dataQuotes = await getAllQuotes();
+      const dataReviews = await getAllReviews();
+
+      setFeedData([
+        ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
+        ...(Array.isArray(dataReadingList) ? dataReadingList : []),
+        ...(Array.isArray(dataQuotes) ? dataQuotes : []),
+        ...(Array.isArray(dataReviews) ? dataReviews : []),
+      ]);
+    } catch (error) {
+      console.error('Failed to fetch books data:', error);
+      return [];
+    }
+  };
 
   const login = async (email, password) => {
     setIsLoading(true);
@@ -105,6 +131,8 @@ export const UserProvider = ({ children }) => {
         isLoading,
         selectBook,
         selectedBook,
+        fetchFeedData,
+        feedData,
       }}
     >
       {children}

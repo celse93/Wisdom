@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import {
   getBooksSearch,
@@ -9,6 +9,7 @@ import {
 import { getAllCategories } from '../services/api/feed';
 import { postQuote } from '../services/api/books';
 import Modal from '@mui/material/Modal';
+import { UserContext } from '../context/UserContext';
 
 export const CreatePosts = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export const CreatePosts = () => {
   const [content, setContent] = useState('');
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const { fetchFeedData } = useContext(UserContext);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -89,6 +91,8 @@ export const CreatePosts = () => {
         const saveReadingList = await postReadingList(bookSelected.book_id);
         alert(`${saveReadingList['message']}`);
       }
+      setOpen(false);
+      await fetchFeedData();
     } catch (error) {
       console.error('Error: ', error);
     } finally {
@@ -98,7 +102,6 @@ export const CreatePosts = () => {
       setSelectedCategory(1);
       setSelectedOption('reading');
       setBookSelected({});
-      navigate('/');
     }
   };
 

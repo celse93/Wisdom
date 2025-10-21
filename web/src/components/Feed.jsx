@@ -3,12 +3,6 @@ import { useNavigate } from 'react-router';
 import { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { postReadingList, postRecommendations } from '../services/api/books';
-import {
-  getAllQuotes,
-  getAllReviews,
-  getAllReadingLists,
-  getAllRecommendations,
-} from '../services/api/feed';
 import { getProfileNames } from '../services/api/users';
 import {
   Card,
@@ -23,42 +17,27 @@ import {
 import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
 
 export const Feed = () => {
-  const [booksData, setBooksData] = useState([]);
   const [bookDetails, setBookDetails] = useState([]);
   const [profileNames, setProfileNames] = useState([]);
   const [fetchComplete, setFetchComplete] = useState(false);
   const navigate = useNavigate();
-  const { selectBook } = useContext(UserContext);
+  const { selectBook, fetchFeedData, feedData } = useContext(UserContext);
 
   useEffect(() => {
-    const fetchBooksData = async () => {
-      try {
-        const dataRecommendations = await getAllRecommendations();
-        const dataReadingList = await getAllReadingLists();
-        const dataQuotes = await getAllQuotes();
-        const dataReviews = await getAllReviews();
-
-        setBooksData([
-          ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
-          ...(Array.isArray(dataReadingList) ? dataReadingList : []),
-          ...(Array.isArray(dataQuotes) ? dataQuotes : []),
-          ...(Array.isArray(dataReviews) ? dataReviews : []),
-        ]);
-      } catch (error) {
-        console.error('Failed to fetch books data:', error);
-      }
+    const initialLoad = async () => {
+      await fetchFeedData();
     };
-    fetchBooksData();
+    initialLoad();
   }, []);
 
   useEffect(() => {
     const fetchBookCovers = async () => {
-      if (booksData.length == 0) {
+      if (feedData.length == 0) {
         setFetchComplete(true);
         return;
       }
       try {
-        const bookDetailPromises = booksData.map((book) =>
+        const bookDetailPromises = feedData.map((book) =>
           getBooksDetail(book.book_id)
         );
         const [bookDetailsResult, profileDetailsResult] = await Promise.all([
@@ -74,9 +53,9 @@ export const Feed = () => {
       }
     };
     fetchBookCovers();
-  }, [booksData]);
+  }, [feedData]);
 
-  console.log(booksData);
+  console.log(feedData);
   console.log(bookDetails);
   console.log(profileNames);
 
@@ -118,7 +97,7 @@ export const Feed = () => {
         </Box>
       ) : (
         <Box>
-          {booksData.map((data) => {
+          {feedData.map((data) => {
             const bookInfo = bookDetails.find(
               (book) => book.book_id == data.book_id
             );
