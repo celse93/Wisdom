@@ -98,9 +98,15 @@ export const Feed = () => {
       ) : (
         <Box>
           {feedData.map((data) => {
+            {
+              /* finds the associated book to access its description and coverId*/
+            }
             const bookInfo = bookDetails.find(
               (book) => book.book_id == data.book_id
             );
+            {
+              /* finds the associated profile to access the username*/
+            }
             const profile = profileNames.find(
               (profile) => profile.id == data.user_id
             );

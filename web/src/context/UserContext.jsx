@@ -8,6 +8,10 @@ import {
   getAllReviews,
   getAllReadingLists,
   getAllRecommendations,
+  getUserQuotes,
+  getUserlReviews,
+  getUserReadingLists,
+  getUserRecommendations,
 } from '../services/api/feed';
 
 export const UserContext = createContext({
@@ -26,6 +30,7 @@ export const UserProvider = ({ children }) => {
   const [profile, setProfile] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [feedData, setFeedData] = useState([]);
+  const [userFeedData, setUserFeedData] = useState([]);
   const navigate = useNavigate();
   const [selectedBook, setSelectedBook] = useState({
     book: null,
@@ -40,6 +45,25 @@ export const UserProvider = ({ children }) => {
       const dataReviews = await getAllReviews();
 
       setFeedData([
+        ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
+        ...(Array.isArray(dataReadingList) ? dataReadingList : []),
+        ...(Array.isArray(dataQuotes) ? dataQuotes : []),
+        ...(Array.isArray(dataReviews) ? dataReviews : []),
+      ]);
+    } catch (error) {
+      console.error('Failed to fetch books data:', error);
+      return [];
+    }
+  };
+
+  const fetchUserFeedData = async () => {
+    try {
+      const dataRecommendations = await getUserRecommendations();
+      const dataReadingList = await getUserReadingLists();
+      const dataQuotes = await getUserQuotes();
+      const dataReviews = await getUserlReviews();
+
+      setUserFeedData([
         ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
         ...(Array.isArray(dataReadingList) ? dataReadingList : []),
         ...(Array.isArray(dataQuotes) ? dataQuotes : []),
@@ -133,6 +157,8 @@ export const UserProvider = ({ children }) => {
         selectedBook,
         fetchFeedData,
         feedData,
+        fetchUserFeedData,
+        userFeedData,
       }}
     >
       {children}

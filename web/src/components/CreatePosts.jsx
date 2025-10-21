@@ -21,7 +21,7 @@ export const CreatePosts = () => {
   const [content, setContent] = useState('');
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  const { fetchFeedData } = useContext(UserContext);
+  const { fetchFeedData, fetchUserFeedData } = useContext(UserContext);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -93,6 +93,7 @@ export const CreatePosts = () => {
       }
       setOpen(false);
       await fetchFeedData();
+      await fetchUserFeedData();
     } catch (error) {
       console.error('Error: ', error);
     } finally {
