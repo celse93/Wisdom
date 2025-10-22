@@ -17,6 +17,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 
 export const Navbar = () => {
   const { logout, profile, user } = useContext(UserContext);
@@ -116,28 +117,59 @@ export const Navbar = () => {
             </Typography>
           </Box>
           <Box
-            variant="h6"
-            component="span"
             sx={{
               display: 'flex',
-              fontFamily: 'serif',
-              color: 'var(--muted-foreground)',
-              fontStyle: 'oblique',
-              fontWeight: 'bold',
-              '&:hover': {
-                color: 'var(--foreground)',
-                transition: 'color 0.3s ease-in-out',
-              },
             }}
-            className="clickable-item"
-            onClick={() => navigate('/')}
           >
-            <AutoStoriesOutlinedIcon
+            <Box
+              variant="h6"
+              component="span"
               sx={{
-                mr: 0.5,
+                display: 'flex',
+                fontFamily: 'serif',
+                color: 'var(--muted-foreground)',
+                fontStyle: 'oblique',
+                fontWeight: 'bold',
+                mr: 3,
+                '&:hover': {
+                  color: 'var(--foreground)',
+                  transition: 'color 0.3s ease-in-out',
+                },
               }}
-            />
-            <Typography>Feed</Typography>
+              className="clickable-item"
+              onClick={() => navigate('/')}
+            >
+              <AutoStoriesOutlinedIcon
+                sx={{
+                  mr: 0.5,
+                }}
+              />
+              <Typography>Feed</Typography>
+            </Box>
+            <Box
+              variant="h6"
+              component="span"
+              sx={{
+                display: 'flex',
+                fontFamily: 'serif',
+                color: 'var(--muted-foreground)',
+                fontStyle: 'oblique',
+                fontWeight: 'bold',
+                '&:hover': {
+                  color: 'var(--foreground)',
+                  transition: 'color 0.3s ease-in-out',
+                },
+              }}
+              className="clickable-item"
+              onClick={() => navigate('/explore')}
+            >
+              <ExploreOutlinedIcon
+                sx={{
+                  mr: 0.5,
+                }}
+              />
+              <Typography>Explore</Typography>
+            </Box>
           </Box>
 
           {!user ? (

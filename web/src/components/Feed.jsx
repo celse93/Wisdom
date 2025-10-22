@@ -88,7 +88,7 @@ export const Feed = () => {
 
   return (
     <>
-      <div style={{ height: '100px' }}></div>
+      <Box style={{ height: '100px' }}></Box>
       {!fetchComplete ? (
         <Typography sx={{ color: 'text.primary' }}>Loading...</Typography>
       ) : bookDetails.length == 0 && fetchComplete ? (

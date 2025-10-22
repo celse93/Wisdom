@@ -11,12 +11,12 @@ export const App = () => {
   return (
     <>
       <Routes>
-        {/* Rutas públicas específicas */}
+        {/* Public routes */}
         <Route path="/login" element={<LoginRedirect />} />
         <Route path="/login-form" element={<LoginForm />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Rutas protegidas */}
+        {/* Protected routes */}
         <Route element={<GuardedRoute />}>
           <Route path="/" element={<ProtectedNavBar />}>
             {routesConfig
@@ -36,7 +36,7 @@ export const App = () => {
           </Route>
         </Route>
 
-        {/* Ruta comodín */}
+        {/* Common routes */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>

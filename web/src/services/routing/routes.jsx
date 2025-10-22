@@ -9,6 +9,7 @@ import { MyReviews } from '../../pages/MyReviews';
 import { MyRecommendations } from '../../pages/MyRecommendations';
 import { MyFollowers } from '../../components/MyFollowers';
 import { MyFollowings } from '../../components/MyFollowings';
+import { Explore } from '../../pages/Explore';
 
 export const routesConfig = [
   {
@@ -21,6 +22,12 @@ export const routesConfig = [
     name: 'Login',
     path: '/login',
     component: <Login />,
+    showInNavbar: false,
+  },
+  {
+    name: 'Explore',
+    path: '/explore',
+    component: <Explore />,
     showInNavbar: false,
   },
   {
