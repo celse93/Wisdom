@@ -77,7 +77,7 @@ def auth_routes(app):
         if not bcrypt.checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
             return jsonify({"error": "Password not correct"}), 400
 
-        # Create JWT and CSRF token
+        # JWT and CSRF token
         access_token = create_access_token(identity=str(user.id))
         csrf_token = get_csrf_token(access_token)
 

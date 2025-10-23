@@ -99,7 +99,6 @@ export const UserProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    setIsLoading(true);
     try {
       const user = await postLogin(email, password);
       setUser(user);
@@ -116,23 +115,23 @@ export const UserProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    setIsLoading(true);
     try {
       await postLogout();
-      setIsLoggedIn(false)
-      setUser({});
       navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
-      setUser({});
-      navigate('/login');
     } finally {
       setIsLoading(false);
+      setIsLoggedIn(false)
+      setUser({});
+      setProfile({})
+      setFeedData([])
+      setUserFeedData([])
+      navigate('/login');
     }
   };
 
   const register = async (name, email, password) => {
-    setIsLoading(true);
     try {
       await postRegister(name, email, password);
 
