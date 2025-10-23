@@ -30,7 +30,7 @@ export const UserFeedTab = () => {
   const [userReviews, setUserReviews] = useState([]);
   const [userQuotes, setUserQuotes] = useState([]);
   const navigate = useNavigate();
-  const { selectBook, userFeedData, fetchUserFeedData } =
+  const { selectBook, userFeedData, fetchUserFeedData, isLoadingFeed } =
     useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('all');
 
@@ -43,7 +43,7 @@ export const UserFeedTab = () => {
 
   useEffect(() => {
     const fetchBookCovers = async () => {
-      if (userFeedData.length == 0) {
+      if (userFeedData.length === 0) {
         setFetchComplete(true);
         return;
       }
@@ -76,16 +76,10 @@ export const UserFeedTab = () => {
         setUserReviews(dataReviews);
       } catch (error) {
         console.error('Failed to fetch book details:', error);
-      } finally {
-        setFetchComplete(true);
       }
     };
     fetchBookCovers();
   }, [userFeedData]);
-
-  console.log(userFeedData);
-  console.log(bookDetails);
-  console.log(profileNames);
 
   const handleBookClick = async (bookId) => {
     const fetchBook = await selectBook(bookId);
@@ -99,6 +93,8 @@ export const UserFeedTab = () => {
   const handleChangeTabs = (event, newValue) => {
     setValueTabs(newValue);
   };
+  
+  console.log(isLoadingFeed);
 
   return (
     <Box>
@@ -112,13 +108,13 @@ export const UserFeedTab = () => {
             <Tab label="Quotes" value="quotes" />
           </TabList>
         </Box>
-        {fetchComplete && bookDetails.length == 0 ? (
+        {isLoadingFeed ? (
           <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
-        ) : userFeedData.length == 0 &&
-          bookDetails.length == 0 &&
-          fetchComplete ? (
+        ) : userFeedData.length === 0 && fetchComplete ? (
           <Box>
-            <Typography variant="h5">No posts yet</Typography>
+            <Typography variant="h5" sx={{ color: 'var(--text)' }}>
+              No posts yet
+            </Typography>
           </Box>
         ) : (
           <>

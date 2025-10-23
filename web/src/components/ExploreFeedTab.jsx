@@ -25,13 +25,12 @@ import ExploreRoundedIcon from '@mui/icons-material/ExploreRounded';
 export const ExploreFeedTab = () => {
   const [bookDetails, setBookDetails] = useState([]);
   const [profileNames, setProfileNames] = useState([]);
-  const [fetchComplete, setFetchComplete] = useState(false);
   const [recommendations, setRecommendations] = useState([]);
   const [readingLists, setReadingLists] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [quotes, setQuotes] = useState([]);
   const navigate = useNavigate();
-  const { selectBook, feedData, fetchFeedData } = useContext(UserContext);
+  const { selectBook, feedData, fetchFeedData, isLoadingFeed } = useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('recommendations');
 
   useEffect(() => {
@@ -44,7 +43,6 @@ export const ExploreFeedTab = () => {
   useEffect(() => {
     const fetchBookCovers = async () => {
       if (feedData.length === 0) {
-        setFetchComplete(true);
         return;
       }
       try {
@@ -76,8 +74,6 @@ export const ExploreFeedTab = () => {
         setReviews(dataReviews);
       } catch (error) {
         console.error('Failed to fetch book details:', error);
-      } finally {
-        setFetchComplete(true);
       }
     };
     fetchBookCovers();
@@ -85,7 +81,6 @@ export const ExploreFeedTab = () => {
 
   console.log(feedData);
   console.log(bookDetails);
-  console.log(fetchComplete);
 
   const handleBookClick = async (bookId) => {
     const fetchBook = await selectBook(bookId);
@@ -139,7 +134,7 @@ export const ExploreFeedTab = () => {
             <Tab label="Quotes" value="quotes" />
           </TabList>
         </Box>
-        {!fetchComplete ? (
+        {!isLoadingFeed ? (
           <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
         ) : (
           <>

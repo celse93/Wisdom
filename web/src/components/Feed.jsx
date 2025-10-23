@@ -21,7 +21,7 @@ export const Feed = () => {
   const [profileNames, setProfileNames] = useState([]);
   const [fetchComplete, setFetchComplete] = useState(false);
   const navigate = useNavigate();
-  const { selectBook, fetchFeedData, feedData } = useContext(UserContext);
+  const { selectBook, fetchFeedData, feedData, isLoadingFeed } = useContext(UserContext);
 
   useEffect(() => {
     const initialLoad = async () => {
@@ -48,16 +48,11 @@ export const Feed = () => {
         setProfileNames(profileDetailsResult);
       } catch (error) {
         console.error('Failed to fetch book details:', error);
-      } finally {
-        setFetchComplete(true);
       }
     };
     fetchBookCovers();
   }, [feedData]);
 
-  console.log(feedData);
-  console.log(bookDetails);
-  console.log(profileNames);
 
   const handleBookClick = async (bookId) => {
     const fetchBook = await selectBook(bookId);
@@ -86,14 +81,18 @@ export const Feed = () => {
     }
   };
 
+  console.log(feedData);
+  console.log(bookDetails);
+  console.log(profileNames);
+
   return (
     <>
       <Box style={{ height: '100px' }}></Box>
-      {!fetchComplete ? (
-        <Typography sx={{ color: 'text.primary' }}>Loading...</Typography>
-      ) : bookDetails.length == 0 && fetchComplete ? (
+      {isLoadingFeed ? (
+        <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
+      ) : feedData.length == 0 && fetchComplete ? (
         <Box>
-          <Typography variant="h5">No posts yet</Typography>
+          <Typography variant="h5" sx={{ color: 'var(--text)' }}>No posts yet</Typography>
         </Box>
       ) : (
         <Box>

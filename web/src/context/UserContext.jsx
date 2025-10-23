@@ -29,6 +29,7 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [profile, setProfile] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingFeed, setIsLoadingFeed] = useState(true);
   const [feedData, setFeedData] = useState([]);
   const [userFeedData, setUserFeedData] = useState([]);
   const navigate = useNavigate();
@@ -44,14 +45,13 @@ export const UserProvider = ({ children }) => {
         const userData = await getCurrentUser();
         const profile = await getCurrentProfile();
         setProfile(profile);
-        setUser(userData)
+        setUser(userData);
         setIsLoggedIn(true);
       } catch (error) {
         console.error('Session restoration failed, user logged out:', error);
         setIsLoggedIn(false);
         setUser({});
-        setProfile({})
-        // Ensure any stored CSRF token in headers is cleared if a global API wrapper is used
+        setProfile({});
       } finally {
         setIsLoading(false);
       }
@@ -76,6 +76,8 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error('Failed to fetch books data:', error);
       return [];
+    } finally {
+      setIsLoadingFeed(false);;
     }
   };
 
@@ -95,6 +97,8 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error('Failed to fetch books data:', error);
       return [];
+    } finally {
+      setIsLoadingFeed(false);
     }
   };
 
@@ -122,11 +126,11 @@ export const UserProvider = ({ children }) => {
       console.error('Logout error:', error);
     } finally {
       setIsLoading(false);
-      setIsLoggedIn(false)
+      setIsLoggedIn(false);
       setUser({});
-      setProfile({})
-      setFeedData([])
-      setUserFeedData([])
+      setProfile({});
+      setFeedData([]);
+      setUserFeedData([]);
       navigate('/login');
     }
   };
@@ -185,6 +189,7 @@ export const UserProvider = ({ children }) => {
         fetchUserFeedData,
         userFeedData,
         isLoggedIn,
+        isLoadingFeed
       }}
     >
       {children}
