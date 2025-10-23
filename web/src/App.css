@@ -1,9 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 /* Placeholder gris claro para el input de búsqueda de usuarios */
 .placeholder-lightgray::placeholder {
   color: #d1d5db;
   opacity: 1;
 }
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   --radius: 0.625rem;

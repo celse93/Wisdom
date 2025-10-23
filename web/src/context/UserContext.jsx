@@ -1,8 +1,8 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import { postLogin, postLogout, postRegister } from '../services/api/auth';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { getAuthorDetail, getBooksDetail } from '../services/api/books';
-import { getCurrentProfile } from '../services/api/users';
+import { getCurrentProfile, getCurrentUser } from '../services/api/users';
 import {
   getAllQuotes,
   getAllReviews,
@@ -28,14 +28,37 @@ export const UserContext = createContext({
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [profile, setProfile] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [feedData, setFeedData] = useState([]);
   const [userFeedData, setUserFeedData] = useState([]);
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedBook, setSelectedBook] = useState({
     book: null,
     author: null,
   });
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const userData = await getCurrentUser();
+        const profile = await getCurrentProfile();
+        setProfile(profile);
+        setUser(userData)
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error('Session restoration failed, user logged out:', error);
+        setIsLoggedIn(false);
+        setUser({});
+        setProfile({})
+        // Ensure any stored CSRF token in headers is cleared if a global API wrapper is used
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkSession();
+  }, []);
 
   const fetchFeedData = async () => {
     try {
@@ -85,6 +108,7 @@ export const UserProvider = ({ children }) => {
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
+      setUser({});
       throw error;
     } finally {
       setIsLoading(false);
@@ -95,6 +119,7 @@ export const UserProvider = ({ children }) => {
     setIsLoading(true);
     try {
       await postLogout();
+      setIsLoggedIn(false)
       setUser({});
       navigate('/login');
     } catch (error) {
@@ -120,6 +145,7 @@ export const UserProvider = ({ children }) => {
       navigate('/profile');
     } catch (error) {
       console.error('Register error:', error.message);
+      setUser({});
       throw error;
     } finally {
       setIsLoading(false);
@@ -159,6 +185,7 @@ export const UserProvider = ({ children }) => {
         feedData,
         fetchUserFeedData,
         userFeedData,
+        isLoggedIn,
       }}
     >
       {children}

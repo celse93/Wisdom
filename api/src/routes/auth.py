@@ -106,4 +106,10 @@ def auth_routes(app):
         if not user:
             return jsonify({"error": "User not found"}), 404
 
-        return jsonify(user.serialize()), 200
+        response = jsonify(
+            {
+                "user": user.serialize(),
+            }
+        )
+
+        return response, 200
