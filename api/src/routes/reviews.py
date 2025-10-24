@@ -2,6 +2,7 @@ from flask import request, jsonify
 from src.db import db
 from src.models.models import Reviews
 from datetime import date
+import datetime
 from sqlalchemy import select, and_
 from flask_jwt_extended import (
     jwt_required,
@@ -113,9 +114,11 @@ def reviews_routes(app):
     @app.route("/reviews", methods=["GET"])
     @jwt_required()
     def all_reviews():
+        today = date.today()
+        last_week = datetime.datetime(today.year, today.month, today.day -7) 
         review_list = (
             db.session.execute(
-                select(Reviews).where(Reviews.created_at == date.today())
+                select(Reviews).where(Reviews.created_at >= last_week)
             )
             .scalars()
             .all()

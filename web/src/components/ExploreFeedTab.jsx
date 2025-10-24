@@ -134,7 +134,7 @@ export const ExploreFeedTab = () => {
             <Tab label="Quotes" value="quotes" />
           </TabList>
         </Box>
-        {!isLoadingFeed ? (
+        {isLoadingFeed ? (
           <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
         ) : (
           <>

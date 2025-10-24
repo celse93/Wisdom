@@ -110,7 +110,7 @@ export const UserFeedTab = () => {
         </Box>
         {isLoadingFeed ? (
           <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
-        ) : userFeedData.length === 0 && fetchComplete ? (
+        ) : userFeedData.length === 0 && fetchComplete && !isLoadingFeed ? (
           <Box>
             <Typography variant="h5" sx={{ color: 'var(--text)' }}>
               No posts yet

@@ -90,7 +90,7 @@ export const Feed = () => {
       <Box style={{ height: '100px' }}></Box>
       {isLoadingFeed ? (
         <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
-      ) : feedData.length == 0 && fetchComplete ? (
+      ) : feedData.length === 0 && fetchComplete && !isLoadingFeed ? (
         <Box>
           <Typography variant="h5" sx={{ color: 'var(--text)' }}>No posts yet</Typography>
         </Box>
