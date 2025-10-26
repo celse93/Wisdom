@@ -21,7 +21,8 @@ export const Feed = () => {
   const [profileNames, setProfileNames] = useState([]);
   const [fetchComplete, setFetchComplete] = useState(false);
   const navigate = useNavigate();
-  const { selectBook, fetchFeedData, feedData, isLoadingFeed } = useContext(UserContext);
+  const { selectBook, fetchFeedData, feedData, isLoadingFeed } =
+    useContext(UserContext);
 
   useEffect(() => {
     const initialLoad = async () => {
@@ -53,7 +54,6 @@ export const Feed = () => {
     fetchBookCovers();
   }, [feedData]);
 
-
   const handleBookClick = async (bookId) => {
     const fetchBook = await selectBook(bookId);
     if (fetchBook) {
@@ -81,9 +81,15 @@ export const Feed = () => {
     }
   };
 
+  const totalDays = (date) => {
+    const daysMilisec = new Date(
+      new Date().getTime() - new Date(date).getTime()
+    );
+    const daysNumber = daysMilisec.getDate() - 1;
+    return daysNumber;
+  };
+
   console.log(feedData);
-  console.log(bookDetails);
-  console.log(profileNames);
 
   return (
     <>
@@ -92,7 +98,9 @@ export const Feed = () => {
         <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
       ) : feedData.length === 0 && fetchComplete && !isLoadingFeed ? (
         <Box>
-          <Typography variant="h5" sx={{ color: 'var(--text)' }}>No posts yet</Typography>
+          <Typography variant="h5" sx={{ color: 'var(--text)' }}>
+            No posts yet
+          </Typography>
         </Box>
       ) : (
         <Box>
@@ -148,7 +156,9 @@ export const Feed = () => {
                           variant="caption"
                           sx={{ color: 'var(--primary)' }}
                         >
-                          {data.created_at}
+                          {totalDays(data.created_at) == 1
+                            ? totalDays(data.created_at) + ' day ago'
+                            : totalDays(data.created_at) + ' days ago'}
                         </Typography>
                       </Box>
                     </Link>

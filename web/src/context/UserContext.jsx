@@ -13,6 +13,7 @@ import {
   getUserReadingLists,
   getUserRecommendations,
 } from '../services/api/feed';
+import { common } from '@mui/material/colors';
 
 export const UserContext = createContext({
   user: {},
@@ -67,17 +68,22 @@ export const UserProvider = ({ children }) => {
       const dataQuotes = await getAllQuotes();
       const dataReviews = await getAllReviews();
 
-      setFeedData([
+      const combinedData = [
         ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
         ...(Array.isArray(dataReadingList) ? dataReadingList : []),
         ...(Array.isArray(dataQuotes) ? dataQuotes : []),
         ...(Array.isArray(dataReviews) ? dataReviews : []),
-      ]);
+      ];
+      combinedData.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      setFeedData(combinedData);
     } catch (error) {
       console.error('Failed to fetch books data:', error);
       return [];
     } finally {
-      setIsLoadingFeed(false);;
+      setIsLoadingFeed(false);
     }
   };
 
@@ -88,12 +94,18 @@ export const UserProvider = ({ children }) => {
       const dataQuotes = await getUserQuotes();
       const dataReviews = await getUserlReviews();
 
-      setUserFeedData([
+      const combinedData = [
         ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
         ...(Array.isArray(dataReadingList) ? dataReadingList : []),
         ...(Array.isArray(dataQuotes) ? dataQuotes : []),
         ...(Array.isArray(dataReviews) ? dataReviews : []),
-      ]);
+      ];
+
+      combinedData.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      setUserFeedData(combinedData);
     } catch (error) {
       console.error('Failed to fetch books data:', error);
       return [];
@@ -189,7 +201,7 @@ export const UserProvider = ({ children }) => {
         fetchUserFeedData,
         userFeedData,
         isLoggedIn,
-        isLoadingFeed
+        isLoadingFeed,
       }}
     >
       {children}

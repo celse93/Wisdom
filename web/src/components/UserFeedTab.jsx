@@ -74,6 +74,7 @@ export const UserFeedTab = () => {
         setUserReadingLists(dataReadingList);
         setUserQuotes(dataQuotes);
         setUserReviews(dataReviews);
+        setFetchComplete(true);
       } catch (error) {
         console.error('Failed to fetch book details:', error);
       }

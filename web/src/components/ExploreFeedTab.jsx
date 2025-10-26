@@ -80,7 +80,6 @@ export const ExploreFeedTab = () => {
   }, [feedData]);
 
   console.log(feedData);
-  console.log(bookDetails);
 
   const handleBookClick = async (bookId) => {
     const fetchBook = await selectBook(bookId);
