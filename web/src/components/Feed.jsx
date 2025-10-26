@@ -156,9 +156,11 @@ export const Feed = () => {
                           variant="caption"
                           sx={{ color: 'var(--primary)' }}
                         >
-                          {totalDays(data.created_at) == 1
-                            ? totalDays(data.created_at) + ' day ago'
-                            : totalDays(data.created_at) + ' days ago'}
+                          {totalDays(data.created_at) === 0
+                            ? 'today'
+                            : totalDays(data.created_at) === 1
+                              ? totalDays(data.created_at) + ' day ago'
+                              : totalDays(data.created_at) + ' days ago'}
                         </Typography>
                       </Box>
                     </Link>

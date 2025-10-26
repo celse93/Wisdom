@@ -94,7 +94,15 @@ export const UserFeedTab = () => {
   const handleChangeTabs = (event, newValue) => {
     setValueTabs(newValue);
   };
-  
+
+  const totalDays = (date) => {
+    const daysMilisec = new Date(
+      new Date().getTime() - new Date(date).getTime()
+    );
+    const daysNumber = daysMilisec.getDate() - 1;
+    return daysNumber;
+  };
+
   console.log(isLoadingFeed);
 
   return (
@@ -190,7 +198,12 @@ export const UserFeedTab = () => {
                                   variant="caption"
                                   sx={{ color: 'var(--primary)' }}
                                 >
-                                  {data.created_at}
+                                  {totalDays(data.created_at) === 0
+                                    ? 'today'
+                                    : totalDays(data.created_at) === 1
+                                      ? totalDays(data.created_at) + ' day ago'
+                                      : totalDays(data.created_at) +
+                                        ' days ago'}
                                 </Typography>
                               </Box>
                             </Link>
