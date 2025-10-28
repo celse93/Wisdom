@@ -1,14 +1,20 @@
 import requests
 from flask import request, jsonify
+import os
+from flask_jwt_extended import jwt_required
 
-open_library_url = "https://openlibrary.org/"
-
+open_library_url = "https://www.googleapis.com/books/v1/"
 
 def books_search_routes(app):
+    @jwt_required()
     @app.route("/books_search/<path:path>", methods=["GET"])
     def search_books(path):
         url = f"{open_library_url}{path}"
+        print(url)
         params = dict(request.args)
+        api_key = os.getenv("GOOGLE_API_KEY")
+        params["key"] = api_key
+        print(params)
 
         try:
             response = requests.get(url, params=params, timeout=10)
@@ -16,28 +22,25 @@ def books_search_routes(app):
             if response.status_code != 200:
                 return jsonify(
                     {"error": "Failed to get the information from OpenLibrary"}
-                ), 500
+                ), response.status_code
 
             data = response.json()
-            books = data["docs"]
+            books = data["items"]
             results = []
 
             for x in range(8):
-                book_id = books[x]["key"].split("/")[-1]
                 results.append(
                     {
                         "title": books[x]["title"],
-                        "author": books[x]["author_name"][0],
-                        "first_publish_year": books[x]["first_publish_year"],
-                        "cover_id": books[x]["cover_i"],
-                        "book_id": book_id,
+                        "author": books[x]["authors"][0],
+                        "first_publish_year": books[x]["publishedDate"],
+                        "cover_id": books[x]["imageLinks"]["thumbnail"],
+                        "book_id": books[x]["id"],
                     }
                 )
-            return jsonify(results), response.status_code
+            return jsonify(books), response.status_code
 
         except Exception as e:
             return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
 
 
-# pruebas hechas con https://automatic-fortnight-5g54rgww9xgwh4j7r-5000.app.github.dev/books/search?q=harry+potter - SALIÓ OK
-# prueba hecha con https://automatic-fortnight-5g54rgww9xgwh4j7r-5000.app.github.dev/books/search?q=lord%20of%20the%20rings - SALIÓ OK
