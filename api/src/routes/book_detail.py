@@ -2,6 +2,8 @@ from flask import jsonify, request
 import requests
 import os
 from flask_jwt_extended import jwt_required
+import re
+import json
 
 
 google_books_url = "https://www.googleapis.com/books/v1/"
@@ -27,10 +29,23 @@ def book_detail_route(app):
             book = response.json()
             volume_info = book.get("volumeInfo", {})
             image_links = volume_info.get("imageLinks", {})
+            
+            # Removes unicodes(\u003cb\) from description string 
+            try:
+                decoded_string = json.loads(volume_info.get("description"))
+            except json.JSONDecodeError:
+               decoded_string = volume_info.get("description", ["N/A"])
+
+            # Regex to find content between < > and replaces with nothing.
+            cleaned_text = re.sub('<[^>]+>', '', decoded_string)
+
+            # Replaces multiple spaces with a single space.
+            cleaned_text = re.sub(r'\s{2,}', ' ', cleaned_text).strip()
+
 
             results = {
                 "author": volume_info.get("authors", ["N/A"]),
-                "description": volume_info.get("description", ["N/A"]),
+                "description": cleaned_text,
                 "title": volume_info.get("title", "N/A"),
                 "cover": image_links.get("thumbnail", "N/A"),
                 "book_id": book.get("id", "N/A"),

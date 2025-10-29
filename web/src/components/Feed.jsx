@@ -54,8 +54,8 @@ export const Feed = () => {
     fetchBookCovers();
   }, [feedData]);
 
-  const handleBookClick = async (bookId) => {
-    const fetchBook = await selectBook(bookId);
+  const handleBookClick = async (book) => {
+    const fetchBook = await selectBook(book);
     if (fetchBook) {
       navigate('/book');
     } else {
@@ -186,7 +186,7 @@ export const Feed = () => {
                   <Box sx={{ display: 'flex', gap: 2, marginBottom: 2 }}>
                     <Box
                       sx={{ flexShrink: 0 }}
-                      onClick={() => handleBookClick(data.book_id)}
+                      onClick={() => handleBookClick(bookInfo)}
                     >
                       <img
                         alt="Book cover"

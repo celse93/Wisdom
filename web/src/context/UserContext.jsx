@@ -35,10 +35,7 @@ export const UserProvider = ({ children }) => {
   const [userFeedData, setUserFeedData] = useState([]);
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedBook, setSelectedBook] = useState({
-    book: null,
-    author: null,
-  });
+  const [selectedBook, setSelectedBook] = useState({});
 
   useEffect(() => {
     const checkSession = async () => {
@@ -167,19 +164,16 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const selectBook = async (bookID) => {
+  const selectBook = async (book) => {
     setIsLoading(true);
     try {
-      const bookData = await getBooksDetail(bookID);
-      const authorData = await getAuthorDetail(bookData.author_id);
-
-      setSelectedBook({ book: bookData, author: authorData });
-      setIsLoading(false);
+      setSelectedBook(book);
       return true;
     } catch (error) {
-      console.error('Failed to select book and author:', error);
-      setIsLoading(false);
+      console.error('Failed to select book', error);
       return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 

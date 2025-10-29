@@ -1,16 +1,14 @@
 import { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { Link } from 'react-router';
-import { NavLink } from 'react-router';
 import { useNavigate } from 'react-router';
 import { postReadingList, postRecommendations } from '../services/api/books';
 
 export const Book = () => {
   const { selectedBook } = useContext(UserContext);
-  const { book, author } = selectedBook;
   const navigate = useNavigate();
 
-  if (!book || !author) {
+  if (!selectedBook) {
     return <p>Cargando... </p>;
   }
 
@@ -42,7 +40,7 @@ export const Book = () => {
         <div className="container book-cover-container d-flex justify-content-end pe-5">
           <div>
             <img
-              src={`https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`}
+              src={selectedBook.cover}
               className="img-fluid"
               alt="Book cover"
             />
@@ -50,73 +48,26 @@ export const Book = () => {
         </div>
         <div className="container">
           <div>
-            <h3>{book.title}</h3>
+            <h3>{selectedBook.title}</h3>
           </div>
           <div className="book-description overflow-scroll mb-3">
-            <div className="mb-3">
-              <NavLink data-bs-toggle="modal" data-bs-target="#authorModal">
-                {author.author_name}
-              </NavLink>
-            </div>
-            <p>{book.description}</p>
+            <div className="mb-3">by {selectedBook.author}</div>
+            <div className="mb-3">Published: {selectedBook.publish_year}</div>
+            <p>{selectedBook.description}</p>
           </div>
           <div className="mt-auto mb-2">
-            <button
-              className="btn btn-primary btn-sm w-100"
-              onClick={() => handleBookReadList(book)}
-            >
+            <button className="btn btn-primary btn-sm w-100">
               <i className="fa-solid fa-plus me-2"></i>
               Agregar a biblioteca
             </button>
           </div>
           <div className="mt-auto mb-4">
-            <button
-              className="btn btn-primary btn-sm w-100"
-              onClick={() => handleRecommendations(book)}
-            >
+            <button className="btn btn-primary btn-sm w-100">
               <i className="fa-solid fa-plus me-2"></i>
               Agregar a leídos
             </button>
           </div>
-          <Link onClick={handleGoBack}>Volver</Link>
-        </div>
-      </div>
-
-      {/* Modal */}
-      <div className="modal fade" id="authorModal" tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          <div className="modal-content">
-            <div className="modal-header">
-              <div className="me-2">
-                <img
-                  src={`https://covers.openlibrary.org/a/olid/${author.author_id}-M.jpg`}
-                  className="rounded-circle"
-                  width="200"
-                  height="200"
-                  alt="Author picture"
-                />
-              </div>
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                {author.author_name}
-              </h1>
-            </div>
-            <div className="modal-body">
-              <div className="d-flex">
-                <div>
-                  <p>{author.author_bio}</p>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
+          <Link onClick={handleGoBack}>Return</Link>
         </div>
       </div>
     </div>
