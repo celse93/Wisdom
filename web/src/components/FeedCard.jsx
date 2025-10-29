@@ -1,0 +1,229 @@
+import { useNavigate } from 'react-router';
+import { useContext } from 'react';
+import { UserContext } from '../context/UserContext';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Avatar,
+  Link,
+  Typography,
+  Box,
+  Chip,
+} from '@mui/material';
+import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import StarIcon from '@mui/icons-material/Star';
+import BookIcon from '@mui/icons-material/Book';
+
+export const FeedCard = ({
+  content,
+  date,
+  username,
+  bookId,
+  bookInfo,
+  cover,
+  title,
+  author,
+  text,
+}) => {
+  const navigate = useNavigate();
+  const { selectBook } = useContext(UserContext);
+
+  const handleBookClick = async (book) => {
+    const fetchBook = await selectBook(book);
+    if (fetchBook) {
+      navigate('/book');
+    } else {
+      console.log('Could not navigate to book page');
+    }
+  };
+
+  const totalDays = (date) => {
+    const daysMilisec = new Date(
+      new Date().getTime() - new Date(date).getTime()
+    );
+    const daysNumber = daysMilisec.getDate() - 1;
+    return daysNumber;
+  };
+
+  return (
+    <Box>
+      <Card
+        sx={{
+          mb: 1,
+          py: 1,
+          width: 770,
+          height: 'auto',
+          mx: 'auto',
+          borderRadius: 3,
+          transition: 'box-shadow 0.3s',
+          '&:hover': { boxShadow: 6 },
+        }}
+        key={bookId}
+      >
+        <CardHeader
+          avatar={
+            <Link
+              underline="none"
+              color="inherit"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+              }}
+            >
+              <Avatar
+                alt="icon"
+                sx={{
+                  width: 40,
+                  height: 40,
+                  color: 'var(--primary)',
+                }}
+              >
+                <AutoStoriesRoundedIcon />
+              </Avatar>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight="bold">
+                  {username}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'var(--primary)' }}>
+                  {totalDays(date) === 0
+                    ? 'today'
+                    : totalDays(date) === 1
+                      ? totalDays(date) + ' day ago'
+                      : totalDays(date) + ' days ago'}
+                </Typography>
+              </Box>
+            </Link>
+          }
+          action={
+            <Chip
+              size="small"
+              icon={
+                content === 'quote' ? (
+                  <FormatQuoteIcon
+                    sx={{
+                      color: 'var(--chart-1)',
+                    }}
+                  />
+                ) : content === 'review' ? (
+                  <StarIcon
+                    sx={{
+                      color: 'var(--chart-1)',
+                    }}
+                  />
+                ) : content === 'reading_list' ? (
+                  <BookIcon
+                    sx={{
+                      color: 'var(--chart-1)',
+                    }}
+                  />
+                ) : (
+                  <AutoStoriesIcon
+                    sx={{
+                      color: 'var(--chart-1)',
+                    }}
+                  />
+                )
+              }
+              label={
+                content === 'quote'
+                  ? 'Quote'
+                  : content === 'review'
+                    ? 'Review'
+                    : content === 'reading_list'
+                      ? 'Want to Read'
+                      : 'Read'
+              }
+              sx={{
+                bgcolor: 'var(--background)',
+                color: 'var(--text)',
+                borderColor: 'var(--border)',
+                fontWeight: 'medium',
+                border: '1px solid',
+              }}
+            />
+          }
+          sx={{ paddingBottom: 0, paddingRight: 3 }}
+        />
+        <CardContent
+          sx={{
+            paddingTop: 0,
+            paddingBottom: '16px !important',
+          }}
+        >
+          <Box sx={{ display: 'flex', gap: 2, marginBottom: 2 }}>
+            <Box
+              sx={{ flexShrink: 0 }}
+              onClick={() => handleBookClick(bookInfo)}
+            >
+              <img
+                alt="Book cover"
+                style={{
+                  height: 128,
+                  width: 96,
+                  borderRadius: 8,
+                  objectFit: 'cover',
+                }}
+                className="clickable-item"
+                src={
+                  cover != ''
+                    ? cover
+                    : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=No+Cover'
+                }
+              />
+            </Box>
+            <Box sx={{ flexGrow: 1, paddingTop: 1 }}>
+              <Typography
+                variant="h6"
+                component="h3"
+                sx={{
+                  fontWeight: 'semibold',
+                  lineHeight: 'tight',
+                  fontStyle: 'italic',
+                }}
+              >
+                {title}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                component="h3"
+                sx={{ lineHeight: 'tight' }}
+              >
+                by {author}
+              </Typography>
+            </Box>
+          </Box>
+          {(content == 'quote' || content == 'review') && (
+            <Box
+              sx={{
+                p: 2,
+                borderRadius: 1,
+                border: '1px solid',
+                borderColor: 'divider',
+                borderLeft: '4px solid',
+                borderLeftColor: 'primary.main',
+                bgcolor: 'action.hover',
+                fontStyle: 'italic',
+              }}
+            >
+              <Typography
+                variant="body2"
+                sx={{ whiteSpace: 'pre-wrap', lineHeight: 'relaxed' }}
+              >
+                {text}
+              </Typography>
+            </Box>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
+  );
+};
