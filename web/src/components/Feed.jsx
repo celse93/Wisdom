@@ -198,9 +198,9 @@ export const Feed = () => {
                         }}
                         className="clickable-item"
                         src={
-                          bookInfo.cover_id != ''
-                            ? `https://covers.openlibrary.org/b/id/${bookInfo.cover_id}-M.jpg`
-                            : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=sin+portada+de+libro'
+                          bookInfo.cover != ''
+                            ? bookInfo.cover
+                            : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=No+Cover'
                         }
                       />
                     </Box>
@@ -208,9 +208,16 @@ export const Feed = () => {
                       <Typography
                         variant="h6"
                         component="h3"
-                        sx={{ fontWeight: 'semibold', lineHeight: 'tight' }}
+                        sx={{ fontWeight: 'semibold', lineHeight: 'tight', fontStyle: 'italic' }}
                       >
                         {bookInfo.title}
+                      </Typography>
+                      <Typography
+                        variant="subtitle2"
+                        component="h3"
+                        sx={{ lineHeight: 'tight' }}
+                      >
+                        by {bookInfo.author}
                       </Typography>
                     </Box>
                   </Box>

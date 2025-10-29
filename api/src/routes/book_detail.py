@@ -1,50 +1,41 @@
 from flask import jsonify, request
 import requests
+import os
+from flask_jwt_extended import jwt_required
 
 
-from ratelimit import limits, sleep_and_retry
-
-
-CALLS = 10
-PERIOD = 1
-
-
-@sleep_and_retry
-@limits(calls=CALLS, period=PERIOD)
-def fetch_openlibrary(url, params):
-    return requests.get(url, params=params, timeout=10)
-
-
-open_library_url = "https://openlibrary.org/"
-
+google_books_url = "https://www.googleapis.com/books/v1/"
 
 def book_detail_route(app):
+    @jwt_required()
     @app.route("/book_detail/<path:path>", methods=["GET"])
     def book_detail(path):
-        url = f"{open_library_url}{path}"
+        url = f"{google_books_url}{path}"
+        print(url)
         params = dict(request.args)
+        api_key = os.getenv("GOOGLE_API_KEY")
+        
+        if not api_key:
+             return jsonify({"error": "GOOGLE_API_KEY not found in environment variables."}), 500
+        
+        params["key"] = api_key
+        print(params)
 
         try:
-            proxy_request = fetch_openlibrary(url=url, params=params)
+            response = requests.get(url, params=params, timeout=10)
 
-            data = proxy_request.json()
-            author = data.get("authors")
-            author_id = author[0]["author"]["key"].split("/")[-1]
-            description = data.get("description")
-            cover = data.get("covers")
-            cover_id = (
-                cover and len(cover) > 0 and cover[0] is not None and cover[0]
-            ) or ""
+            book = response.json()
+            volume_info = book.get("volumeInfo", {})
+            image_links = volume_info.get("imageLinks", {})
 
             results = {
-                "author_id": author_id,
-                "description": description.get("value")
-                if isinstance(description, dict)
-                else description,
-                "title": data["title"],
-                "cover_id": cover_id,
-                "book_id": data["key"].split("/")[-1],
+                "author": volume_info.get("authors", ["N/A"]),
+                "description": volume_info.get("description", ["N/A"]),
+                "title": volume_info.get("title", "N/A"),
+                "cover": image_links.get("thumbnail", "N/A"),
+                "book_id": book.get("id", "N/A"),
+                "publish_year": volume_info.get("publishedDate", "N/A"),
             }
-            return jsonify(results), proxy_request.status_code
+            return jsonify(results), response.status_code
         except requests.RequestException:
             return jsonify({"error": "Failed to fetch from OpenLibrary."}), 502

@@ -3,16 +3,22 @@ from flask import request, jsonify
 import os
 from flask_jwt_extended import jwt_required
 
-open_library_url = "https://www.googleapis.com/books/v1/"
+google_books_url = "https://www.googleapis.com/books/v1/"
 
 def books_search_routes(app):
     @jwt_required()
     @app.route("/books_search/<path:path>", methods=["GET"])
     def search_books(path):
-        url = f"{open_library_url}{path}"
+        url = f"{google_books_url}{path}"
         print(url)
         params = dict(request.args)
+        params["printType"] = "books"
+        params["projection"] = "lite"
         api_key = os.getenv("GOOGLE_API_KEY")
+        
+        if not api_key:
+             return jsonify({"error": "GOOGLE_API_KEY not found in environment variables."}), 500
+        
         params["key"] = api_key
         print(params)
 
@@ -25,20 +31,27 @@ def books_search_routes(app):
                 ), response.status_code
 
             data = response.json()
+            
+            if "items" not in data:
+                return jsonify({"message": "Search successful, but no books found.", "data": data}), 200
+
             books = data["items"]
             results = []
 
-            for x in range(8):
+            for book in books:
+                volume_info = book.get("volumeInfo", {})
+                image_links = volume_info.get("imageLinks", {})
+                
                 results.append(
                     {
-                        "title": books[x]["title"],
-                        "author": books[x]["authors"][0],
-                        "first_publish_year": books[x]["publishedDate"],
-                        "cover_id": books[x]["imageLinks"]["thumbnail"],
-                        "book_id": books[x]["id"],
+                        "title": volume_info.get("title", "N/A"),
+                        "author": volume_info.get("authors", ["N/A"]),
+                        "first_publish_year": volume_info.get("publishedDate", "N/A"),
+                        "cover_id": image_links.get("thumbnail", "N/A"),
+                        "book_id": book.get("id", "N/A"),
                     }
                 )
-            return jsonify(books), response.status_code
+            return jsonify(results), response.status_code
 
         except Exception as e:
             return jsonify({"error": f"Unexpected error: {str(e)}"}), 500

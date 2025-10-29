@@ -270,9 +270,9 @@ export const ExploreFeedTab = () => {
                                 }}
                                 className="clickable-item"
                                 src={
-                                  bookInfo.cover_id !== ''
-                                    ? `https://covers.openlibrary.org/b/id/${bookInfo.cover_id}-M.jpg`
-                                    : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=sin+portada+de+libro'
+                                  bookInfo.cover !== ''
+                                    ? bookInfo.cover
+                                    : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=No+Cover'
                                 }
                               />
                             </Box>
@@ -420,9 +420,9 @@ export const ExploreFeedTab = () => {
                                 }}
                                 className="clickable-item"
                                 src={
-                                  bookInfo.cover_id != ''
-                                    ? `https://covers.openlibrary.org/b/id/${bookInfo.cover_id}-M.jpg`
-                                    : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=sin+portada+de+libro'
+                                  bookInfo.cover != ''
+                                    ? bookInfo.cover
+                                    : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=No+Cover'
                                 }
                               />
                             </Box>
@@ -570,9 +570,9 @@ export const ExploreFeedTab = () => {
                                 }}
                                 className="clickable-item"
                                 src={
-                                  bookInfo.cover_id != ''
-                                    ? `https://covers.openlibrary.org/b/id/${bookInfo.cover_id}-M.jpg`
-                                    : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=sin+portada+de+libro'
+                                  bookInfo.cover != ''
+                                    ? bookInfo.cover
+                                    : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=No+Cover'
                                 }
                               />
                             </Box>
@@ -742,9 +742,9 @@ export const ExploreFeedTab = () => {
                                 }}
                                 className="clickable-item"
                                 src={
-                                  bookInfo.cover_id != ''
-                                    ? `https://covers.openlibrary.org/b/id/${bookInfo.cover_id}-M.jpg`
-                                    : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=sin+portada+de+libro'
+                                  bookInfo.cover != ''
+                                    ? bookInfo.cover
+                                    : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=No+Cover'
                                 }
                               />
                             </Box>

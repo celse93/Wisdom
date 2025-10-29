@@ -1,8 +1,8 @@
 import { baseUrl, fetchWrapper } from './config';
 
 export const getBooksSearch = async (input) => {
-  if (input == '') return console.error('¡Sin query!');
-  return await fetchWrapper(`${baseUrl}books_search/search.json?q=${input}`, {
+  if (input == '') return console.error('No query!');
+  return await fetchWrapper(`${baseUrl}books_search/volumes?q=${input}`, {
     credentials: 'include',
   }).then((data) => {
     return data;
@@ -10,8 +10,8 @@ export const getBooksSearch = async (input) => {
 };
 
 export const getBooksDetail = async (id) => {
-  if (id == '') return console.error('¡Sin libro ID!');
-  return await fetchWrapper(`${baseUrl}book_detail/works/${id}.json`, {
+  if (id == '') return console.error('No book ID!');
+  return await fetchWrapper(`${baseUrl}book_detail/volumes/${id}`, {
     credentials: 'include',
   }).then((data) => {
     return data;

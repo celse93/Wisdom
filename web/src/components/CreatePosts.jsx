@@ -114,7 +114,7 @@ export const CreatePosts = () => {
     setSelectedCategory(e.target.value);
   };
 
-  const showContent = selectedOption == 'quote' || selectedOption == 'review';
+  const showContent = selectedOption === 'quote' || selectedOption === 'review';
 
   const handleOpen = () => setOpen(true);
 
@@ -181,7 +181,7 @@ export const CreatePosts = () => {
                           className="dropdown-item d-flex align-items-center"
                         >
                           <img
-                            src={`https://covers.openlibrary.org/b/id/${book.cover_id}-S.jpg`}
+                            src={book.cover_id}
                             className="me-3"
                             style={{
                               width: '40px',
