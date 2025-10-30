@@ -1,48 +1,52 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { UserContext } from '../context/UserContext';
-import { followUser, unfollowUser } from '../services/api/follows';
-import { getFollowers } from '../services/api/follows';
+import {
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getFollowings,
+} from '../services/api/follows';
 
 export const MyFollowers = () => {
-  const { profile, } = useContext(UserContext);
   const [followers, setFollowers] = useState([]);
+  const [followings, setFollowings] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFollowers = async () => {
-        try {
-          const followersList = await getFollowers()
-          setFollowers(followersList);
-        } catch (error) {
-          console.error('Error fetching followers:', error);
-        } finally {
-          setLoading(false);
-        }
+      try {
+        const [followersList, followingsList] = await Promise.all([
+          getFollowers(),
+          getFollowings(),
+        ]);
+        setFollowers(followersList);
+        setFollowings(followingsList);
+      } catch (error) {
+        console.error('Error fetching followers:', error);
+      } finally {
+        setLoading(false);
       }
+    };
     fetchFollowers();
   }, []);
 
-
-
-  const handleFollow = async (userId, index) => {
+  const handleFollow = async (userId) => {
     try {
       await followUser(userId);
-      const newFollowers = [...followers];
-      newFollowers[index].is_following = true;
-      setFollowers(newFollowers);
+      const newFollow = followers.find((user) => user.id === userId);
+      setFollowings((prevFollowings) => [...prevFollowings, newFollow]);
     } catch (error) {
       console.error('Error following user:', error);
     }
   };
 
-  const handleUnfollow = async (userId, index) => {
+  const handleUnfollow = async (userId) => {
     try {
       await unfollowUser(userId);
-      const newFollowers = [...followers];
-      newFollowers[index].is_following = false;
-      setFollowers(newFollowers);
+      setFollowings((prevFollowings) =>
+        prevFollowings.filter((following) => following.id !== userId)
+      );
     } catch (error) {
       console.error('Error unfollowing user:', error);
     }
@@ -74,7 +78,7 @@ export const MyFollowers = () => {
               >
                 <i className="fa-solid fa-arrow-left fa-lg"></i>
               </button>
-              <h1 className="text-white mb-0">Mis Seguidores</h1>
+              <h1 className="text-white mb-0">Followers</h1>
             </div>
 
             {followers.length === 0 ? (
@@ -91,39 +95,55 @@ export const MyFollowers = () => {
               </div>
             ) : (
               <div className="row g-3">
-                {followers.map((follower, index) => (
-                  <div key={follower.id} className="col-12">
-                    <div className="card bg-dark border border-secondary">
-                      <div className="card-body d-flex align-items-center">
-                        <img
-                          src={getProfileAvatar(follower.username)}
-                          alt={follower.name}
-                          className="rounded-circle me-3"
-                          width="60"
-                          height="60"
-                        />
-                        <div className="flex-grow-1">
-                          <h6 className="text-white mb-0">{follower.username}</h6>
+                {followers.map((follower) => {
+                  const isFollowing = followings.find(
+                    (following) => following.id === follower.id
+                  );
+
+                  return (
+                    <div key={follower.id} className="col-12">
+                      <div className="card bg-dark border border-secondary">
+                        <div className="card-body d-flex align-items-center">
+                          <img
+                            src={getProfileAvatar(follower.username)}
+                            alt={follower.name}
+                            className="rounded-circle me-3"
+                            width="60"
+                            height="60"
+                          />
+                          <div className="flex-grow-1">
+                            <h6 className="text-white mb-0">
+                              {follower.username}
+                            </h6>
+                          </div>
+                          {isFollowing ? (
+                            <button
+                              className="btn btn-outline-secondary btn-sm"
+                              onClick={() =>
+                                handleUnfollow(
+                                  follower.id
+                                )
+                              }
+                            >
+                              Following
+                            </button>
+                          ) : (
+                            <button
+                              className="btn btn-primary btn-sm"
+                              onClick={() =>
+                                handleFollow(
+                                  follower.id
+                                )
+                              }
+                            >
+                              Follow
+                            </button>
+                          )}
                         </div>
-                        {follower.is_following ? (
-                          <button
-                            className="btn btn-outline-secondary btn-sm"
-                            onClick={() => handleUnfollow(follower.id, index)}
-                          >
-                            Siguiendo
-                          </button>
-                        ) : (
-                          <button
-                            className="btn btn-primary btn-sm"
-                            onClick={() => handleFollow(follower.id, index)}
-                          >
-                            Seguir
-                          </button>
-                        )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

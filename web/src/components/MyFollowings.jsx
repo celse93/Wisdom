@@ -1,19 +1,20 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { UserContext } from '../context/UserContext';
-import { unfollowUser, getFollowed } from '../services/api/follows';
+import {
+  unfollowUser,
+  getFollowings,
+} from '../services/api/follows';
 
 export const MyFollowings = () => {
-  const { profile } = useContext(UserContext);
-  const [followed, setFollowed] = useState([]);
+  const [followings, setFollowings] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFollowings = async () => {
       try {
-        const followedList = await getFollowed();
-        setFollowed(followedList);
+        const followingsList = await getFollowings();
+        setFollowings(followingsList);
       } catch (error) {
         console.error('Error fetching followings:', error);
       } finally {
@@ -23,11 +24,12 @@ export const MyFollowings = () => {
     fetchFollowings();
   }, []);
 
-  const handleUnfollow = async (userId, index) => {
+  const handleUnfollow = async (userId) => {
     try {
       await unfollowUser(userId);
-      const newFollowings = followed.filter((_, i) => i !== index);
-      setFollowed(newFollowings);
+      setFollowings((prevFollowings) =>
+        prevFollowings.filter((following) => following.id !== userId)
+      );
     } catch (error) {
       console.error('Error unfollowing user:', error);
     }
@@ -36,9 +38,6 @@ export const MyFollowings = () => {
   const getProfileAvatar = (userName) => {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=7c3aed&color=fff&size=60&bold=true&rounded=true`;
   };
-
-
-  console.log(followed)
 
   if (loading) {
     return (
@@ -62,10 +61,10 @@ export const MyFollowings = () => {
               >
                 <i className="fa-solid fa-arrow-left fa-lg"></i>
               </button>
-              <h1 className="text-white mb-0">Siguiendo</h1>
+              <h1 className="text-white mb-0">Following</h1>
             </div>
 
-            {followed.length === 0 ? (
+            {followings.length === 0 ? (
               <div className="text-center">
                 <div className="card bg-dark border border-secondary">
                   <div className="card-body py-5">
@@ -79,25 +78,27 @@ export const MyFollowings = () => {
               </div>
             ) : (
               <div className="row g-3">
-                {followed.map((user, index) => (
-                  <div key={user.id} className="col-12">
+                {followings.map((following) => (
+                  <div key={following.id} className="col-12">
                     <div className="card bg-dark border border-secondary">
                       <div className="card-body d-flex align-items-center">
                         <img
-                          src={getProfileAvatar(user.username)}
-                          alt={user.name}
+                          src={getProfileAvatar(following.username)}
+                          alt={following.name}
                           className="rounded-circle me-3"
                           width="60"
                           height="60"
                         />
                         <div className="flex-grow-1">
-                          <h6 className="text-white mb-0">{user.username}</h6>
+                          <h6 className="text-white mb-0">
+                            {following.username}
+                          </h6>
                         </div>
                         <button
                           className="btn btn-outline-secondary btn-sm"
-                          onClick={() => handleUnfollow(user.id, index)}
+                          onClick={() => handleUnfollow(following.id)}
                         >
-                          Dejar de seguir
+                          Following
                         </button>
                       </div>
                     </div>

@@ -53,7 +53,7 @@ export const getFollowers = async () => {
   });
 };
 
-export const getFollowed = async () => {
+export const getFollowings = async () => {
   return await fetchWrapper(`${baseUrl}followings/`, {
     credentials: 'include',
   }).then((data) => {
