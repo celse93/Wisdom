@@ -1,53 +1,34 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import { UserContext } from '../context/UserContext';
-import { unfollowUser } from '../services/api/follows';
+import { unfollowUser, getFollowed } from '../services/api/follows';
 
 export const MyFollowings = () => {
   const { profile } = useContext(UserContext);
-  const [followings, setFollowings] = useState([]);
+  const [followed, setFollowed] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFollowings = async () => {
-      if (profile?.id) {
-        try {
-          setLoading(true);
-          const response = await fetch(
-            `/api/follows/${profile.id}/followings`,
-            {
-              method: 'GET',
-              credentials: 'include',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': sessionStorage.getItem('csrf_access_token'),
-              },
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const data = await response.json();
-          console.log('Followings data:', data);
-          setFollowings(data);
-        } catch (error) {
-          console.error('Error fetching followings:', error);
-        } finally {
-          setLoading(false);
-        }
+      try {
+        const followedList = await getFollowed();
+        setFollowed(followedList);
+        console.log(followed)
+      } catch (error) {
+        console.error('Error fetching followings:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchFollowings();
-  }, [profile?.id]);
+  }, []);
 
   const handleUnfollow = async (userId, index) => {
     try {
       await unfollowUser(userId);
-      const newFollowings = followings.filter((_, i) => i !== index);
-      setFollowings(newFollowings);
+      const newFollowings = followed.filter((_, i) => i !== index);
+      setFollowed(newFollowings);
     } catch (error) {
       console.error('Error unfollowing user:', error);
     }
@@ -82,7 +63,7 @@ export const MyFollowings = () => {
               <h1 className="text-white mb-0">Siguiendo</h1>
             </div>
 
-            {followings.length === 0 ? (
+            {followed.length === 0 ? (
               <div className="text-center">
                 <div className="card bg-dark border border-secondary">
                   <div className="card-body py-5">
@@ -96,23 +77,23 @@ export const MyFollowings = () => {
               </div>
             ) : (
               <div className="row g-3">
-                {followings.map((following, index) => (
-                  <div key={following.id} className="col-12">
+                {followed.map((user, index) => (
+                  <div key={user.id} className="col-12">
                     <div className="card bg-dark border border-secondary">
                       <div className="card-body d-flex align-items-center">
                         <img
-                          src={getProfileAvatar(following.name)}
-                          alt={following.name}
+                          src={getProfileAvatar(user.name)}
+                          alt={user.name}
                           className="rounded-circle me-3"
                           width="60"
                           height="60"
                         />
                         <div className="flex-grow-1">
-                          <h6 className="text-white mb-0">{following.name}</h6>
+                          <h6 className="text-white mb-0">{user.name}</h6>
                         </div>
                         <button
                           className="btn btn-outline-secondary btn-sm"
-                          onClick={() => handleUnfollow(following.id, index)}
+                          onClick={() => handleUnfollow(user.id, index)}
                         >
                           Dejar de seguir
                         </button>

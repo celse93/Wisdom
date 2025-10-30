@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { UserContext } from '../context/UserContext';
-import { searchUsers, followUser, unfollowUser } from '../services/api/follows';
 import {
   Typography,
   Box,
@@ -20,11 +19,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 
 export const Navbar = () => {
-  const { logout, profile, user } = useContext(UserContext);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [searching, setSearching] = useState(false);
+  const { logout, user } = useContext(UserContext);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
@@ -41,52 +36,6 @@ export const Navbar = () => {
     logout();
   };
 
-  const handleSearchChange = async (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    if (!query.trim()) {
-      setSearchResults([]);
-      setShowDropdown(false);
-      return;
-    }
-
-    setSearching(true);
-    try {
-      const results = await searchUsers(query);
-      setSearchResults(results);
-      setShowDropdown(results.length > 0);
-    } catch (error) {
-      console.error('Error searching users:', error);
-      setSearchResults([]);
-    } finally {
-      setSearching(false);
-    }
-  };
-
-  const handleFollow = async (userId, index) => {
-    try {
-      await followUser(userId);
-      const newResults = [...searchResults];
-      newResults[index].is_following = true;
-      newResults[index].followers_count += 1;
-      setSearchResults(newResults);
-    } catch (error) {
-      console.error('Error following user:', error);
-    }
-  };
-
-  const handleUnfollow = async (userId, index) => {
-    try {
-      await unfollowUser(userId);
-      const newResults = [...searchResults];
-      newResults[index].is_following = false;
-      newResults[index].followers_count -= 1;
-      setSearchResults(newResults);
-    } catch (error) {
-      console.error('Error unfollowing user;', error);
-    }
-  };
 
   return (
     <>

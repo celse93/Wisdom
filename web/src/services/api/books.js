@@ -60,7 +60,7 @@ export const getUserReviews = async () => {
 };
 
 export const postReadingList = async (bookId) => {
-  if (bookId == '') return alert('¡Sin libro!');
+  if (bookId == '') return alert('No book!');
   return await fetchWrapper(`${baseUrl}reading_list/user`, {
     method: 'POST',
     headers: {

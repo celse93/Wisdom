@@ -17,7 +17,7 @@ def follows_routes(app):
 
         profiles = (
             db.session.execute(
-                select(Profiles).where(Profiles.name.ilike(f"%{query}%"))
+                select(Profiles).where(Profiles.username.ilike(f"%{query}%"))
             )
             .scalars()
             .all()
@@ -50,8 +50,7 @@ def follows_routes(app):
                 results.append(
                     {
                         "id": profile.id,
-                        "name": profile.name,
-                        "avatar": profile.avatar,
+                        "name": profile.username,
                         "followers_count": followers_count,
                         "followings_count": followings_count,
                         "is_following": is_following is not None,
@@ -60,61 +59,77 @@ def follows_routes(app):
 
         return jsonify(results), 200
 
-    @app.route("/follows/<int:user_id>", methods=["POST"])
+    @app.route("/follows/", methods=["POST", "DELETE"])
     @jwt_required()
-    def follow_user(user_id):
-        current_user_id = int(get_jwt_identity())
+    def follows():
+        # method to save followed user
+        if request.method == "POST":
+            current_user_id = int(get_jwt_identity())
+            data = request.get_json()
+            required_fields = ["user_id"]
+            
+            if not all(field in data for field in required_fields):
+                return jsonify({"error": "Missing user ID"}), 400
 
-        if current_user_id == user_id:
-            return jsonify({"error": "Cannot follow yourself"}), 400
+            user_id = data['user_id']
+            
+            if current_user_id == user_id:
+                return jsonify({"error": "Cannot follow yourself"}), 400
 
-        user_to_follow = db.session.get(Profiles, user_id)
-        if not user_to_follow:
-            return jsonify({"error": "User not found"}), 404
+            user_to_follow = db.session.get(Profiles, user_id)
+            if not user_to_follow:
+                return jsonify({"error": "User not found"}), 404
 
-        existing_follow = db.session.execute(
-            select(Follows).where(
-                and_(
-                    Follows.follower_id == current_user_id,
-                    Follows.following_id == user_id,
+            existing_follow = db.session.execute(
+                select(Follows).where(
+                    and_(
+                        Follows.follower_id == current_user_id,
+                        Follows.following_id == user_id,
+                    )
                 )
-            )
-        ).scalar_one_or_none()
+            ).scalar_one_or_none()
 
-        if existing_follow:
-            return jsonify({"error": "Already following this user"}), 400
+            if existing_follow:
+                return jsonify({"error": "Already following this user"}), 400
 
-        new_follow = Follows(follower_id=current_user_id, following_id=user_id)
-        db.session.add(new_follow)
-        db.session.commit()
+            new_follow = Follows(follower_id=current_user_id, following_id=user_id)
+            db.session.add(new_follow)
+            db.session.commit()
 
-        return jsonify({"message": "User followed successfully"}), 201
+            return jsonify({"message": "User followed successfully"}), 201
 
-    @app.route("/follows/<int:user_id>", methods=["DELETE"])
-    @jwt_required()
-    def unfollow_user(user_id):
-        current_user_id = int(get_jwt_identity())
+        # method to delete followed user
+        if request.method == 'DELETE':
+            current_user_id = int(get_jwt_identity())
+            data = request.get_json()
+            required_fields = ['user_id']
+            
+            if not all(field in data for field in required_fields):
+                return jsonify({"error": "Missing user ID"}), 400
 
-        existing_follow = db.session.execute(
-            select(Follows).where(
-                and_(
-                    Follows.follower_id == current_user_id,
-                    Follows.following_id == user_id,
+            user_id = data['user_id']
+            
+            existing_follow = db.session.execute(
+                select(Follows).where(
+                    and_(
+                        Follows.follower_id == current_user_id,
+                        Follows.following_id == user_id,
+                    )
                 )
-            )
-        ).scalar_one_or_none()
+            ).scalar_one_or_none()
 
-        if not existing_follow:
-            return jsonify({"error": "Not following this user"}), 404
+            if not existing_follow:
+                return jsonify({"error": "Not following this user"}), 404
 
-        db.session.delete(existing_follow)
-        db.session.commit()
+            db.session.delete(existing_follow)
+            db.session.commit()
 
-        return jsonify({"message": "User unfollowed successfully"}), 200
+            return jsonify({"message": "User unfollowed successfully"}), 200
 
-    @app.route("/profiles/<int:user_id>/stats", methods=["GET"])
+    @app.route("/profiles_stats/", methods=["GET"])
     @jwt_required()
-    def get_user_stats(user_id):
+    def get_user_stats():
+        user_id = int(get_jwt_identity())
         profile = db.session.get(Profiles, user_id)
         if not profile:
             return jsonify({"error": "User not found"}), 404
@@ -135,13 +150,15 @@ def follows_routes(app):
             {"followers_count": followers_count, "followings_count": followings_count}
         ), 200
 
-    @app.route("/follows/<int:user_id>/followers", methods=["GET"])
+    @app.route("/followers/", methods=["GET"])
     @jwt_required()
-    def get_followers(user_id):
+    def get_followers():
+        user_id = int(get_jwt_identity())
         profile = db.session.get(Profiles, user_id)
         if not profile:
             return jsonify({"error": "User not found"}), 404
 
+        # to get the current user's followers IDs
         follower_ids = (
             db.session.execute(
                 select(Follows.follower_id).where(Follows.following_id == user_id)
@@ -158,13 +175,15 @@ def follows_routes(app):
 
         return jsonify(followers), 200
 
-    @app.route("/follows/<int:user_id>/followings", methods=["GET"])
+    @app.route("/followings/", methods=["GET"])
     @jwt_required()
-    def get_followings(user_id):
+    def get_followings():
+        user_id = int(get_jwt_identity())
         profile = db.session.get(Profiles, user_id)
         if not profile:
             return jsonify({"error": "User not found"}), 404
 
+        # to get the users' IDs this current user follows
         following_ids = (
             db.session.execute(
                 select(Follows.following_id).where(Follows.follower_id == user_id)
@@ -172,11 +191,13 @@ def follows_routes(app):
             .scalars()
             .all()
         )
-
+        
+        
         followings = []
         for following_id in following_ids:
             following_profile = db.session.get(Profiles, following_id)
             if following_profile:
                 followings.append(following_profile.serialize())
-
+        
+        print(following_ids)
         return jsonify(followings), 200

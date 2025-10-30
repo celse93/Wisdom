@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { NavLink } from 'react-router';
 import { UserContext } from '../context/UserContext';
-import { searchUsers, followUser, unfollowUser } from '../services/api/follows';
+import { searchProfiles, followUser, unfollowUser } from '../services/api/follows';
 
 export const NavBarFinal = () => {
   const { logout, profile } = useContext(UserContext);
