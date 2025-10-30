@@ -96,14 +96,14 @@ export const MyFollowers = () => {
                     <div className="card bg-dark border border-secondary">
                       <div className="card-body d-flex align-items-center">
                         <img
-                          src={getProfileAvatar(follower.name)}
+                          src={getProfileAvatar(follower.username)}
                           alt={follower.name}
                           className="rounded-circle me-3"
                           width="60"
                           height="60"
                         />
                         <div className="flex-grow-1">
-                          <h6 className="text-white mb-0">{follower.name}</h6>
+                          <h6 className="text-white mb-0">{follower.username}</h6>
                         </div>
                         {follower.is_following ? (
                           <button

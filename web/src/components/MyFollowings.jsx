@@ -14,7 +14,6 @@ export const MyFollowings = () => {
       try {
         const followedList = await getFollowed();
         setFollowed(followedList);
-        console.log(followed)
       } catch (error) {
         console.error('Error fetching followings:', error);
       } finally {
@@ -37,6 +36,9 @@ export const MyFollowings = () => {
   const getProfileAvatar = (userName) => {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=7c3aed&color=fff&size=60&bold=true&rounded=true`;
   };
+
+
+  console.log(followed)
 
   if (loading) {
     return (
@@ -82,14 +84,14 @@ export const MyFollowings = () => {
                     <div className="card bg-dark border border-secondary">
                       <div className="card-body d-flex align-items-center">
                         <img
-                          src={getProfileAvatar(user.name)}
+                          src={getProfileAvatar(user.username)}
                           alt={user.name}
                           className="rounded-circle me-3"
                           width="60"
                           height="60"
                         />
                         <div className="flex-grow-1">
-                          <h6 className="text-white mb-0">{user.name}</h6>
+                          <h6 className="text-white mb-0">{user.username}</h6>
                         </div>
                         <button
                           className="btn btn-outline-secondary btn-sm"

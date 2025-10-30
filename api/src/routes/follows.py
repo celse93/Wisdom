@@ -199,5 +199,5 @@ def follows_routes(app):
             if following_profile:
                 followings.append(following_profile.serialize())
         
-        print(following_ids)
+        print(followings)
         return jsonify(followings), 200
