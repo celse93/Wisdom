@@ -75,7 +75,7 @@ export const Feed = () => {
         <Box>
           {feedData.map((data) => {
             {
-              /* finds the associated book to access its description and coverId*/
+              /* finds the associated book to access its info */
             }
             const bookInfo = bookDetails.find(
               (book) => book.book_id == data.book_id

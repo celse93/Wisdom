@@ -13,7 +13,6 @@ def book_detail_route(app):
     @app.route("/book_detail/<path:path>", methods=["GET"])
     def book_detail(path):
         url = f"{google_books_url}{path}"
-        print(url)
         params = dict(request.args)
         api_key = os.getenv("GOOGLE_API_KEY")
         
@@ -21,7 +20,6 @@ def book_detail_route(app):
              return jsonify({"error": "GOOGLE_API_KEY not found in environment variables."}), 500
         
         params["key"] = api_key
-        print(params)
 
         try:
             response = requests.get(url, params=params, timeout=10)
@@ -29,19 +27,13 @@ def book_detail_route(app):
             book = response.json()
             volume_info = book.get("volumeInfo", {})
             image_links = volume_info.get("imageLinks", {})
+            description_data = volume_info.get("description", "")
             
-            # Removes unicodes(\u003cb\) from description string 
-            try:
-                decoded_string = json.loads(volume_info.get("description"))
-            except json.JSONDecodeError:
-               decoded_string = volume_info.get("description", ["N/A"])
-
-            # Regex to find content between < > and replaces with nothing.
-            cleaned_text = re.sub('<[^>]+>', '', decoded_string)
-
+            # Regex to find content between < > and replaces with nothing
+            cleaned_text = re.sub('<[^>]+>', '', description_data) 
+            
             # Replaces multiple spaces with a single space.
             cleaned_text = re.sub(r'\s{2,}', ' ', cleaned_text).strip()
-
 
             results = {
                 "author": volume_info.get("authors", ["N/A"]),
