@@ -3,11 +3,7 @@ import { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { getProfileNames } from '../services/api/users';
 import { FeedCard } from './FeedCard';
-import {
-  Typography,
-  Box,
-  Tab,
-} from '@mui/material';
+import { Typography, Box, Tab } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import ExploreRoundedIcon from '@mui/icons-material/ExploreRounded';
 
@@ -135,6 +131,7 @@ export const ExploreFeedTab = () => {
                     }
                     return (
                       <FeedCard
+                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
                         content={data.content_type}
                         date={data.created_at}
                         username={profile.username}
@@ -169,6 +166,7 @@ export const ExploreFeedTab = () => {
                     }
                     return (
                       <FeedCard
+                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
                         content={data.content_type}
                         date={data.created_at}
                         username={profile.username}
@@ -203,6 +201,7 @@ export const ExploreFeedTab = () => {
                     }
                     return (
                       <FeedCard
+                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
                         content={data.content_type}
                         date={data.created_at}
                         username={profile.username}
@@ -237,6 +236,7 @@ export const ExploreFeedTab = () => {
                     }
                     return (
                       <FeedCard
+                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
                         content={data.content_type}
                         date={data.created_at}
                         username={profile.username}

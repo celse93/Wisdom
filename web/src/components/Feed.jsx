@@ -4,17 +4,13 @@ import { UserContext } from '../context/UserContext';
 import { postReadingList, postRecommendations } from '../services/api/books';
 import { getProfileNames } from '../services/api/users';
 import { FeedCard } from './FeedCard';
-import {
-  Typography,
-  Box,
-} from '@mui/material';
+import { Typography, Box } from '@mui/material';
 
 export const Feed = () => {
   const [bookDetails, setBookDetails] = useState([]);
   const [profileNames, setProfileNames] = useState([]);
   const [fetchComplete, setFetchComplete] = useState(false);
-  const { fetchFeedData, feedData, isLoadingFeed, } =
-    useContext(UserContext);
+  const { fetchFeedData, feedData, isLoadingFeed } = useContext(UserContext);
 
   useEffect(() => {
     const initialLoad = async () => {
@@ -95,6 +91,7 @@ export const Feed = () => {
             }
             return (
               <FeedCard
+                key={`${data.book_id}_${data.content_type}_${profile.id}`}
                 content={data.content_type}
                 date={data.created_at}
                 username={profile.username}

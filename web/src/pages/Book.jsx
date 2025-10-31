@@ -8,31 +8,33 @@ export const Book = () => {
   const { selectedBook } = useContext(UserContext);
   const navigate = useNavigate();
 
-  if (!selectedBook) {
-    return <p>Cargando... </p>;
-  }
-
   const handleBookReadList = async (book) => {
     try {
       const saveBook = await postReadingList(book.book_id);
-      alert(`Libro "${book.title}": ${saveBook['message']}`);
+      alert(`"${book.title}": ${saveBook['message']}`);
     } catch {
-      alert('¡Error! Libro ya registrado');
+      alert('Error! Book already registered');
     }
   };
 
   const handleRecommendations = async (book) => {
     try {
       const saveBook = await postRecommendations(book.book_id);
-      alert(`Libro "${book.title}": ${saveBook['message']}`);
+      alert(`"${book.title}": ${saveBook['message']}`);
     } catch {
-      alert('¡Error! Libro ya registrado');
+      alert('Error! Book already registered');
     }
   };
 
   const handleGoBack = () => {
     navigate(-1);
   };
+
+  console.log(selectedBook);
+
+  if (!selectedBook) {
+    return <p>Cargando... </p>;
+  }
 
   return (
     <div className="d-flex main-book-container justify-content-center mt-5 pt-5">
@@ -56,15 +58,19 @@ export const Book = () => {
             <p>{selectedBook.description}</p>
           </div>
           <div className="mt-auto mb-2">
-            <button className="btn btn-primary btn-sm w-100">
-              <i className="fa-solid fa-plus me-2"></i>
-              Agregar a biblioteca
+            <button
+              className="btn btn-primary btn-sm w-100"
+              onClick={() => handleBookReadList(selectedBook)}
+            >
+              Want to Read
             </button>
           </div>
           <div className="mt-auto mb-4">
-            <button className="btn btn-primary btn-sm w-100">
-              <i className="fa-solid fa-plus me-2"></i>
-              Agregar a leídos
+            <button
+              className="btn btn-primary btn-sm w-100"
+              onClick={() => handleRecommendations(selectedBook)}
+            >
+              Read
             </button>
           </div>
           <Link onClick={handleGoBack}>Return</Link>

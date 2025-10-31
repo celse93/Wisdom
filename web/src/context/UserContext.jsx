@@ -7,10 +7,6 @@ import {
   getAllReviews,
   getAllReadingLists,
   getAllRecommendations,
-  getUserQuotes,
-  getUserReviews,
-  getUserReadingLists,
-  getUserRecommendations,
 } from '../services/api/feed';
 
 export const UserContext = createContext({
@@ -19,7 +15,7 @@ export const UserContext = createContext({
   login: () => {},
   logout: () => {},
   selectBook: () => {},
-  selectedBook: { book: {}, author: {} },
+  selectedBook: () => {},
   register: () => {},
   isLoading: false,
 });
@@ -30,7 +26,6 @@ export const UserProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingFeed, setIsLoadingFeed] = useState(true);
   const [feedData, setFeedData] = useState([]);
-  const [userFeedData, setUserFeedData] = useState([]);
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedBook, setSelectedBook] = useState({});
@@ -83,41 +78,17 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const fetchUserFeedData = async () => {
-    try {
-      const dataRecommendations = await getUserRecommendations();
-      const dataReadingList = await getUserReadingLists();
-      const dataQuotes = await getUserQuotes();
-      const dataReviews = await getUserReviews();
-
-      const combinedData = [
-        ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
-        ...(Array.isArray(dataReadingList) ? dataReadingList : []),
-        ...(Array.isArray(dataQuotes) ? dataQuotes : []),
-        ...(Array.isArray(dataReviews) ? dataReviews : []),
-      ];
-
-      combinedData.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
-      );
-
-      setUserFeedData(combinedData);
-    } catch (error) {
-      console.error('Failed to fetch books data:', error);
-      return [];
-    } finally {
-      setIsLoadingFeed(false);
-    }
-  };
 
   const login = async (email, password) => {
     try {
-      const [user, profile] = await Promise.all([
-        postLogin(email, password),
+      await postLogin(email, password);
+
+      const [userData, profileData] = await Promise.all([
+        getCurrentUser(),
         getCurrentProfile(),
       ]);
-      setUser(user);
-      setProfile(profile);
+      setUser(userData);
+      setProfile(profileData);
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
@@ -135,25 +106,26 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      setIsLoading(true);
+      navigate('/login');
+      setIsLoading(false);
       setIsLoggedIn(false);
       setUser({});
       setProfile({});
       setFeedData([]);
-      setUserFeedData([]);
-      navigate('/login');
     }
   };
 
   const register = async (name, email, password) => {
     try {
-      const [register, user, profile] = await Promise.all([
-        postRegister(name, email, password),
-        postLogin(email, password),
+      await postRegister(name, email, password);
+      await postLogin(email, password);
+
+      const [userData, profileData] = await Promise.all([
+        getCurrentUser(),
         getCurrentProfile(),
       ]);
-      setUser(user);
-      setProfile(profile);
+      setUser(userData);
+      setProfile(profileData);
       navigate('/profile');
     } catch (error) {
       console.error('Register error:', error.message);
@@ -192,8 +164,6 @@ export const UserProvider = ({ children }) => {
         selectedBook,
         fetchFeedData,
         feedData,
-        fetchUserFeedData,
-        userFeedData,
         isLoggedIn,
         isLoadingFeed,
       }}

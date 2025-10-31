@@ -188,6 +188,7 @@ export const UserFeedTab = () => {
                     }
                     return (
                       <FeedCard
+                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
                         content={data.content_type}
                         date={data.created_at}
                         username={profile.username}
@@ -222,6 +223,7 @@ export const UserFeedTab = () => {
                     }
                     return (
                       <FeedCard
+                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
                         content={data.content_type}
                         date={data.created_at}
                         username={profile.username}
@@ -256,6 +258,7 @@ export const UserFeedTab = () => {
                     }
                     return (
                       <FeedCard
+                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
                         content={data.content_type}
                         date={data.created_at}
                         username={profile.username}
@@ -290,6 +293,7 @@ export const UserFeedTab = () => {
                     }
                     return (
                       <FeedCard
+                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
                         content={data.content_type}
                         date={data.created_at}
                         username={profile.username}
@@ -324,6 +328,7 @@ export const UserFeedTab = () => {
                     }
                     return (
                       <FeedCard
+                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
                         content={data.content_type}
                         date={data.created_at}
                         username={profile.username}
