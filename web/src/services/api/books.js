@@ -18,47 +18,6 @@ export const getBooksDetail = async (id) => {
   });
 };
 
-export const getAuthorDetail = async (id) => {
-  if (id == '') return console.error('¡Sin autor ID!');
-  return await fetchWrapper(`${baseUrl}author/authors/${id}.json`, {
-    credentials: 'include',
-  }).then((data) => {
-    return data;
-  });
-};
-
-export const getUserReadingList = async () => {
-  return await fetchWrapper(`${baseUrl}reading_list/user`, {
-    credentials: 'include',
-  }).then((data) => {
-    return data;
-  });
-};
-
-export const getUserRecommendations = async () => {
-  return await fetchWrapper(`${baseUrl}recommendations`, {
-    credentials: 'include',
-  }).then((data) => {
-    return data;
-  });
-};
-
-export const getUserQuotes = async () => {
-  return await fetchWrapper(`${baseUrl}quotes/user`, {
-    credentials: 'include',
-  }).then((data) => {
-    return data;
-  });
-};
-
-export const getUserReviews = async () => {
-  return await fetchWrapper(`${baseUrl}reviews/user`, {
-    credentials: 'include',
-  }).then((data) => {
-    return data;
-  });
-};
-
 export const postReadingList = async (bookId) => {
   if (bookId == '') return alert('No book!');
   return await fetchWrapper(`${baseUrl}reading_list/user`, {

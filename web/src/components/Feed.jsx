@@ -13,7 +13,7 @@ export const Feed = () => {
   const [bookDetails, setBookDetails] = useState([]);
   const [profileNames, setProfileNames] = useState([]);
   const [fetchComplete, setFetchComplete] = useState(false);
-  const { fetchFeedData, feedData, isLoadingFeed } =
+  const { fetchFeedData, feedData, isLoadingFeed, } =
     useContext(UserContext);
 
   useEffect(() => {
@@ -63,8 +63,6 @@ export const Feed = () => {
       alert('¡Error! Libro ya registrado');
     }
   };
-
-  console.log(feedData);
 
   return (
     <>

@@ -3,36 +3,106 @@ import { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { getProfileNames } from '../services/api/users';
 import { FeedCard } from './FeedCard';
-import {
-  Typography,
-  Box,
-  Tab,
-} from '@mui/material';
+import { Typography, Box, Tab } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
+import { useParams } from 'react-router';
+import {
+  getUserQuotes,
+  getUserReviews,
+  getUserReadingLists,
+  getUserRecommendations,
+  getFollowQuotes,
+  getFollowReadingLists,
+  getFollowReviews,
+  getFollowRecommendations,
+} from '../services/api/feed';
 
 export const UserFeedTab = () => {
   const [bookDetails, setBookDetails] = useState([]);
   const [profileNames, setProfileNames] = useState([]);
-  const [fetchComplete, setFetchComplete] = useState(false);
   const [userRecommendations, setUserRecommendations] = useState([]);
   const [userReadingLists, setUserReadingLists] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
   const [userQuotes, setUserQuotes] = useState([]);
-  const { userFeedData, fetchUserFeedData, isLoadingFeed } =
-    useContext(UserContext);
+  const { profile } = useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('all');
+  let { profileId } = useParams();
+  const [userFeedData, setUserFeedData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     const initialLoad = async () => {
-      await fetchUserFeedData();
+      try {
+        if (profile.id === parseInt(profileId)) {
+          {
+            /* Fecthing data of the logged user */
+          }
+          const [
+            dataRecommendations,
+            dataReadingList,
+            dataQuotes,
+            dataReviews,
+          ] = await Promise.all([
+            getUserRecommendations(),
+            getUserReadingLists(),
+            getUserQuotes(),
+            getUserReviews(),
+          ]);
+
+          const combinedData = [
+            ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
+            ...(Array.isArray(dataReadingList) ? dataReadingList : []),
+            ...(Array.isArray(dataQuotes) ? dataQuotes : []),
+            ...(Array.isArray(dataReviews) ? dataReviews : []),
+          ];
+
+          combinedData.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+
+          setUserFeedData(combinedData);
+        } else {
+          {
+            /* Fecthing data from another user */
+          }
+          const [
+            dataRecommendations,
+            dataReadingList,
+            dataQuotes,
+            dataReviews,
+          ] = await Promise.all([
+            getFollowRecommendations(profileId),
+            getFollowReadingLists(profileId),
+            getFollowQuotes(profileId),
+            getFollowReviews(profileId),
+          ]);
+
+          const combinedData = [
+            ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
+            ...(Array.isArray(dataReadingList) ? dataReadingList : []),
+            ...(Array.isArray(dataQuotes) ? dataQuotes : []),
+            ...(Array.isArray(dataReviews) ? dataReviews : []),
+          ];
+
+          combinedData.sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
+          );
+
+          setUserFeedData(combinedData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch books data:', error);
+        setUserFeedData([]);
+      }
     };
     initialLoad();
-  }, []);
+  }, [profileId]);
 
   useEffect(() => {
     const fetchBookCovers = async () => {
       if (userFeedData.length === 0) {
-        setFetchComplete(true);
+        setIsLoading(false);
         return;
       }
       try {
@@ -62,9 +132,10 @@ export const UserFeedTab = () => {
         setUserReadingLists(dataReadingList);
         setUserQuotes(dataQuotes);
         setUserReviews(dataReviews);
-        setFetchComplete(true);
       } catch (error) {
         console.error('Failed to fetch book details:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchBookCovers();
@@ -73,8 +144,6 @@ export const UserFeedTab = () => {
   const handleChangeTabs = (event, newValue) => {
     setValueTabs(newValue);
   };
-
-  console.log(isLoadingFeed);
 
   return (
     <Box>
@@ -88,9 +157,9 @@ export const UserFeedTab = () => {
             <Tab label="Quotes" value="quotes" />
           </TabList>
         </Box>
-        {isLoadingFeed ? (
+        {isLoading ? (
           <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
-        ) : userFeedData.length === 0 && fetchComplete && !isLoadingFeed ? (
+        ) : userFeedData.length === 0 && !isLoading ? (
           <Box>
             <Typography variant="h5" sx={{ color: 'var(--text)' }}>
               No posts yet

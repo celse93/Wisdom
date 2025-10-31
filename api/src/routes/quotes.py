@@ -98,3 +98,17 @@ def quotes_routes(app):
 
         response_body = [item.serialize() for item in quote_list]
         return jsonify(response_body), 200
+
+    @app.route("/quotes/follow/<int:followId>", methods=["GET"])
+    @jwt_required()
+    def follow_quotes(followId):
+        quote_list = (
+            db.session.execute(select(Quotes).where(Quotes.user_id == followId))
+            .scalars()
+            .all()
+        )
+        if not quote_list:
+            return jsonify({"error": "Quotes list not found"}), 404
+
+        response_body = [item.serialize() for item in quote_list]
+        return jsonify(response_body), 200

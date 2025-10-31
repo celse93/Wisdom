@@ -103,3 +103,21 @@ def recommendations_routes(app):
 
         response_body = [item.serialize() for item in recommendations]
         return jsonify(response_body), 200
+    
+    @app.route("/recommendations/follow/<int:followId>", methods=["GET"])
+    @jwt_required()
+    def follow_recommendations(followId):
+        recommendations = (
+            db.session.execute(
+                select(Recommendations).where(
+                    Recommendations.user_id == followId
+                )
+            )
+            .scalars()
+            .all()
+        )
+        if not recommendations:
+            return jsonify({"error": "Recommendation list not found"}), 404
+
+        response_body = [item.serialize() for item in recommendations]
+        return jsonify(response_body), 200

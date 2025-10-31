@@ -98,3 +98,20 @@ def reading_list_routes(app):
         response_body = [item.serialize() for item in reading_list]
 
         return jsonify(response_body), 200
+
+    @app.route("/reading_list/follow/<int:followId>", methods=["GET"])
+    @jwt_required()
+    def follow_reading_list(followId):
+        reading_list = (
+            db.session.execute(
+                select(ReadingList).where(ReadingList.user_id == followId)
+            )
+            .scalars()
+            .all()
+        )
+        if not reading_list:
+            return jsonify({"error": "Reading list not found"}), 404
+
+        response_body = [item.serialize() for item in reading_list]
+
+        return jsonify(response_body), 200

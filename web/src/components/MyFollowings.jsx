@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import {
-  unfollowUser,
-  getFollowings,
-} from '../services/api/follows';
+import { unfollowUser, getFollowings } from '../services/api/follows';
 
 export const MyFollowings = () => {
   const [followings, setFollowings] = useState([]);
@@ -37,6 +34,10 @@ export const MyFollowings = () => {
 
   const getProfileAvatar = (userName) => {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=7c3aed&color=fff&size=60&bold=true&rounded=true`;
+  };
+
+  const handleOnClick = (followId) => {
+    navigate(`/profile/${followId}`)
   };
 
   if (loading) {
@@ -82,24 +83,29 @@ export const MyFollowings = () => {
                   <div key={following.id} className="col-12">
                     <div className="card bg-dark border border-secondary">
                       <div className="card-body d-flex align-items-center">
-                        <img
-                          src={getProfileAvatar(following.username)}
-                          alt={following.name}
-                          className="rounded-circle me-3"
-                          width="60"
-                          height="60"
-                        />
-                        <div className="flex-grow-1">
+                        <div
+                          className="d-flex align-items-center clickable-item w-75"
+                          onClick={()=> handleOnClick(following.id)}
+                        >
+                          <img
+                            src={getProfileAvatar(following.username)}
+                            alt={following.name}
+                            className="rounded-circle me-3"
+                            width="60"
+                            height="60"
+                          />
                           <h6 className="text-white mb-0">
                             {following.username}
                           </h6>
                         </div>
-                        <button
-                          className="btn btn-outline-secondary btn-sm"
-                          onClick={() => handleUnfollow(following.id)}
-                        >
-                          Following
-                        </button>
+                        <div className="w-25">
+                          <button
+                            className="btn btn-outline-secondary btn-sm"
+                            onClick={() => handleUnfollow(following.id)}
+                          >
+                            Following
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

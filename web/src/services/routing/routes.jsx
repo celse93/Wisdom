@@ -3,13 +3,10 @@ import { Login } from '../../pages/Login';
 import { Book } from '../../pages/Book';
 import { Profile } from '../../pages/Profile';
 import { Register } from '../../pages/Register';
-import { MyLibrary } from '../../pages/MyLibrary';
-import { MyQuotes } from '../../pages/MyQuotes';
-import { MyReviews } from '../../pages/MyReviews';
-import { MyRecommendations } from '../../pages/MyRecommendations';
 import { MyFollowers } from '../../components/MyFollowers';
 import { MyFollowings } from '../../components/MyFollowings';
 import { Explore } from '../../pages/Explore';
+import { useParams } from "react-router";
 
 export const routesConfig = [
   {
@@ -38,7 +35,7 @@ export const routesConfig = [
   },
   {
     name: 'Profile',
-    path: '/profile',
+    path: '/profile/:profileId',
     component: <Profile />,
     showInNavbar: true,
   },
@@ -46,30 +43,6 @@ export const routesConfig = [
     name: 'Register',
     path: '/register',
     component: <Register />,
-    showInNavbar: false,
-  },
-  {
-    name: 'Mi Biblioteca',
-    path: '/my_library',
-    component: <MyLibrary />,
-    showInNavbar: false,
-  },
-  {
-    name: 'Mis Citas',
-    path: '/my_quotes',
-    component: <MyQuotes />,
-    showInNavbar: false,
-  },
-  {
-    name: 'Mis Reseñas',
-    path: '/my_reviews',
-    component: <MyReviews />,
-    showInNavbar: false,
-  },
-  {
-    name: 'Mis Recomendaciones',
-    path: '/my_recommendations',
-    component: <MyRecommendations />,
     showInNavbar: false,
   },
   {

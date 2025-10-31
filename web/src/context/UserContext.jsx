@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import { postLogin, postLogout, postRegister } from '../services/api/auth';
 import { useNavigate } from 'react-router-dom';
-import { getAuthorDetail, getBooksDetail } from '../services/api/books';
 import { getCurrentProfile, getCurrentUser } from '../services/api/users';
 import {
   getAllQuotes,
@@ -9,11 +8,10 @@ import {
   getAllReadingLists,
   getAllRecommendations,
   getUserQuotes,
-  getUserlReviews,
+  getUserReviews,
   getUserReadingLists,
   getUserRecommendations,
 } from '../services/api/feed';
-import { common } from '@mui/material/colors';
 
 export const UserContext = createContext({
   user: {},
@@ -40,8 +38,10 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const userData = await getCurrentUser();
-        const profile = await getCurrentProfile();
+        const [userData, profile] = await Promise.all([
+          getCurrentUser(),
+          getCurrentProfile(),
+        ]);
         setProfile(profile);
         setUser(userData);
         setIsLoggedIn(true);
@@ -54,7 +54,6 @@ export const UserProvider = ({ children }) => {
         setIsLoading(false);
       }
     };
-
     checkSession();
   }, []);
 
@@ -89,7 +88,7 @@ export const UserProvider = ({ children }) => {
       const dataRecommendations = await getUserRecommendations();
       const dataReadingList = await getUserReadingLists();
       const dataQuotes = await getUserQuotes();
-      const dataReviews = await getUserlReviews();
+      const dataReviews = await getUserReviews();
 
       const combinedData = [
         ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
@@ -113,9 +112,11 @@ export const UserProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const user = await postLogin(email, password);
+      const [user, profile] = await Promise.all([
+        postLogin(email, password),
+        getCurrentProfile(),
+      ]);
       setUser(user);
-      const profile = await getCurrentProfile();
       setProfile(profile);
       navigate('/');
     } catch (error) {
@@ -134,7 +135,7 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      setIsLoading(false);
+      setIsLoading(true);
       setIsLoggedIn(false);
       setUser({});
       setProfile({});
@@ -146,14 +147,13 @@ export const UserProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      await postRegister(name, email, password);
-
-      const userData = await postLogin(email, password);
-      setUser(userData);
-
-      const profileData = await getCurrentProfile();
-      setProfile(profileData);
-
+      const [register, user, profile] = await Promise.all([
+        postRegister(name, email, password),
+        postLogin(email, password),
+        getCurrentProfile(),
+      ]);
+      setUser(user);
+      setProfile(profile);
       navigate('/profile');
     } catch (error) {
       console.error('Register error:', error.message);

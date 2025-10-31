@@ -29,11 +29,11 @@ export const LoginForm = () => {
     const newErrors = {};
 
     if (!formData.email) {
-      newErrors.email = 'El email es obligatorio';
+      newErrors.email = 'Email mandatory';
     }
 
     if (!formData.password) {
-      newErrors.password = 'La contraseña es obligatoria';
+      newErrors.password = 'Password mandatory';
     }
 
     setErrors(newErrors);
@@ -51,7 +51,7 @@ export const LoginForm = () => {
       await login(formData.email, formData.password);
     } catch (error) {
       console.error(error);
-      setErrors({ submit: 'Email o contraseña incorrectos' });
+      setErrors({ submit: 'Email or password incorrect' });
     }
   };
 
@@ -83,7 +83,7 @@ export const LoginForm = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="tu@email.com"
+                    placeholder="email@email.com"
                     disabled={isLoading}
                   />
                   {errors.email && (
@@ -102,7 +102,7 @@ export const LoginForm = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Tu contraseña"
+                    placeholder="password"
                     disabled={isLoading}
                   />
                   {errors.password && (
@@ -149,72 +149,3 @@ export const LoginForm = () => {
     </div>
   );
 };
-
-/*
-import { useContext, useState } from 'react';
-import { Link } from 'react-router';
-import { UserContext } from '../context/User';
-
-export const LoginForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const { login } = useContext(UserContext);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    login(email, password);
-  };
-
-  return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              <h3>Iniciar Sesión</h3>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
-                    Email
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label">
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary w-100">
-                  Ingresar
-                </button>
-              </form>
-              <div className="mt-3 text-center">
-                <Link to="/register">¿No tienes cuenta? Regístrate</Link>
-                <br />
-                <Link to="/login">Volver al inicio</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-*/

@@ -1,18 +1,16 @@
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router';
 import {
   getBooksSearch,
   postRecommendations,
   postReadingList,
   postReview,
+  postQuote,
 } from '../services/api/books';
 import { getAllCategories } from '../services/api/feed';
-import { postQuote } from '../services/api/books';
 import Modal from '@mui/material/Modal';
 import { UserContext } from '../context/UserContext';
 
 export const CreatePosts = () => {
-  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [books, setBooks] = useState([]);
   const [bookSelected, setBookSelected] = useState({});

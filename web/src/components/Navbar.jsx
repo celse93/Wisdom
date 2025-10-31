@@ -19,7 +19,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 
 export const Navbar = () => {
-  const { logout, user } = useContext(UserContext);
+  const { logout, profile } = useContext(UserContext);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
@@ -36,6 +36,10 @@ export const Navbar = () => {
     logout();
   };
 
+  const handleClickProfile = () => {
+    navigate(`/profile/${profile.id}`);
+    handleClose();
+  };
 
   return (
     <>
@@ -121,15 +125,15 @@ export const Navbar = () => {
             </Box>
           </Box>
 
-          {!user ? (
+          {!profile ? (
             <Box>
               <Button
                 variant="contained"
                 size="medium"
-                disabled={user['user']['id']}
+                disabled={profile.id}
               >
                 <LoginIcon />
-                {user ? 'Connecting...' : 'Log In'}
+                {profile ? 'Connecting...' : 'Log In'}
               </Button>
             </Box>
           ) : (
@@ -157,10 +161,7 @@ export const Navbar = () => {
                 onClose={handleClose}
               >
                 <MenuItem
-                  onClick={() => {
-                    navigate('/profile');
-                    handleClose();
-                  }}
+                  onClick={handleClickProfile}
                 >
                   <PersonOutlineIcon />
                   My Profile

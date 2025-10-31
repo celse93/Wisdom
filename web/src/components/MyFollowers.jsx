@@ -56,6 +56,10 @@ export const MyFollowers = () => {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=7c3aed&color=fff&size=60&bold=true&rounded=true`;
   };
 
+  const handleOnClick = (followId) => {
+    navigate(`/profile/${followId}`);
+  };
+
   if (loading) {
     return (
       <div className="container-fluid bg-dark min-vh-100 py-4">
@@ -104,41 +108,38 @@ export const MyFollowers = () => {
                     <div key={follower.id} className="col-12">
                       <div className="card bg-dark border border-secondary">
                         <div className="card-body d-flex align-items-center">
-                          <img
-                            src={getProfileAvatar(follower.username)}
-                            alt={follower.name}
-                            className="rounded-circle me-3"
-                            width="60"
-                            height="60"
-                          />
-                          <div className="flex-grow-1">
+                          <div
+                            className="d-flex align-items-center clickable-item w-75"
+                            onClick={()=> handleOnClick(follower.id)}
+                          >
+                            <img
+                              src={getProfileAvatar(follower.username)}
+                              alt={follower.name}
+                              className="rounded-circle me-3"
+                              width="60"
+                              height="60"
+                            />
                             <h6 className="text-white mb-0">
                               {follower.username}
                             </h6>
                           </div>
-                          {isFollowing ? (
-                            <button
-                              className="btn btn-outline-secondary btn-sm"
-                              onClick={() =>
-                                handleUnfollow(
-                                  follower.id
-                                )
-                              }
-                            >
-                              Following
-                            </button>
-                          ) : (
-                            <button
-                              className="btn btn-primary btn-sm"
-                              onClick={() =>
-                                handleFollow(
-                                  follower.id
-                                )
-                              }
-                            >
-                              Follow
-                            </button>
-                          )}
+                          <div>
+                            {isFollowing ? (
+                              <button
+                                className="btn btn-outline-secondary btn-sm"
+                                onClick={() => handleUnfollow(follower.id)}
+                              >
+                                Following
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-primary btn-sm"
+                                onClick={() => handleFollow(follower.id)}
+                              >
+                                Follow
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
