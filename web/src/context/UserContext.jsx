@@ -17,6 +17,7 @@ export const UserContext = createContext({
   selectBook: () => {},
   selectedBook: () => {},
   register: () => {},
+  removeDuplicates: () => {},
   isLoading: false,
 });
 
@@ -78,6 +79,13 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const removeDuplicates = (arr) => {
+    const uniqueSet = new Set(arr);
+
+    const uniqueArray = [...uniqueSet];
+
+    return uniqueArray;
+  };
 
   const login = async (email, password) => {
     try {
@@ -166,6 +174,7 @@ export const UserProvider = ({ children }) => {
         feedData,
         isLoggedIn,
         isLoadingFeed,
+        removeDuplicates
       }}
     >
       {children}

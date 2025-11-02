@@ -14,8 +14,9 @@ export const ExploreFeedTab = () => {
   const [readingLists, setReadingLists] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [quotes, setQuotes] = useState([]);
-  const { feedData, fetchFeedData, isLoadingFeed } = useContext(UserContext);
+  const { feedData, fetchFeedData, isLoadingFeed, removeDuplicates } = useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('recommendations');
+  let feedArray = []
 
   useEffect(() => {
     const initialLoad = async () => {
@@ -43,8 +44,13 @@ export const ExploreFeedTab = () => {
           (value) => value.content_type === 'review'
         );
 
-        const bookDetailPromises = feedData.map((book) =>
-          getBooksDetail(book.book_id)
+        for (let i = 0; i < feedData.length; i++) {
+          feedArray.push(feedData[i].book_id);
+        }
+        const uniqueArray = removeDuplicates(feedArray)
+
+        const bookDetailPromises = uniqueArray.map((bookId) =>
+          getBooksDetail(bookId)
         );
         const [bookDetailsResult, profileDetailsResult] = await Promise.all([
           Promise.all(bookDetailPromises),

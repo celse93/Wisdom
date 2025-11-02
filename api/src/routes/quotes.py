@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from src.db import db
 from src.models.models import Quotes
-from datetime import date
+from datetime import date, timedelta
 import datetime
 from sqlalchemy import select, and_
 from flask_jwt_extended import (
@@ -87,7 +87,7 @@ def quotes_routes(app):
     @jwt_required()
     def all_quotes():
         today = date.today()
-        last_week = datetime.datetime(today.year, today.month, today.day -7) 
+        last_week = today - timedelta(days=7)
         quote_list = (
             db.session.execute(select(Quotes).where(Quotes.created_at >= last_week))
             .scalars()

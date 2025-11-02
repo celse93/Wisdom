@@ -10,7 +10,8 @@ export const Feed = () => {
   const [bookDetails, setBookDetails] = useState([]);
   const [profileNames, setProfileNames] = useState([]);
   const [fetchComplete, setFetchComplete] = useState(false);
-  const { fetchFeedData, feedData, isLoadingFeed } = useContext(UserContext);
+  const { fetchFeedData, feedData, isLoadingFeed, removeDuplicates } = useContext(UserContext);
+  let feedArray = []
 
   useEffect(() => {
     const initialLoad = async () => {
@@ -26,8 +27,12 @@ export const Feed = () => {
         return;
       }
       try {
-        const bookDetailPromises = feedData.map((book) =>
-          getBooksDetail(book.book_id)
+        for (let i = 0; i < feedData.length; i++) {
+          feedArray.push(feedData[i].book_id);
+        }
+        const uniqueArray = removeDuplicates(feedArray)
+        const bookDetailPromises = uniqueArray.map((bookId) =>
+          getBooksDetail(bookId)
         );
         const [bookDetailsResult, profileDetailsResult] = await Promise.all([
           Promise.all(bookDetailPromises),
@@ -59,6 +64,9 @@ export const Feed = () => {
       alert('¡Error! Libro ya registrado');
     }
   };
+
+  console.log(feedData);
+  console.log(feedArray);
 
   return (
     <>

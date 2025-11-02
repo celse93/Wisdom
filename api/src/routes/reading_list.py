@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from src.db import db
 from src.models.models import ReadingList
-from datetime import date
+from datetime import date, timedelta
 import datetime
 from sqlalchemy import select, and_
 from flask_jwt_extended import (
@@ -84,7 +84,7 @@ def reading_list_routes(app):
     @jwt_required()
     def all_reading_list():
         today = date.today()
-        last_week = datetime.datetime(today.year, today.month, today.day -7) 
+        last_week = today - timedelta(days=7)
         reading_list = (
             db.session.execute(
                 select(ReadingList).where(ReadingList.created_at >= last_week)
