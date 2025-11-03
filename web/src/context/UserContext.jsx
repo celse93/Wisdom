@@ -1,13 +1,18 @@
 import { createContext, useState, useEffect } from 'react';
 import { postLogin, postLogout, postRegister } from '../services/api/auth';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentProfile, getCurrentUser } from '../services/api/users';
+import {
+  getCurrentProfile,
+  getCurrentUser,
+  getProfileNames,
+} from '../services/api/users';
 import {
   getAllQuotes,
   getAllReviews,
   getAllReadingLists,
   getAllRecommendations,
 } from '../services/api/feed';
+import { getBooksDetail } from '../services/api/books';
 
 export const UserContext = createContext({
   user: {},
@@ -17,7 +22,7 @@ export const UserContext = createContext({
   selectBook: () => {},
   selectedBook: () => {},
   register: () => {},
-  removeDuplicates: () => {},
+  fetchFeedData: () => {},
   isLoading: false,
 });
 
@@ -30,6 +35,8 @@ export const UserProvider = ({ children }) => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedBook, setSelectedBook] = useState({});
+  const [bookDetails, setBookDetails] = useState([]);
+  const [profileNames, setProfileNames] = useState([]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -41,8 +48,9 @@ export const UserProvider = ({ children }) => {
         setProfile(profile);
         setUser(userData);
         setIsLoggedIn(true);
+        await Promise.all(fetchFeedData());
       } catch (error) {
-        console.error('Session restoration failed, user logged out:', error);
+        console.error('Session restoration failed, user logged out: ', error);
         setIsLoggedIn(false);
         setUser({});
         setProfile({});
@@ -55,10 +63,13 @@ export const UserProvider = ({ children }) => {
 
   const fetchFeedData = async () => {
     try {
-      const dataRecommendations = await getAllRecommendations();
-      const dataReadingList = await getAllReadingLists();
-      const dataQuotes = await getAllQuotes();
-      const dataReviews = await getAllReviews();
+      const [dataRecommendations, dataReadingList, dataQuotes, dataReviews] =
+        await Promise.all([
+          getAllRecommendations(),
+          getAllReadingLists(),
+          getAllQuotes(),
+          getAllReviews(),
+        ]);
 
       const combinedData = [
         ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
@@ -69,22 +80,25 @@ export const UserProvider = ({ children }) => {
       combinedData.sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
-
       setFeedData(combinedData);
+
+      const bookIds = combinedData.map((item) => item.book_id);
+      const uniqueBookIds = [...new Set(bookIds)];
+      const bookDetailPromises = uniqueBookIds.map((bookId) =>
+        getBooksDetail(bookId)
+      );
+      const [bookDetailsResult, profileDetailsResult] = await Promise.all([
+        Promise.all(bookDetailPromises),
+        getProfileNames(),
+      ]);
+      setBookDetails(bookDetailsResult);
+      setProfileNames(profileDetailsResult);
     } catch (error) {
       console.error('Failed to fetch books data:', error);
       return [];
     } finally {
       setIsLoadingFeed(false);
     }
-  };
-
-  const removeDuplicates = (arr) => {
-    const uniqueSet = new Set(arr);
-
-    const uniqueArray = [...uniqueSet];
-
-    return uniqueArray;
   };
 
   const login = async (email, password) => {
@@ -174,7 +188,8 @@ export const UserProvider = ({ children }) => {
         feedData,
         isLoggedIn,
         isLoadingFeed,
-        removeDuplicates
+        bookDetails,
+        profileNames,
       }}
     >
       {children}

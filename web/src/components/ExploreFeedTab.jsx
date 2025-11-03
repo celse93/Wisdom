@@ -1,73 +1,34 @@
-import { getBooksDetail } from '../services/api/books';
-import { useEffect, useState, useContext } from 'react';
+import { useState, useContext, useMemo } from 'react';
 import { UserContext } from '../context/UserContext';
-import { getProfileNames } from '../services/api/users';
 import { FeedCard } from './FeedCard';
 import { Typography, Box, Tab } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import ExploreRoundedIcon from '@mui/icons-material/ExploreRounded';
 
 export const ExploreFeedTab = () => {
-  const [bookDetails, setBookDetails] = useState([]);
-  const [profileNames, setProfileNames] = useState([]);
-  const [recommendations, setRecommendations] = useState([]);
-  const [readingLists, setReadingLists] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [quotes, setQuotes] = useState([]);
-  const { feedData, fetchFeedData, isLoadingFeed, removeDuplicates } = useContext(UserContext);
+  const { feedData, isLoadingFeed, bookDetails, profileNames } =
+    useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('recommendations');
-  let feedArray = []
 
-  useEffect(() => {
-    const initialLoad = async () => {
-      await fetchFeedData();
-    };
-    initialLoad();
-  }, []);
+  const recommendations = useMemo(
+    () => feedData.filter((value) => value.content_type === 'recommendation'),
+    [feedData]
+  );
 
-  useEffect(() => {
-    const fetchBookCovers = async () => {
-      if (feedData.length === 0) {
-        return;
-      }
-      try {
-        const dataRecommendations = feedData.filter(
-          (value) => value.content_type === 'recommendation'
-        );
-        const dataReadingList = feedData.filter(
-          (value) => value.content_type === 'reading_list'
-        );
-        const dataQuotes = feedData.filter(
-          (value) => value.content_type === 'quote'
-        );
-        const dataReviews = feedData.filter(
-          (value) => value.content_type === 'review'
-        );
+  const readingLists = useMemo(
+    () => feedData.filter((value) => value.content_type === 'reading_list'),
+    [feedData]
+  );
 
-        for (let i = 0; i < feedData.length; i++) {
-          feedArray.push(feedData[i].book_id);
-        }
-        const uniqueArray = removeDuplicates(feedArray)
+  const reviews = useMemo(
+    () => feedData.filter((value) => value.content_type === 'review'),
+    [feedData]
+  );
 
-        const bookDetailPromises = uniqueArray.map((bookId) =>
-          getBooksDetail(bookId)
-        );
-        const [bookDetailsResult, profileDetailsResult] = await Promise.all([
-          Promise.all(bookDetailPromises),
-          getProfileNames(),
-        ]);
-        setBookDetails(bookDetailsResult);
-        setProfileNames(profileDetailsResult);
-        setRecommendations(dataRecommendations);
-        setReadingLists(dataReadingList);
-        setQuotes(dataQuotes);
-        setReviews(dataReviews);
-      } catch (error) {
-        console.error('Failed to fetch book details:', error);
-      }
-    };
-    fetchBookCovers();
-  }, [feedData]);
+  const quotes = useMemo(
+    () => feedData.filter((value) => value.content_type === 'quote'),
+    [feedData]
+  );
 
   console.log(feedData);
 
