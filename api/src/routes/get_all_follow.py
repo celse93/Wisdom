@@ -9,38 +9,31 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 
-def get_all_routes(app):
-    @app.route("/get_all", methods=["GET"])
+def get_all_follow_routes(app):
+    @app.route("/get_all_follow/<int:followId>", methods=["GET"])
     @jwt_required()
-    def get_all():
-        # method to get all data from all tables from the last 7 days
+    def get_all_follow(followId):
+        # method to get all data from specific user profile
         if request.method == "GET":
-            today = date.today()
-            last_week = today - timedelta(days=7)
             reviews = (
-                db.session.execute(
-                    select(Reviews).where(Reviews.created_at >= last_week)
-                )
+                db.session.execute(select(Reviews).where(Reviews.user_id == followId))
                 .scalars()
                 .all()
             )
             recommendations = (
                 db.session.execute(
-                    select(Recommendations).where(
-                        Recommendations.created_at >= last_week
-                    )
-                )
+                    select(Recommendations).where(Recommendations.user_id == followId))
                 .scalars()
                 .all()
             )
             quotes = (
-                db.session.execute(select(Quotes).where(Quotes.created_at >= last_week))
+                db.session.execute(select(Quotes).where(Quotes.user_id == followId))
                 .scalars()
                 .all()
             )
             reading_list = (
                 db.session.execute(
-                    select(ReadingList).where(ReadingList.created_at >= last_week)
+                    select(ReadingList).where(ReadingList.user_id == followId)
                 )
                 .scalars()
                 .all()
