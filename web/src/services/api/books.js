@@ -34,8 +34,16 @@ export const postReadingList = async (bookId) => {
   });
 };
 
-export const postRecommendations = async (bookId) => {
-  if (bookId == '') return alert('¡Sin libro!');
+export const postRecommendations = async (
+  bookId,
+  title,
+  author,
+  description,
+  date,
+  image,
+  type
+) => {
+  if (bookId == '' || title == '') return alert('No book ID or title');
   return await fetchWrapper(`${baseUrl}recommendations/user`, {
     method: 'POST',
     headers: {
@@ -44,6 +52,12 @@ export const postRecommendations = async (bookId) => {
     credentials: 'include',
     body: JSON.stringify({
       book_id: bookId,
+      title: title,
+      author: author,
+      description: description,
+      date: date,
+      image: image,
+      type: type
     }),
   }).then((data) => {
     return data;

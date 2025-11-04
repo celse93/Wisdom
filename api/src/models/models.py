@@ -178,7 +178,7 @@ class Books(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     book_id: Mapped[str] = mapped_column(String(50), nullable=False)
-    title: Mapped[str] = mapped_column(String(250), nullable=True)
+    title: Mapped[str] = mapped_column(String(250), nullable=False)
     author: Mapped[list[str]] = mapped_column(JSON, nullable=True)
     description: Mapped[str] = mapped_column(String(5000), nullable=True)
     published_date: Mapped[str] = mapped_column(String(50), nullable=True)
