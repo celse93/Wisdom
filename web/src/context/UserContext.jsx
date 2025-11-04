@@ -11,6 +11,14 @@ import {
   getAllReviews,
   getAllReadingLists,
   getAllRecommendations,
+  getUserQuotes,
+  getUserReviews,
+  getUserReadingLists,
+  getUserRecommendations,
+  getFollowQuotes,
+  getFollowReadingLists,
+  getFollowReviews,
+  getFollowRecommendations,
 } from '../services/api/feed';
 import { getBooksDetail } from '../services/api/books';
 
@@ -23,7 +31,14 @@ export const UserContext = createContext({
   selectedBook: () => {},
   register: () => {},
   fetchFeedData: () => {},
+  fetchUserFeed: () => {},
+  fetchFollowFeed: () => {},
   isLoading: false,
+  userFeedData: [],
+  profileNames: [],
+  bookDetails: [],
+  feedData: [],
+  selectedBook: {},
 });
 
 export const UserProvider = ({ children }) => {
@@ -37,6 +52,7 @@ export const UserProvider = ({ children }) => {
   const [selectedBook, setSelectedBook] = useState({});
   const [bookDetails, setBookDetails] = useState([]);
   const [profileNames, setProfileNames] = useState([]);
+  const [userFeedData, setUserFeedData] = useState([]);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -95,7 +111,64 @@ export const UserProvider = ({ children }) => {
       setProfileNames(profileDetailsResult);
     } catch (error) {
       console.error('Failed to fetch books data:', error);
-      return [];
+      setFeedData([]);
+    } finally {
+      setIsLoadingFeed(false);
+    }
+  };
+
+  const fetchUserFeed = async () => {
+    try {
+      const [dataRecommendations, dataReadingList, dataQuotes, dataReviews] =
+        await Promise.all([
+          getUserRecommendations(),
+          getUserReadingLists(),
+          getUserQuotes(),
+          getUserReviews(),
+        ]);
+
+      const combinedData = [
+        ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
+        ...(Array.isArray(dataReadingList) ? dataReadingList : []),
+        ...(Array.isArray(dataQuotes) ? dataQuotes : []),
+        ...(Array.isArray(dataReviews) ? dataReviews : []),
+      ];
+
+      combinedData.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      setUserFeedData(combinedData);
+    } catch (error) {
+      console.error('Failed to fetch books data:', error);
+      setUserFeedData([]);
+    } finally {
+      setIsLoadingFeed(false);
+    }
+  };
+
+  const fetchFollowFeed = async (profileId) => {
+    try {
+      const [dataRecommendations, dataReadingList, dataQuotes, dataReviews] =
+        await Promise.all([
+          getFollowRecommendations(profileId),
+          getFollowReadingLists(profileId),
+          getFollowQuotes(profileId),
+          getFollowReviews(profileId),
+        ]);
+      const combinedData = [
+        ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
+        ...(Array.isArray(dataReadingList) ? dataReadingList : []),
+        ...(Array.isArray(dataQuotes) ? dataQuotes : []),
+        ...(Array.isArray(dataReviews) ? dataReviews : []),
+      ];
+      combinedData.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+      setUserFeedData(combinedData);
+    } catch (error) {
+      console.error('Failed to fetch books data:', error);
+      setUserFeedData([]);
     } finally {
       setIsLoadingFeed(false);
     }
@@ -190,6 +263,11 @@ export const UserProvider = ({ children }) => {
         isLoadingFeed,
         bookDetails,
         profileNames,
+        fetchUserFeed,
+        fetchFollowFeed,
+        userFeedData,
+        setBookDetails,
+        setProfileNames
       }}
     >
       {children}

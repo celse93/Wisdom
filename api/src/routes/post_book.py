@@ -16,21 +16,21 @@ def posts_routes(app):
     def posts():
         if request.method == "POST":
             data = request.get_json()
-            required_fields = ["book_id", "title", "author", "description", "date", 
-                               "image", "type", "text", "category_id"]
+            required_fields = ["book_id", "type"]
             user_id = get_jwt_identity()
-            if not any(field in data for field in required_fields):
-                return jsonify({"error": "Missing required fields"}), 400
             
-            book_id = data["book_id"]
-            title = data["title"]
-            author = data["author"]
-            description = data['description']
-            date = data['date']
-            image = data['image']
-            type = data['type']
-            text = data['text']
-            category_id = data['category_id']
+            if not all(field in data for field in required_fields):
+                return jsonify({"error": "Missing book ID or type"}), 400
+            
+            book_id = data.get("book_id")
+            title = data.get("title")
+            author = data.get("author", ["N/A"])
+            description = data.get('description')
+            date = data.get('date')
+            image = data.get('image')
+            type = data.get('type')
+            text = data.get('text')
+            category_id = data.get('category_id')
 
             if type == 'recommendation':
                 existing_recom = db.session.execute(
@@ -119,85 +119,90 @@ def posts_routes(app):
                     return jsonify({"message": "Book saved successfully in Reading list and Books table"}), 201
 
             if type == 'quote':
-                
-                existing_book = db.session.execute(
-                    select(Books).where(
-                            Books.book_id == book_id,
-                    )
-                ).scalar_one_or_none()
-                
-                # if book exists in Books table save data in Quotes table only
-                if existing_book:
-                    new_quote = Quotes(
-                        book_id=book_id,
-                        user_id=user_id,
-                        text=text,
-                        category_id=category_id,
-                        content_type="quote",
-                    )
-                    db.session.add(new_quote)
-                    db.session.commit()
-
-                    return jsonify({"message": "Quote saved successfully"}), 201
-                
-                # if book not exists in Books table save data in ReadingList + Books table
-                if not existing_book:
-                    new_book = Books(
-                        book_id=book_id, title=title, author=author, description=description,
-                        published_date=date, image=image
-                    )
-                    
-                    new_quote = Quotes(
-                        book_id=book_id,
-                        user_id=user_id,
-                        text=text,
-                        category_id=category_id,
-                        content_type="quote",
-                    )
-                    db.session.add(new_book)
-                    db.session.add(new_quote)
-                    db.session.commit()
-                    return jsonify({"message": "Book saved successfully in Quotes and Books table"}), 201
-                
-            if type == 'review':
-                existing_review = db.session.execute(
-                    select(Reviews).where(
-                        and_(
-                            Reviews.user_id == user_id,
-                            Reviews.book_id == book_id,
+                if text != None: 
+                    existing_book = db.session.execute(
+                        select(Books).where(
+                                Books.book_id == book_id,
                         )
-                    )
-                ).scalar_one_or_none()
-
-                if existing_review:
-                    return jsonify({"error": "Book already rated"}), 400
-                
-                existing_book = db.session.execute(
-                    select(Books).where(
-                            Books.book_id == book_id,
-                    )
-                ).scalar_one_or_none()
-                
-                # if book exists in Books table save data in Reviews table only
-                if existing_book:
-                    new_review = Reviews(
-                        text=text, book_id=book_id, user_id=user_id, content_type="review"
-                    )
-                    db.session.add(new_review)
-                    db.session.commit()
-                    return jsonify({"message": "Review saved successfully"}), 201
-                
-                # if book not exists in Books table save data in Reviews + Books table
-                if not existing_book:
-                    new_book = Books(
-                        book_id=book_id, title=title, author=author, description=description,
-                        published_date=date, image=image
-                    )
+                    ).scalar_one_or_none()
                     
-                    new_review = Reviews(
-                        text=text, book_id=book_id, user_id=user_id, content_type="review"
-                    )
-                    db.session.add(new_book)
-                    db.session.add(new_review)
-                    db.session.commit()
-                    return jsonify({"message": "Book saved successfully in Reading list and Books table"}), 201
+                    # if book exists in Books table save data in Quotes table only
+                    if existing_book:
+                        new_quote = Quotes(
+                            book_id=book_id,
+                            user_id=user_id,
+                            text=text,
+                            category_id=category_id,
+                            content_type="quote",
+                        )
+                        db.session.add(new_quote)
+                        db.session.commit()
+
+                        return jsonify({"message": "Quote saved successfully"}), 201
+                    
+                    # if book not exists in Books table save data in ReadingList + Books table
+                    if not existing_book:
+                        new_book = Books(
+                            book_id=book_id, title=title, author=author, description=description,
+                            published_date=date, image=image
+                        )
+                        
+                        new_quote = Quotes(
+                            book_id=book_id,
+                            user_id=user_id,
+                            text=text,
+                            category_id=category_id,
+                            content_type="quote",
+                        )
+                        db.session.add(new_book)
+                        db.session.add(new_quote)
+                        db.session.commit()
+                        return jsonify({"message": "Book saved successfully in Quotes and Books table"}), 201
+                else:
+                    return jsonify({"error": "Missing quote text"}), 400
+            
+            if type == 'review': 
+                if text != None:
+                    existing_review = db.session.execute(
+                        select(Reviews).where(
+                            and_(
+                                Reviews.user_id == user_id,
+                                Reviews.book_id == book_id,
+                            )
+                        )
+                    ).scalar_one_or_none()
+
+                    if existing_review:
+                        return jsonify({"error": "Book already rated"}), 400
+                    
+                    existing_book = db.session.execute(
+                        select(Books).where(
+                                Books.book_id == book_id,
+                        )
+                    ).scalar_one_or_none()
+                    
+                    # if book exists in Books table save data in Reviews table only
+                    if existing_book:
+                        new_review = Reviews(
+                            text=text, book_id=book_id, user_id=user_id, content_type="review"
+                        )
+                        db.session.add(new_review)
+                        db.session.commit()
+                        return jsonify({"message": "Review saved successfully"}), 201
+                    
+                    # if book not exists in Books table save data in Reviews + Books table
+                    if not existing_book:
+                        new_book = Books(
+                            book_id=book_id, title=title, author=author, description=description,
+                            published_date=date, image=image
+                        )
+                        
+                        new_review = Reviews(
+                            text=text, book_id=book_id, user_id=user_id, content_type="review"
+                        )
+                        db.session.add(new_book)
+                        db.session.add(new_review)
+                        db.session.commit()
+                        return jsonify({"message": "Book saved successfully in Reading list and Books table"}), 201
+                else:
+                    return jsonify({"error": "Missing review text"}), 400

@@ -10,7 +10,6 @@ def books_search_routes(app):
     @app.route("/books_search/<path:path>", methods=["GET"])
     def search_books(path):
         url = f"{google_books_url}{path}"
-        print(url)
         params = dict(request.args)
         params["printType"] = "books"
         params["projection"] = "lite"
@@ -20,7 +19,6 @@ def books_search_routes(app):
              return jsonify({"error": "GOOGLE_API_KEY not found in environment variables."}), 500
         
         params["key"] = api_key
-        print(params)
 
         try:
             response = requests.get(url, params=params, timeout=10)
@@ -46,9 +44,10 @@ def books_search_routes(app):
                     {
                         "title": volume_info.get("title", "N/A"),
                         "author": volume_info.get("authors", ["N/A"]),
-                        "first_publish_year": volume_info.get("publishedDate", "N/A"),
-                        "cover_id": image_links.get("thumbnail", "N/A"),
+                        "publish_year": volume_info.get("publishedDate", "N/A"),
+                        "cover": image_links.get("thumbnail", "N/A"),
                         "book_id": book.get("id", "N/A"),
+                        "description": volume_info.get("description", ["N/A"]),
                     }
                 )
             return jsonify(results), response.status_code

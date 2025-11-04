@@ -34,30 +34,24 @@ export const postReadingList = async (bookId) => {
   });
 };
 
-export const postRecommendations = async (
-  bookId,
-  title,
-  author,
-  description,
-  date,
-  image,
-  type
-) => {
-  if (bookId == '' || title == '') return alert('No book ID or title');
-  return await fetchWrapper(`${baseUrl}recommendations/user`, {
+export const postBook = async (book) => {
+  if (book.book_id == '' || book.type == '') return alert('No book ID or type');
+  return await fetchWrapper(`${baseUrl}posts`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     credentials: 'include',
     body: JSON.stringify({
-      book_id: bookId,
-      title: title,
-      author: author,
-      description: description,
-      date: date,
-      image: image,
-      type: type
+      book_id: book.book_id,
+      title: book.title,
+      author: book.author,
+      description: book.description,
+      date: book.publish_year,
+      image: book.cover,
+      type: book.type,
+      text: book.text,
+      category_id: book.category_id,
     }),
   }).then((data) => {
     return data;

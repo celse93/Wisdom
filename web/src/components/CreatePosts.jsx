@@ -5,10 +5,12 @@ import {
   postReadingList,
   postReview,
   postQuote,
+  postBook,
 } from '../services/api/books';
 import { getAllCategories } from '../services/api/feed';
 import Modal from '@mui/material/Modal';
 import { UserContext } from '../context/UserContext';
+import { useParams } from 'react-router';
 
 export const CreatePosts = () => {
   const [query, setQuery] = useState('');
@@ -19,7 +21,9 @@ export const CreatePosts = () => {
   const [content, setContent] = useState('');
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  const { fetchFeedData, fetchUserFeedData } = useContext(UserContext);
+  const { fetchFeedData, fetchUserFeed, fetchFollowFeed } =
+    useContext(UserContext);
+  let { profileId } = useParams();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -61,37 +65,21 @@ export const CreatePosts = () => {
     const selectedValue = dropdownElement.value;
 
     try {
-      if (selectedValue == 'review') {
-        const saveReview = await postReview(
-          bookSelected.book_id,
-          content.trim()
-        );
-        alert(`${saveReview['message']}`);
-      }
-
-      if (selectedValue == 'quote') {
-        const saveQuote = await postQuote(
-          bookSelected.book_id,
-          content.trim(),
-          selectedCategory
-        );
-        alert(`${saveQuote['message']}`);
-      }
-
-      if (selectedValue == 'recommendation') {
-        const saveRecommendation = await postRecommendations(
-          bookSelected.book_id
-        );
-        alert(`${saveRecommendation['message']}`);
-      }
-
-      if (selectedValue == 'reading') {
-        const saveReadingList = await postReadingList(bookSelected.book_id);
-        alert(`${saveReadingList['message']}`);
-      }
+      setBookSelected({
+        ...bookSelected,
+        type: selectedValue,
+        text: content,
+        category_id: selectedCategory,
+      });
+      const saveBook = await Promise.all(postBook(bookSelected));
+      alert(`${saveBook['message']}`);
       setOpen(false);
-      await fetchFeedData();
-      await fetchUserFeedData();
+
+      if (profileId) {
+        await Promise.all(fetchUserFeed());
+      } else {
+        await Promise.all(fetchFeedData());
+      }
     } catch (error) {
       console.error('Error: ', error);
     } finally {

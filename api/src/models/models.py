@@ -117,7 +117,7 @@ class Reviews(db.Model):
     __tablename__ = "reviews"
 
     id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    text: Mapped[str] = mapped_column(String(500), nullable=False)
+    text: Mapped[str] = mapped_column(String(1500), nullable=False)
     book_id: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("profiles.id"))
     content_type: Mapped[str] = mapped_column(String(50), nullable=False)
@@ -139,10 +139,10 @@ class Quotes(db.Model):
     __tablename__ = "quotes"
 
     id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
-    text: Mapped[str] = mapped_column(String(500), nullable=False)
+    text: Mapped[str] = mapped_column(String(1500), nullable=False)
     book_id: Mapped[str] = mapped_column(String(50), nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("profiles.id"))
-    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
+    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=True)
     content_type: Mapped[str] = mapped_column(String(50), nullable=False)
     created_at: Mapped[date] = mapped_column(Date, default=date.today)
     profile: Mapped[List["Profiles"]] = relationship(back_populates="quote")
@@ -178,7 +178,7 @@ class Books(db.Model):
 
     id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     book_id: Mapped[str] = mapped_column(String(50), nullable=False)
-    title: Mapped[str] = mapped_column(String(250), nullable=False)
+    title: Mapped[str] = mapped_column(String(250), nullable=True)
     author: Mapped[list[str]] = mapped_column(JSON, nullable=True)
     description: Mapped[str] = mapped_column(String(5000), nullable=True)
     published_date: Mapped[str] = mapped_column(String(50), nullable=True)

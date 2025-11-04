@@ -6,94 +6,39 @@ import { FeedCard } from './FeedCard';
 import { Typography, Box, Tab } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import { useParams } from 'react-router';
-import {
-  getUserQuotes,
-  getUserReviews,
-  getUserReadingLists,
-  getUserRecommendations,
-  getFollowQuotes,
-  getFollowReadingLists,
-  getFollowReviews,
-  getFollowRecommendations,
-} from '../services/api/feed';
 
 export const UserFeedTab = () => {
-  const [bookDetails, setBookDetails] = useState([]);
-  const [profileNames, setProfileNames] = useState([]);
   const [userRecommendations, setUserRecommendations] = useState([]);
   const [userReadingLists, setUserReadingLists] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
   const [userQuotes, setUserQuotes] = useState([]);
-  const { profile } = useContext(UserContext);
+  const {
+    profile,
+    fetchUserFeed,
+    userFeedData,
+    bookDetails,
+    profileNames,
+    fetchFollowFeed,
+    setBookDetails,
+    setProfileNames
+  } = useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('all');
   let { profileId } = useParams();
-  const [userFeedData, setUserFeedData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(true);
     const initialLoad = async () => {
-      try {
-        if (profile.id === parseInt(profileId)) {
-          {
-            /* Fecthing data of the logged user */
-          }
-          const [
-            dataRecommendations,
-            dataReadingList,
-            dataQuotes,
-            dataReviews,
-          ] = await Promise.all([
-            getUserRecommendations(),
-            getUserReadingLists(),
-            getUserQuotes(),
-            getUserReviews(),
-          ]);
-
-          const combinedData = [
-            ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
-            ...(Array.isArray(dataReadingList) ? dataReadingList : []),
-            ...(Array.isArray(dataQuotes) ? dataQuotes : []),
-            ...(Array.isArray(dataReviews) ? dataReviews : []),
-          ];
-
-          combinedData.sort(
-            (a, b) => new Date(b.created_at) - new Date(a.created_at)
-          );
-
-          setUserFeedData(combinedData);
-        } else {
-          {
-            /* Fecthing data from another user */
-          }
-          const [
-            dataRecommendations,
-            dataReadingList,
-            dataQuotes,
-            dataReviews,
-          ] = await Promise.all([
-            getFollowRecommendations(profileId),
-            getFollowReadingLists(profileId),
-            getFollowQuotes(profileId),
-            getFollowReviews(profileId),
-          ]);
-
-          const combinedData = [
-            ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
-            ...(Array.isArray(dataReadingList) ? dataReadingList : []),
-            ...(Array.isArray(dataQuotes) ? dataQuotes : []),
-            ...(Array.isArray(dataReviews) ? dataReviews : []),
-          ];
-
-          combinedData.sort(
-            (a, b) => new Date(b.created_at) - new Date(a.created_at)
-          );
-
-          setUserFeedData(combinedData);
+      if (profile.id === parseInt(profileId)) {
+        {
+          /* Fecthing data of the logged user */
         }
-      } catch (error) {
-        console.error('Failed to fetch books data:', error);
-        setUserFeedData([]);
+        await fetchUserFeed();
+      } else {
+        {
+          /* Fecthing data from another user */
+        }
+        await fetchFollowFeed(profileId);
       }
     };
     initialLoad();
