@@ -96,11 +96,6 @@ def recommendations_routes(app):
                 )
             ).scalar_one_or_none()
             
-            followers_count = db.session.execute(
-                select(func.count())
-                .select_from(Follows)
-                .where(Follows.following_id == user_id)
-                ).scalar()
             
             
             delete_book = db.session.get(Recommendations, existing_book.id)
