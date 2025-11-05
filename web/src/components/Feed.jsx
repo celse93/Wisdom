@@ -1,15 +1,20 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useEffect } from 'react';
 import { UserContext } from '../context/UserContext';
 import { FeedCard } from './FeedCard';
 import { Typography, Box } from '@mui/material';
 
 export const Feed = () => {
-  const { feedData, isLoadingFeed, bookDetails, profileNames } =
+  const { feedData, isLoadingFeed, bookDetails, profileNames, fetchFeedData } =
     useContext(UserContext);
 
-  const posts = useMemo(() => [...feedData], [feedData]);
+  useEffect(() => {
+    const initialLoad = async () => {
+      await fetchFeedData();
+    };
+    initialLoad();
+  }, []);
 
-  console.log(posts);
+  const posts = useMemo(() => [...feedData], [feedData]);
 
   return (
     <>
@@ -48,7 +53,7 @@ export const Feed = () => {
                 username={profile.username}
                 bookId={data.book_id}
                 bookInfo={bookInfo}
-                cover={bookInfo.cover}
+                cover={bookInfo.image}
                 title={bookInfo.title}
                 author={bookInfo.author}
                 text={data.text}

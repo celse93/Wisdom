@@ -1,5 +1,5 @@
 import { getBooksDetail } from '../services/api/books';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useMemo } from 'react';
 import { UserContext } from '../context/UserContext';
 import { getProfileNames } from '../services/api/users';
 import { FeedCard } from './FeedCard';
@@ -8,10 +8,6 @@ import { TabList, TabPanel, TabContext } from '@mui/lab';
 import { useParams } from 'react-router';
 
 export const UserFeedTab = () => {
-  const [userRecommendations, setUserRecommendations] = useState([]);
-  const [userReadingLists, setUserReadingLists] = useState([]);
-  const [userReviews, setUserReviews] = useState([]);
-  const [userQuotes, setUserQuotes] = useState([]);
   const {
     profile,
     fetchUserFeed,
@@ -20,14 +16,13 @@ export const UserFeedTab = () => {
     profileNames,
     fetchFollowFeed,
     setBookDetails,
-    setProfileNames
+    setProfileNames,
+    isLoadingFeed
   } = useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('all');
   let { profileId } = useParams();
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
     const initialLoad = async () => {
       if (profile.id === parseInt(profileId)) {
         {
@@ -44,47 +39,26 @@ export const UserFeedTab = () => {
     initialLoad();
   }, [profileId]);
 
-  useEffect(() => {
-    const fetchBookCovers = async () => {
-      if (userFeedData.length === 0) {
-        setIsLoading(false);
-        return;
-      }
-      try {
-        const dataRecommendations = userFeedData.filter(
-          (value) => value.content_type === 'recommendation'
-        );
-        const dataReadingList = userFeedData.filter(
-          (value) => value.content_type === 'reading_list'
-        );
-        const dataQuotes = userFeedData.filter(
-          (value) => value.content_type === 'quote'
-        );
-        const dataReviews = userFeedData.filter(
-          (value) => value.content_type === 'review'
-        );
+  const userRecommendations = useMemo(
+    () =>
+      userFeedData.filter((value) => value.content_type === 'recommendation'),
+    [userFeedData]
+  );
 
-        const bookDetailPromises = userFeedData.map((book) =>
-          getBooksDetail(book.book_id)
-        );
-        const [bookDetailsResult, profileDetailsResult] = await Promise.all([
-          Promise.all(bookDetailPromises),
-          getProfileNames(),
-        ]);
-        setBookDetails(bookDetailsResult);
-        setProfileNames(profileDetailsResult);
-        setUserRecommendations(dataRecommendations);
-        setUserReadingLists(dataReadingList);
-        setUserQuotes(dataQuotes);
-        setUserReviews(dataReviews);
-      } catch (error) {
-        console.error('Failed to fetch book details:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchBookCovers();
-  }, [userFeedData]);
+  const userReadingLists = useMemo(
+    () => userFeedData.filter((value) => value.content_type === 'reading_list'),
+    [userFeedData]
+  );
+
+  const userReviews = useMemo(
+    () => userFeedData.filter((value) => value.content_type === 'review'),
+    [userFeedData]
+  );
+
+  const userQuotes = useMemo(
+    () => userFeedData.filter((value) => value.content_type === 'quote'),
+    [userFeedData]
+  );
 
   const handleChangeTabs = (event, newValue) => {
     setValueTabs(newValue);
@@ -102,9 +76,9 @@ export const UserFeedTab = () => {
             <Tab label="Quotes" value="quotes" />
           </TabList>
         </Box>
-        {isLoading ? (
+        {isLoadingFeed ? (
           <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
-        ) : userFeedData.length === 0 && !isLoading ? (
+        ) : userFeedData.length === 0 && !isLoadingFeed ? (
           <Box>
             <Typography variant="h5" sx={{ color: 'var(--text)' }}>
               No posts yet
@@ -139,7 +113,7 @@ export const UserFeedTab = () => {
                         username={profile.username}
                         bookId={data.book_id}
                         bookInfo={bookInfo}
-                        cover={bookInfo.cover}
+                        cover={bookInfo.image}
                         title={bookInfo.title}
                         author={bookInfo.author}
                         text={data.text}
@@ -174,7 +148,7 @@ export const UserFeedTab = () => {
                         username={profile.username}
                         bookId={data.book_id}
                         bookInfo={bookInfo}
-                        cover={bookInfo.cover}
+                        cover={bookInfo.image}
                         title={bookInfo.title}
                         author={bookInfo.author}
                         text={data.text}
@@ -209,7 +183,7 @@ export const UserFeedTab = () => {
                         username={profile.username}
                         bookId={data.book_id}
                         bookInfo={bookInfo}
-                        cover={bookInfo.cover}
+                        cover={bookInfo.image}
                         title={bookInfo.title}
                         author={bookInfo.author}
                         text={data.text}
@@ -244,7 +218,7 @@ export const UserFeedTab = () => {
                         username={profile.username}
                         bookId={data.book_id}
                         bookInfo={bookInfo}
-                        cover={bookInfo.cover}
+                        cover={bookInfo.image}
                         title={bookInfo.title}
                         author={bookInfo.author}
                         text={data.text}
@@ -279,7 +253,7 @@ export const UserFeedTab = () => {
                         username={profile.username}
                         bookId={data.book_id}
                         bookInfo={bookInfo}
-                        cover={bookInfo.cover}
+                        cover={bookInfo.image}
                         title={bookInfo.title}
                         author={bookInfo.author}
                         text={data.text}

@@ -18,9 +18,49 @@ export const getBooksDetail = async (id) => {
   });
 };
 
+export const getAllBooks = async () => {
+  return await fetchWrapper(`${baseUrl}get_all`, {
+    credentials: 'include',
+  }).then((data) => {
+    return data;
+  });
+};
+
+export const getAllUserBooks = async () => {
+  return await fetchWrapper(`${baseUrl}get_all_user`, {
+    credentials: 'include',
+  }).then((data) => {
+    return data;
+  });
+};
+
+export const getAllFollowBooks = async (profileId) => {
+  return await fetchWrapper(`${baseUrl}get_all_follow/${profileId}`, {
+    credentials: 'include',
+  }).then((data) => {
+    return data;
+  });
+};
+
 export const postReadingList = async (bookId) => {
   if (bookId == '') return alert('No book!');
   return await fetchWrapper(`${baseUrl}reading_list/user`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({
+      book_id: bookId,
+    }),
+  }).then((data) => {
+    return data;
+  });
+};
+
+export const postRecommendations = async (bookId) => {
+  if (bookId == '') return alert('No book!');
+  return await fetchWrapper(`${baseUrl}/recommendations/user`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,7 +88,7 @@ export const postBook = async (book) => {
       author: book.author,
       description: book.description,
       date: book.publish_year,
-      image: book.cover,
+      image: book.image,
       type: book.type,
       text: book.text,
       category_id: book.category_id,

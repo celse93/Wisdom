@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import {
   getBooksSearch,
-  postRecommendations,
   postReadingList,
   postReview,
   postQuote,
@@ -15,7 +14,17 @@ import { useParams } from 'react-router';
 export const CreatePosts = () => {
   const [query, setQuery] = useState('');
   const [books, setBooks] = useState([]);
-  const [bookSelected, setBookSelected] = useState({});
+  const [bookSelected, setBookSelected] = useState({
+    title: '',
+    author: [],
+    publish_year: '',
+    image: '',
+    book_id: '',
+    description: '',
+    type: '',
+    text: '',
+    category_id: null,
+  });
   const [selectedOption, setSelectedOption] = useState('reading');
   const [selectedCategory, setSelectedCategory] = useState(1);
   const [content, setContent] = useState('');
@@ -54,7 +63,16 @@ export const CreatePosts = () => {
 
   const handleBookSelected = (book) => {
     setQuery(book.title);
-    setBookSelected(book);
+    setBookSelected({
+      ...bookSelected,
+      title: book.title,
+      author: book.author,
+      publish_year: book.publish_year,
+      image: book.image,
+      book_id: book.book_id,
+      description: book.description,
+      book_id: book.book_id,
+    });
     setBooks([]);
   };
 
@@ -63,22 +81,21 @@ export const CreatePosts = () => {
     const form = e.target;
     const dropdownElement = form.elements.options;
     const selectedValue = dropdownElement.value;
+    const updatedBook = {
+      ...bookSelected,
+      type: selectedValue,
+      text: content,
+      category_id: selectedCategory,
+    };
 
     try {
-      setBookSelected({
-        ...bookSelected,
-        type: selectedValue,
-        text: content,
-        category_id: selectedCategory,
-      });
-      const saveBook = await Promise.all(postBook(bookSelected));
+      const saveBook = await postBook(updatedBook);
       alert(`${saveBook['message']}`);
       setOpen(false);
-
       if (profileId) {
-        await Promise.all(fetchUserFeed());
+        await fetchUserFeed();
       } else {
-        await Promise.all(fetchFeedData());
+        await fetchFeedData();
       }
     } catch (error) {
       console.error('Error: ', error);
@@ -167,7 +184,7 @@ export const CreatePosts = () => {
                           className="dropdown-item d-flex align-items-center"
                         >
                           <img
-                            src={book.cover_id}
+                            src={book.image}
                             className="me-3"
                             style={{
                               width: '40px',

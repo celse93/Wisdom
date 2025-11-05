@@ -20,7 +20,12 @@ import {
   getFollowReviews,
   getFollowRecommendations,
 } from '../services/api/feed';
-import { getBooksDetail } from '../services/api/books';
+import {
+  getBooksDetail,
+  getAllBooks,
+  getAllUserBooks,
+  getAllFollowBooks
+} from '../services/api/books';
 
 export const UserContext = createContext({
   user: {},
@@ -28,7 +33,6 @@ export const UserContext = createContext({
   login: () => {},
   logout: () => {},
   selectBook: () => {},
-  selectedBook: () => {},
   register: () => {},
   fetchFeedData: () => {},
   fetchUserFeed: () => {},
@@ -64,7 +68,6 @@ export const UserProvider = ({ children }) => {
         setProfile(profile);
         setUser(userData);
         setIsLoggedIn(true);
-        await Promise.all(fetchFeedData());
       } catch (error) {
         console.error('Session restoration failed, user logged out: ', error);
         setIsLoggedIn(false);
@@ -78,97 +81,83 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   const fetchFeedData = async () => {
+    setIsLoadingFeed(true)
     try {
-      const [dataRecommendations, dataReadingList, dataQuotes, dataReviews] =
-        await Promise.all([
-          getAllRecommendations(),
-          getAllReadingLists(),
-          getAllQuotes(),
-          getAllReviews(),
-        ]);
+      const dataBooks = await getAllBooks();
 
       const combinedData = [
-        ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
-        ...(Array.isArray(dataReadingList) ? dataReadingList : []),
-        ...(Array.isArray(dataQuotes) ? dataQuotes : []),
-        ...(Array.isArray(dataReviews) ? dataReviews : []),
+        ...(Array.isArray(dataBooks.tables) ? dataBooks.tables : []),
       ];
       combinedData.sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
       setFeedData(combinedData);
+      setBookDetails(dataBooks.books);
 
-      const bookIds = combinedData.map((item) => item.book_id);
-      const uniqueBookIds = [...new Set(bookIds)];
-      const bookDetailPromises = uniqueBookIds.map((bookId) =>
-        getBooksDetail(bookId)
-      );
-      const [bookDetailsResult, profileDetailsResult] = await Promise.all([
-        Promise.all(bookDetailPromises),
-        getProfileNames(),
-      ]);
-      setBookDetails(bookDetailsResult);
+      const profileDetailsResult = await getProfileNames();
+
       setProfileNames(profileDetailsResult);
     } catch (error) {
       console.error('Failed to fetch books data:', error);
       setFeedData([]);
+      setBookDetails([]);
+      setProfileNames([]);
     } finally {
       setIsLoadingFeed(false);
     }
   };
 
   const fetchUserFeed = async () => {
+    setIsLoadingFeed(true)
     try {
-      const [dataRecommendations, dataReadingList, dataQuotes, dataReviews] =
-        await Promise.all([
-          getUserRecommendations(),
-          getUserReadingLists(),
-          getUserQuotes(),
-          getUserReviews(),
-        ]);
+      const dataBooks = await getAllUserBooks();
 
       const combinedData = [
-        ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
-        ...(Array.isArray(dataReadingList) ? dataReadingList : []),
-        ...(Array.isArray(dataQuotes) ? dataQuotes : []),
-        ...(Array.isArray(dataReviews) ? dataReviews : []),
+        ...(Array.isArray(dataBooks.tables) ? dataBooks.tables : []),
       ];
-
       combinedData.sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
 
       setUserFeedData(combinedData);
+      setBookDetails(dataBooks.books);
+
+      const profileDetailsResult = await getProfileNames();
+
+      setProfileNames(profileDetailsResult);
     } catch (error) {
       console.error('Failed to fetch books data:', error);
       setUserFeedData([]);
+      setBookDetails([]);
+      setProfileNames([]);
     } finally {
       setIsLoadingFeed(false);
     }
   };
 
   const fetchFollowFeed = async (profileId) => {
+    setIsLoadingFeed(true)
     try {
-      const [dataRecommendations, dataReadingList, dataQuotes, dataReviews] =
-        await Promise.all([
-          getFollowRecommendations(profileId),
-          getFollowReadingLists(profileId),
-          getFollowQuotes(profileId),
-          getFollowReviews(profileId),
-        ]);
+      const dataBooks = await getAllFollowBooks(profileId);
+
       const combinedData = [
-        ...(Array.isArray(dataRecommendations) ? dataRecommendations : []),
-        ...(Array.isArray(dataReadingList) ? dataReadingList : []),
-        ...(Array.isArray(dataQuotes) ? dataQuotes : []),
-        ...(Array.isArray(dataReviews) ? dataReviews : []),
+        ...(Array.isArray(dataBooks.tables) ? dataBooks.tables : []),
       ];
       combinedData.sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
+
       setUserFeedData(combinedData);
+      setBookDetails(dataBooks.books);
+
+      const profileDetailsResult = await getProfileNames();
+
+      setProfileNames(profileDetailsResult);
     } catch (error) {
       console.error('Failed to fetch books data:', error);
       setUserFeedData([]);
+      setBookDetails([]);
+      setProfileNames([]);
     } finally {
       setIsLoadingFeed(false);
     }
@@ -267,7 +256,7 @@ export const UserProvider = ({ children }) => {
         fetchFollowFeed,
         userFeedData,
         setBookDetails,
-        setProfileNames
+        setProfileNames,
       }}
     >
       {children}

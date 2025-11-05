@@ -45,7 +45,7 @@ def books_search_routes(app):
                         "title": volume_info.get("title", "N/A"),
                         "author": volume_info.get("authors", ["N/A"]),
                         "publish_year": volume_info.get("publishedDate", "N/A"),
-                        "cover": image_links.get("thumbnail", "N/A"),
+                        "image": image_links.get("thumbnail", "N/A"),
                         "book_id": book.get("id", "N/A"),
                         "description": volume_info.get("description", ["N/A"]),
                     }

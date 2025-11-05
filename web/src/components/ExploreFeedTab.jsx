@@ -104,7 +104,7 @@ export const ExploreFeedTab = () => {
                         username={profile.username}
                         bookId={data.book_id}
                         bookInfo={bookInfo}
-                        cover={bookInfo.cover}
+                        cover={bookInfo.image}
                         title={bookInfo.title}
                         author={bookInfo.author}
                         text={data.text}
@@ -139,7 +139,7 @@ export const ExploreFeedTab = () => {
                         username={profile.username}
                         bookId={data.book_id}
                         bookInfo={bookInfo}
-                        cover={bookInfo.cover}
+                        cover={bookInfo.image}
                         title={bookInfo.title}
                         author={bookInfo.author}
                         text={data.text}
@@ -174,7 +174,7 @@ export const ExploreFeedTab = () => {
                         username={profile.username}
                         bookId={data.book_id}
                         bookInfo={bookInfo}
-                        cover={bookInfo.cover}
+                        cover={bookInfo.image}
                         title={bookInfo.title}
                         author={bookInfo.author}
                         text={data.text}
@@ -209,7 +209,7 @@ export const ExploreFeedTab = () => {
                         username={profile.username}
                         bookId={data.book_id}
                         bookInfo={bookInfo}
-                        cover={bookInfo.cover}
+                        cover={bookInfo.image}
                         title={bookInfo.title}
                         author={bookInfo.author}
                         text={data.text}

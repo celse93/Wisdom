@@ -17,7 +17,7 @@ def recommendations_routes(app):
         # method to save book in Recommendation
         if request.method == "POST":
             data = request.get_json()
-            required_fields = ["book_id", "title", "author", "description", "date", "image"]
+            required_fields = ["book_id"]
             user_id = get_jwt_identity()
             if not any(field in data for field in required_fields):
                 return jsonify({"error": "Missing required fields"}), 400
@@ -41,6 +41,16 @@ def recommendations_routes(app):
             if existing_recom:
                 return jsonify({"error": "Book already registered"}), 400
             
+            
+            new_recom = Recommendations(
+                    book_id=book_id, user_id=user_id, content_type="recommendation"
+                )
+            db.session.add(new_recom)
+            db.session.commit()
+            
+            return jsonify({"message": "Book saved successfully"}), 201
+            
+            '''
             existing_book = db.session.execute(
                 select(Books).where(
                         Books.book_id == book_id,
@@ -69,7 +79,8 @@ def recommendations_routes(app):
                 db.session.add(new_recom)
                 db.session.commit()
                 return jsonify({"message": "Book saved successfully"}), 201
-
+            '''
+            
         # method to delete book from Recommendation
         elif request.method == "DELETE":
             data = request.get_json()
