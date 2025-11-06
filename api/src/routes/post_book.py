@@ -31,8 +31,7 @@ def posts_routes(app):
             type = data.get('type')
             text = data.get('text')
             category_id = data.get('category_id')
-            print(data)
-
+            
             if type == 'recommendation':
                 existing_recom = db.session.execute(
                     select(Recommendations).where(
