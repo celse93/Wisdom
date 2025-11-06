@@ -1,7 +1,5 @@
-import { getBooksDetail } from '../services/api/books';
 import { useEffect, useState, useContext, useMemo } from 'react';
 import { UserContext } from '../context/UserContext';
-import { getProfileNames } from '../services/api/users';
 import { FeedCard } from './FeedCard';
 import { Typography, Box, Tab } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
@@ -15,9 +13,7 @@ export const UserFeedTab = () => {
     bookDetails,
     profileNames,
     fetchFollowFeed,
-    setBookDetails,
-    setProfileNames,
-    isLoadingFeed
+    isLoadingFeed,
   } = useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('all');
   let { profileId } = useParams();

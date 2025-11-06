@@ -1,12 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
-import {
-  getBooksSearch,
-  postReadingList,
-  postReview,
-  postQuote,
-  postBook,
-} from '../services/api/books';
-import { getAllCategories } from '../services/api/feed';
+import { useState, useContext } from 'react';
+import { getBooksSearch, postBook } from '../services/api/books';
 import Modal from '@mui/material/Modal';
 import { UserContext } from '../context/UserContext';
 import { useParams } from 'react-router';
@@ -29,22 +22,8 @@ export const CreatePosts = () => {
   const [selectedCategory, setSelectedCategory] = useState(1);
   const [content, setContent] = useState('');
   const [open, setOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const { fetchFeedData, fetchUserFeed, fetchFollowFeed } =
-    useContext(UserContext);
+  const { fetchFeedData, fetchUserFeed, categories } = useContext(UserContext);
   let { profileId } = useParams();
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categoriesList = await getAllCategories();
-        setCategories(categoriesList);
-      } catch (error) {
-        console.error('Error fetching user stats:', error);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   const handleSearch = async () => {
     if (!query.trim()) {

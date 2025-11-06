@@ -4,15 +4,8 @@ import { FeedCard } from './FeedCard';
 import { Typography, Box } from '@mui/material';
 
 export const Feed = () => {
-  const { feedData, isLoadingFeed, bookDetails, profileNames, fetchFeedData } =
+  const { feedData, isLoadingFeed, bookDetails, profileNames } =
     useContext(UserContext);
-
-  useEffect(() => {
-    const initialLoad = async () => {
-      await fetchFeedData();
-    };
-    initialLoad();
-  }, []);
 
   const posts = useMemo(() => [...feedData], [feedData]);
 

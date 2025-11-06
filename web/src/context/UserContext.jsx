@@ -6,25 +6,11 @@ import {
   getCurrentUser,
   getProfileNames,
 } from '../services/api/users';
+import { getAllCategories } from '../services/api/feed';
 import {
-  getAllQuotes,
-  getAllReviews,
-  getAllReadingLists,
-  getAllRecommendations,
-  getUserQuotes,
-  getUserReviews,
-  getUserReadingLists,
-  getUserRecommendations,
-  getFollowQuotes,
-  getFollowReadingLists,
-  getFollowReviews,
-  getFollowRecommendations,
-} from '../services/api/feed';
-import {
-  getBooksDetail,
   getAllBooks,
   getAllUserBooks,
-  getAllFollowBooks
+  getAllFollowBooks,
 } from '../services/api/books';
 
 export const UserContext = createContext({
@@ -37,12 +23,15 @@ export const UserContext = createContext({
   fetchFeedData: () => {},
   fetchUserFeed: () => {},
   fetchFollowFeed: () => {},
-  isLoading: false,
+  isLoading: true,
+  isLoadingFeed: true,
+  isLoggedIn: false,
   userFeedData: [],
   profileNames: [],
   bookDetails: [],
   feedData: [],
   selectedBook: {},
+  categories: [],
 });
 
 export const UserProvider = ({ children }) => {
@@ -51,23 +40,27 @@ export const UserProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingFeed, setIsLoadingFeed] = useState(true);
   const [feedData, setFeedData] = useState([]);
-  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedBook, setSelectedBook] = useState({});
   const [bookDetails, setBookDetails] = useState([]);
   const [profileNames, setProfileNames] = useState([]);
   const [userFeedData, setUserFeedData] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const [userData, profile] = await Promise.all([
+        const [userData, profile, categoriesList] = await Promise.all([
           getCurrentUser(),
           getCurrentProfile(),
+          getAllCategories(),
         ]);
         setProfile(profile);
         setUser(userData);
+        setCategories(categoriesList);
         setIsLoggedIn(true);
+        await fetchFeedData();
       } catch (error) {
         console.error('Session restoration failed, user logged out: ', error);
         setIsLoggedIn(false);
@@ -81,7 +74,7 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   const fetchFeedData = async () => {
-    setIsLoadingFeed(true)
+    setIsLoadingFeed(true);
     try {
       const dataBooks = await getAllBooks();
 
@@ -108,7 +101,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const fetchUserFeed = async () => {
-    setIsLoadingFeed(true)
+    setIsLoadingFeed(true);
     try {
       const dataBooks = await getAllUserBooks();
 
@@ -136,7 +129,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const fetchFollowFeed = async (profileId) => {
-    setIsLoadingFeed(true)
+    setIsLoadingFeed(true);
     try {
       const dataBooks = await getAllFollowBooks(profileId);
 
@@ -167,12 +160,16 @@ export const UserProvider = ({ children }) => {
     try {
       await postLogin(email, password);
 
-      const [userData, profileData] = await Promise.all([
+      const [userData, profileData, categoriesList] = await Promise.all([
         getCurrentUser(),
         getCurrentProfile(),
+        getAllCategories(),
       ]);
       setUser(userData);
       setProfile(profileData);
+      setCategories(categoriesList);
+      setIsLoggedIn(true);
+      await fetchFeedData();
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
@@ -257,6 +254,7 @@ export const UserProvider = ({ children }) => {
         userFeedData,
         setBookDetails,
         setProfileNames,
+        categories,
       }}
     >
       {children}
