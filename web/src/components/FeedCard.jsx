@@ -18,15 +18,9 @@ import StarIcon from '@mui/icons-material/Star';
 import BookIcon from '@mui/icons-material/Book';
 
 export const FeedCard = ({
-  content,
-  date,
-  username,
-  bookId,
   bookInfo,
-  cover,
-  title,
-  author,
-  text,
+  data,
+  profile,
 }) => {
   const navigate = useNavigate();
   const { selectBook } = useContext(UserContext);
@@ -61,7 +55,6 @@ export const FeedCard = ({
           transition: 'box-shadow 0.3s',
           '&:hover': { boxShadow: 6 },
         }}
-        key={bookId}
       >
         <CardHeader
           avatar={
@@ -91,14 +84,14 @@ export const FeedCard = ({
                 }}
               >
                 <Typography variant="subtitle1" fontWeight="bold">
-                  {username}
+                  {profile.username}
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'var(--primary)' }}>
-                  {totalDays(date) === 0
+                  {totalDays(data.created_at) === 0
                     ? 'today'
-                    : totalDays(date) === 1
-                      ? totalDays(date) + ' day ago'
-                      : totalDays(date) + ' days ago'}
+                    : totalDays(data.created_at) === 1
+                      ? totalDays(data.created_at) + ' day ago'
+                      : totalDays(data.created_at) + ' days ago'}
                 </Typography>
               </Box>
             </Link>
@@ -107,19 +100,19 @@ export const FeedCard = ({
             <Chip
               size="small"
               icon={
-                content === 'quote' ? (
+                data.content_type === 'quote' ? (
                   <FormatQuoteIcon
                     sx={{
                       color: 'var(--chart-1)',
                     }}
                   />
-                ) : content === 'review' ? (
+                ) : data.content_type === 'review' ? (
                   <StarIcon
                     sx={{
                       color: 'var(--chart-1)',
                     }}
                   />
-                ) : content === 'reading_list' ? (
+                ) : data.content_type === 'reading_list' ? (
                   <BookIcon
                     sx={{
                       color: 'var(--chart-1)',
@@ -134,11 +127,11 @@ export const FeedCard = ({
                 )
               }
               label={
-                content === 'quote'
+                data.content_type === 'quote'
                   ? 'Quote'
-                  : content === 'review'
+                  : data.content_type === 'review'
                     ? 'Review'
-                    : content === 'reading_list'
+                    : data.content_type === 'reading_list'
                       ? 'Want to Read'
                       : 'Read'
               }
@@ -174,8 +167,8 @@ export const FeedCard = ({
                 }}
                 className="clickable-item"
                 src={
-                  cover != ''
-                    ? cover
+                  bookInfo.image != ''
+                    ? bookInfo.image
                     : 'https://imageplaceholder.net/300x300/eeeeee/131313?text=No+Cover'
                 }
               />
@@ -190,18 +183,18 @@ export const FeedCard = ({
                   fontStyle: 'italic',
                 }}
               >
-                {title}
+                {bookInfo.title}
               </Typography>
               <Typography
                 variant="subtitle2"
                 component="h3"
                 sx={{ lineHeight: 'tight' }}
               >
-                by {author}
+                by {bookInfo.author}
               </Typography>
             </Box>
           </Box>
-          {(content == 'quote' || content == 'review') && (
+          {(data.content_type == 'quote' || data.content_type == 'review') && (
             <Box
               sx={{
                 p: 2,
@@ -218,7 +211,7 @@ export const FeedCard = ({
                 variant="body2"
                 sx={{ whiteSpace: 'pre-wrap', lineHeight: 'relaxed' }}
               >
-                {text}
+                {data.text}
               </Typography>
             </Box>
           )}

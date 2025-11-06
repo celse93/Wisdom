@@ -42,7 +42,7 @@ export const Book = () => {
         <div className="container book-cover-container d-flex justify-content-end pe-5">
           <div>
             <img
-              src={selectedBook.cover}
+              src={selectedBook.image}
               className="img-fluid"
               alt="Book cover"
             />

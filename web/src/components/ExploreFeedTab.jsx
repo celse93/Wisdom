@@ -30,8 +30,6 @@ export const ExploreFeedTab = () => {
     [feedData]
   );
 
-  console.log(feedData);
-
   const handleChangeTabs = (event, newValue) => {
     setValueTabs(newValue);
   };
@@ -98,16 +96,10 @@ export const ExploreFeedTab = () => {
                     }
                     return (
                       <FeedCard
-                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
-                        content={data.content_type}
-                        date={data.created_at}
-                        username={profile.username}
-                        bookId={data.book_id}
+                        key={`${data.book_id}/${data.content_type}/${profile.id}`}
+                        data={data}
                         bookInfo={bookInfo}
-                        cover={bookInfo.image}
-                        title={bookInfo.title}
-                        author={bookInfo.author}
-                        text={data.text}
+                        profile={profile}
                       />
                     );
                   })
@@ -133,16 +125,10 @@ export const ExploreFeedTab = () => {
                     }
                     return (
                       <FeedCard
-                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
-                        content={data.content_type}
-                        date={data.created_at}
-                        username={profile.username}
-                        bookId={data.book_id}
+                        key={`${data.book_id}/${data.content_type}/${profile.id}`}
+                        data={data}
                         bookInfo={bookInfo}
-                        cover={bookInfo.image}
-                        title={bookInfo.title}
-                        author={bookInfo.author}
-                        text={data.text}
+                        profile={profile}
                       />
                     );
                   })
@@ -168,16 +154,10 @@ export const ExploreFeedTab = () => {
                     }
                     return (
                       <FeedCard
-                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
-                        content={data.content_type}
-                        date={data.created_at}
-                        username={profile.username}
-                        bookId={data.book_id}
+                        key={`${data.book_id}/${data.content_type}/${profile.id}`}
+                        data={data}
                         bookInfo={bookInfo}
-                        cover={bookInfo.image}
-                        title={bookInfo.title}
-                        author={bookInfo.author}
-                        text={data.text}
+                        profile={profile}
                       />
                     );
                   })
@@ -203,16 +183,10 @@ export const ExploreFeedTab = () => {
                     }
                     return (
                       <FeedCard
-                        key={`${data.book_id}_${data.content_type}_${profile.id}`}
-                        content={data.content_type}
-                        date={data.created_at}
-                        username={profile.username}
-                        bookId={data.book_id}
+                        key={`${data.book_id}/${data.content_type}/${profile.id}`}
+                        data={data}
                         bookInfo={bookInfo}
-                        cover={bookInfo.image}
-                        title={bookInfo.title}
-                        author={bookInfo.author}
-                        text={data.text}
+                        profile={profile}
                       />
                     );
                   })
