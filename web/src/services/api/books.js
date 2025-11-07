@@ -98,6 +98,24 @@ export const postBook = async (book) => {
   });
 };
 
+export const deleteBook = async (book) => {
+  if (book.book_id == '' || book.type == '') return alert('No book ID or type');
+  return await fetchWrapper(`${baseUrl}delete`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({
+      book_id: book.book_id,
+      type: book.type,
+      text: book.text,
+    }),
+  }).then((data) => {
+    return data;
+  });
+};
+
 export const postQuote = async (bookId, text, categoryId) => {
   if (text == '' || bookId == '') return alert('Required fields empty!');
   return await fetchWrapper(`${baseUrl}quotes/user`, {

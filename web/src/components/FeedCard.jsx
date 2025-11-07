@@ -16,14 +16,14 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import StarIcon from '@mui/icons-material/Star';
 import BookIcon from '@mui/icons-material/Book';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useParams } from 'react-router';
+import { deleteBook } from '../services/api/books';
 
-export const FeedCard = ({
-  bookInfo,
-  data,
-  profile,
-}) => {
+export const FeedCard = ({ bookInfo, data, profile }) => {
   const navigate = useNavigate();
-  const { selectBook } = useContext(UserContext);
+  const { selectBook, fetchUserFeed } = useContext(UserContext);
+  let { profileId } = useParams();
 
   const handleBookClick = async (book) => {
     const fetchBook = await selectBook(book);
@@ -40,6 +40,16 @@ export const FeedCard = ({
     );
     const daysNumber = daysMilisec.getDate() - 1;
     return daysNumber;
+  };
+
+  const handleDeleteClick = async (data) => {
+    const book = {
+      book_id: data.book_id,
+      type: data.content_type,
+      text: data.text,
+    };
+    await deleteBook(book);
+    await fetchUserFeed();
   };
 
   return (
@@ -112,7 +122,7 @@ export const FeedCard = ({
                       color: 'var(--chart-1)',
                     }}
                   />
-                ) : data.content_type === 'reading_list' ? (
+                ) : data.content_type === 'reading' ? (
                   <BookIcon
                     sx={{
                       color: 'var(--chart-1)',
@@ -131,7 +141,7 @@ export const FeedCard = ({
                   ? 'Quote'
                   : data.content_type === 'review'
                     ? 'Review'
-                    : data.content_type === 'reading_list'
+                    : data.content_type === 'reading'
                       ? 'Want to Read'
                       : 'Read'
               }
@@ -193,6 +203,14 @@ export const FeedCard = ({
                 by {bookInfo.author}
               </Typography>
             </Box>
+            {profile.id == profileId && (
+              <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                <DeleteIcon
+                  className="clickable-item"
+                  onClick={() => handleDeleteClick(data)}
+                />
+              </Box>
+            )}
           </Box>
           {(data.content_type == 'quote' || data.content_type == 'review') && (
             <Box

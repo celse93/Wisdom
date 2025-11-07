@@ -97,7 +97,7 @@ def posts_routes(app):
                 # if book exists in Books table save data in ReadingList table only
                 if existing_book:
                     new_reading = ReadingList(
-                        book_id=book_id, user_id=user_id, content_type="reading_list"
+                        book_id=book_id, user_id=user_id, content_type="reading"
                     )
                     db.session.add(new_reading)
                     db.session.commit()
@@ -111,7 +111,7 @@ def posts_routes(app):
                     )
                     
                     new_reading = Recommendations(
-                        book_id=book_id, user_id=user_id, content_type="reading_list"
+                        book_id=book_id, user_id=user_id, content_type="reading"
                     )
                     db.session.add(new_book)
                     db.session.add(new_reading)

@@ -42,7 +42,7 @@ export const UserFeedTab = () => {
   );
 
   const userReadingLists = useMemo(
-    () => userFeedData.filter((value) => value.content_type === 'reading_list'),
+    () => userFeedData.filter((value) => value.content_type === 'reading'),
     [userFeedData]
   );
 

@@ -16,7 +16,7 @@ export const ExploreFeedTab = () => {
   );
 
   const readingLists = useMemo(
-    () => feedData.filter((value) => value.content_type === 'reading_list'),
+    () => feedData.filter((value) => value.content_type === 'reading'),
     [feedData]
   );
 
