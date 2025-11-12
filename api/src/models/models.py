@@ -1,5 +1,5 @@
-from sqlalchemy import String, VARCHAR, ForeignKey, Date, JSON
-from datetime import date
+from sqlalchemy import String, VARCHAR, ForeignKey, DateTime, JSON
+from datetime import datetime, timezone
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.db import db
 from typing import List
@@ -80,7 +80,8 @@ class ReadingList(db.Model):
     book_id: Mapped[str] = mapped_column(String(50), nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("profiles.id"))
     content_type: Mapped[str] = mapped_column(String(50), nullable=False)
-    created_at: Mapped[date] = mapped_column(Date, default=date.today)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), 
+                                                 default=lambda: datetime.now(timezone.utc))
     profile: Mapped[List["Profiles"]] = relationship(back_populates="readinglist")
 
     def serialize(self):
@@ -100,7 +101,8 @@ class Recommendations(db.Model):
     book_id: Mapped[str] = mapped_column(String(50), nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("profiles.id"))
     content_type: Mapped[str] = mapped_column(String(50), nullable=False)
-    created_at: Mapped[date] = mapped_column(Date, default=date.today)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), 
+                                                 default=lambda: datetime.now(timezone.utc))
     profile: Mapped[List["Profiles"]] = relationship(back_populates="recommendation")
 
     def serialize(self):
@@ -121,7 +123,8 @@ class Reviews(db.Model):
     book_id: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("profiles.id"))
     content_type: Mapped[str] = mapped_column(String(50), nullable=False)
-    created_at: Mapped[date] = mapped_column(Date, default=date.today)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), 
+                                                 default=lambda: datetime.now(timezone.utc))
     profile: Mapped[List["Profiles"]] = relationship(back_populates="review")
 
     def serialize(self):
@@ -144,7 +147,8 @@ class Quotes(db.Model):
     user_id: Mapped[int] = mapped_column(ForeignKey("profiles.id"))
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=True)
     content_type: Mapped[str] = mapped_column(String(50), nullable=False)
-    created_at: Mapped[date] = mapped_column(Date, default=date.today)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), 
+                                                 default=lambda: datetime.now(timezone.utc))
     profile: Mapped[List["Profiles"]] = relationship(back_populates="quote")
     category: Mapped[List["Categories"]] = relationship(back_populates="quote")
 

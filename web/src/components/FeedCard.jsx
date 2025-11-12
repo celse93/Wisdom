@@ -52,6 +52,23 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
     await fetchUserFeed();
   };
 
+  const authors = (array) => {
+    let text = '';
+
+    if (array.length == 1) return array[0];
+
+    if (array.length > 1) {
+      for (let i = 0; i < array.length; i++) {
+        if (i == array.length - 1) {
+          text += array[i];
+        } else {
+          text += array[i] + ', ';
+        }
+      }
+      return text;
+    }
+  };
+
   return (
     <Box>
       <Card
@@ -195,13 +212,15 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
               >
                 {bookInfo.title}
               </Typography>
-              <Typography
-                variant="subtitle2"
-                component="h3"
-                sx={{ lineHeight: 'tight' }}
-              >
-                by {bookInfo.author}
-              </Typography>
+              {bookInfo.author[0] != 'N/A' && (
+                <Typography
+                  variant="subtitle2"
+                  component="h3"
+                  sx={{ lineHeight: 'tight' }}
+                >
+                  {`by ${authors(bookInfo.author)}`}
+                </Typography>
+              )}
             </Box>
             {profile.id == profileId && (
               <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>

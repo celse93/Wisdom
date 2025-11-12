@@ -68,11 +68,8 @@ export const CreatePosts = () => {
       setOpen(false);
       const saveBook = await postBook(updatedBook);
       alert(`${saveBook['message']}`);
-      if (profileId) {
-        await fetchUserFeed();
-      } else {
-        await fetchFeedData();
-      }
+      await fetchUserFeed();
+      await fetchFeedData();
     } catch (error) {
       console.error('Error: ', error);
     } finally {
