@@ -110,7 +110,7 @@ def posts_routes(app):
                         published_date=date, image=image
                     )
                     
-                    new_reading = Recommendations(
+                    new_reading = ReadingList(
                         book_id=book_id, user_id=user_id, content_type="reading"
                     )
                     db.session.add(new_book)

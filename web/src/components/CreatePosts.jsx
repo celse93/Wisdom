@@ -57,20 +57,17 @@ export const CreatePosts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.target;
-    const dropdownElement = form.elements.options;
-    const selectedValue = dropdownElement.value;
     const updatedBook = {
       ...bookSelected,
-      type: selectedValue,
+      type: selectedOption,
       text: content,
       category_id: selectedCategory,
     };
 
     try {
+      setOpen(false);
       const saveBook = await postBook(updatedBook);
       alert(`${saveBook['message']}`);
-      setOpen(false);
       if (profileId) {
         await fetchUserFeed();
       } else {
