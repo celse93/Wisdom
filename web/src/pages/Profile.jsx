@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { UserContext } from '../context/UserContext';
 import { CreatePosts } from '../components/CreatePosts';
@@ -67,7 +67,6 @@ export const Profile = () => {
     try {
       const results = await searchProfiles(query);
       setSearchResults(results);
-      console.log(searchResults);
       setShowDropdown(results.length > 0);
     } catch (error) {
       console.error('Error searching users:', error);
@@ -79,25 +78,35 @@ export const Profile = () => {
 
   const handleFollow = async (userId, index) => {
     try {
+      setLoadingStats(true);
       await followUser(userId);
+      const stats = await getUserStats(profile.id);
+      setFollowingsCount(stats.followings_count);
       const newResults = [...searchResults];
       newResults[index].is_following = true;
       newResults[index].followers_count += 1;
       setSearchResults(newResults);
     } catch (error) {
       console.error('Error following user:', error);
+    } finally {
+      setLoadingStats(false);
     }
   };
 
   const handleUnfollow = async (userId, index) => {
     try {
+      setLoadingStats(true); 
       await unfollowUser(userId);
+      const stats = await getUserStats(profile.id);
+      setFollowingsCount(stats.followings_count);
       const newResults = [...searchResults];
       newResults[index].is_following = false;
       newResults[index].followers_count -= 1;
-      setSearchResults(newResults);
+      setSearchResults(newResults);    
     } catch (error) {
       console.error('Error unfollowing user;', error);
+    } finally {
+      setLoadingStats(false);
     }
   };
 
@@ -116,7 +125,7 @@ export const Profile = () => {
               <div className="col-12 col-lg-9">
                 <div className="card border border-secondary mb-4">
                   <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h2 className="mb-0">Mi Perfil</h2>
+                    <h2 className="mb-0">My Profile</h2>
                   </div>
                   <div className="card-body">
                     <div className="row">
@@ -161,7 +170,7 @@ export const Profile = () => {
                                       )}
                                     </h3>
                                     <p className="text-muted mb-0">
-                                      Seguidores
+                                      Followers
                                     </p>
                                   </div>
                                 </div>
@@ -180,7 +189,7 @@ export const Profile = () => {
                                         followingsCount
                                       )}
                                     </h3>
-                                    <p className="text-muted mb-0">Siguiendo</p>
+                                    <p className="text-muted mb-0">Following</p>
                                   </div>
                                 </div>
                               </div>
@@ -272,7 +281,7 @@ export const Profile = () => {
                         onClick={() => handleUnfollow(user.id)}
                         style={{ fontSize: '0.75rem' }}
                       >
-                        Siguiendo
+                        Following
                       </button>
                     ) : (
                       <button
@@ -280,7 +289,7 @@ export const Profile = () => {
                         onClick={() => handleFollow(user.id)}
                         style={{ fontSize: '0.75rem' }}
                       >
-                        Seguir
+                        Follow
                       </button>
                     )}
                   </div>

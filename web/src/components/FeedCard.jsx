@@ -52,20 +52,20 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
     await fetchUserFeed();
   };
 
-  const authors = (array) => {
-    let text = '';
+  const handleAuthors = (array) => {
+    let authors = '';
 
     if (array.length == 1) return array[0];
 
     if (array.length > 1) {
       for (let i = 0; i < array.length; i++) {
         if (i == array.length - 1) {
-          text += array[i];
+          authors += array[i];
         } else {
-          text += array[i] + ', ';
+          authors += array[i] + ', ';
         }
       }
-      return text;
+      return authors;
     }
   };
 
@@ -218,7 +218,7 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
                   component="h3"
                   sx={{ lineHeight: 'tight' }}
                 >
-                  {`by ${authors(bookInfo.author)}`}
+                  {`by ${handleAuthors(bookInfo.author)}`}
                 </Typography>
               )}
             </Box>
