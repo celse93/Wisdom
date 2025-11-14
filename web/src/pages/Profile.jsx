@@ -14,12 +14,9 @@ import { useParams } from 'react-router';
 export const Profile = () => {
   const { profile } = useContext(UserContext);
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
-
   const [followersCount, setFollowersCount] = useState(0);
   const [followingsCount, setFollowingsCount] = useState(0);
   const [loadingStats, setLoadingStats] = useState(true);
-
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -95,14 +92,14 @@ export const Profile = () => {
 
   const handleUnfollow = async (userId, index) => {
     try {
-      setLoadingStats(true); 
+      setLoadingStats(true);
       await unfollowUser(userId);
       const stats = await getUserStats(profile.id);
       setFollowingsCount(stats.followings_count);
       const newResults = [...searchResults];
       newResults[index].is_following = false;
       newResults[index].followers_count -= 1;
-      setSearchResults(newResults);    
+      setSearchResults(newResults);
     } catch (error) {
       console.error('Error unfollowing user;', error);
     } finally {
@@ -149,53 +146,49 @@ export const Profile = () => {
                       </div>
 
                       <div className="col-12 col-md-8">
-                        {!isEditing && (
-                          <div
-                            className="d-flex flex-column justify-content-center align-items-center w-100"
-                            style={{ minHeight: '250px' }}
-                          >
-                            <div className="d-flex flex-row justify-content-center align-items-center gap-3 w-100">
-                              <div style={{ minWidth: '140px' }}>
-                                <div
-                                  className="card bg-secondary border-0 text-center"
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => navigate('/my_followers')}
-                                >
-                                  <div className="card-body">
-                                    <h3 className="text-white mb-0">
-                                      {loadingStats ? (
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                      ) : (
-                                        followersCount
-                                      )}
-                                    </h3>
-                                    <p className="text-muted mb-0">
-                                      Followers
-                                    </p>
-                                  </div>
+                        <div
+                          className="d-flex flex-column justify-content-center align-items-center w-100"
+                          style={{ minHeight: '250px' }}
+                        >
+                          <div className="d-flex flex-row justify-content-center align-items-center gap-3 w-100">
+                            <div style={{ minWidth: '140px' }}>
+                              <div
+                                className="card bg-secondary border-0 text-center"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => navigate('/my_followers')}
+                              >
+                                <div className="card-body">
+                                  <h3 className="text-white mb-0">
+                                    {loadingStats ? (
+                                      <span className="spinner-border spinner-border-sm"></span>
+                                    ) : (
+                                      followersCount
+                                    )}
+                                  </h3>
+                                  <p className="text-muted mb-0">Followers</p>
                                 </div>
                               </div>
-                              <div style={{ minWidth: '140px' }}>
-                                <div
-                                  className="card bg-secondary border-0 text-center"
-                                  style={{ cursor: 'pointer' }}
-                                  onClick={() => navigate('/my_followings')}
-                                >
-                                  <div className="card-body">
-                                    <h3 className="text-white mb-0">
-                                      {loadingStats ? (
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                      ) : (
-                                        followingsCount
-                                      )}
-                                    </h3>
-                                    <p className="text-muted mb-0">Following</p>
-                                  </div>
+                            </div>
+                            <div style={{ minWidth: '140px' }}>
+                              <div
+                                className="card bg-secondary border-0 text-center"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => navigate('/my_followings')}
+                              >
+                                <div className="card-body">
+                                  <h3 className="text-white mb-0">
+                                    {loadingStats ? (
+                                      <span className="spinner-border spinner-border-sm"></span>
+                                    ) : (
+                                      followingsCount
+                                    )}
+                                  </h3>
+                                  <p className="text-muted mb-0">Following</p>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        )}
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -3,6 +3,8 @@ import { getBooksSearch, postBook } from '../services/api/books';
 import Modal from '@mui/material/Modal';
 import { UserContext } from '../context/UserContext';
 import { useParams } from 'react-router';
+import { Button } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 export const CreatePosts = () => {
   const [query, setQuery] = useState('');
@@ -50,7 +52,6 @@ export const CreatePosts = () => {
       image: book.image,
       book_id: book.book_id,
       description: book.description,
-      book_id: book.book_id,
     });
     setBooks([]);
   };
@@ -106,7 +107,10 @@ export const CreatePosts = () => {
 
   return (
     <>
-      <button onClick={handleOpen}>Share Book</button>
+      <Button sx={{ background: 'var(--chart-0)'}} startIcon={<AddIcon />} variant="contained" onClick={handleOpen}>
+        Share Book
+      </Button>
+      
       <Modal open={open} onClose={handleClose}>
         <div className="post-modal">
           <h5>Share Your Reading Experience</h5>
