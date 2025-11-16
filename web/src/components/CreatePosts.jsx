@@ -1,25 +1,36 @@
 import { useState, useContext } from 'react';
 import { getBooksSearch, postBook } from '../services/api/books';
-import Modal from '@mui/material/Modal';
 import { UserContext } from '../context/UserContext';
 import { useParams } from 'react-router';
-import { Button } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  List,
+  ListItem,
+  MenuItem,
+  Modal,
+  Select,
+  TextareaAutosize,
+  TextField,
+  Typography,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { width } from '@mui/system';
 
 export const CreatePosts = () => {
-  const [query, setQuery] = useState('');
-  const [books, setBooks] = useState([]);
-  const [bookSelected, setBookSelected] = useState({
+  const initialBookState = {
     title: '',
     author: [],
     publish_year: '',
     image: '',
     book_id: '',
     description: '',
-    type: '',
-    text: '',
-    category_id: null,
-  });
+  };
+  const [query, setQuery] = useState('');
+  const [books, setBooks] = useState([]);
+  const [bookSelected, setBookSelected] = useState(initialBookState);
   const [selectedOption, setSelectedOption] = useState('reading');
   const [selectedCategory, setSelectedCategory] = useState(1);
   const [content, setContent] = useState('');
@@ -57,7 +68,6 @@ export const CreatePosts = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
     const updatedBook = {
       ...bookSelected,
       type: selectedOption,
@@ -79,7 +89,7 @@ export const CreatePosts = () => {
       setContent('');
       setSelectedCategory(1);
       setSelectedOption('reading');
-      setBookSelected({});
+      setBookSelected(initialBookState);
     }
   };
 
@@ -102,127 +112,184 @@ export const CreatePosts = () => {
     setContent('');
     setSelectedCategory(1);
     setSelectedOption('reading');
-    setBookSelected({});
+    setBookSelected(initialBookState);
+  };
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
   };
 
   return (
     <>
-      <Button sx={{ background: 'var(--chart-0)'}} startIcon={<AddIcon />} variant="contained" onClick={handleOpen}>
+      <Button
+        sx={{ background: 'var(--chart-0)', '&:hover': { bgcolor: 'var(--chart-2)' } }}
+        startIcon={<AddIcon />}
+        variant="contained"
+        onClick={handleOpen}
+      >
         Share Book
       </Button>
-      
+
       <Modal open={open} onClose={handleClose}>
-        <div className="post-modal">
-          <h5>Share Your Reading Experience</h5>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="options">What would you like to share?</label>
-            <select
+        <Box
+          className="create-post"
+          sx={{
+            bgcolor: 'var(--background)',
+            border: 1,
+            borderColor: 'var(--border)',
+            borderRadius: '15px',
+            p: 4,
+            width: '500px',
+          }}
+        >
+          <FormControl sx={{ width: '400px' }}>
+            <Typography
+              sx={{ color: 'var(--text)', fontWeight: 'bold', mb: 1 }}
+            >
+              What would you like to share?{' '}
+            </Typography>
+            <Select
               onChange={handleOnChange}
               value={selectedOption}
-              name="options"
-              id="options"
+              labelId="options"
+              sx={{ width: '200px' }}
             >
-              <option value="reading">Want to Read</option>
-              <option value="recommendation">Book I've Read</option>
-              <option value="quote">Favorite Quote</option>
-              <option value="review">Book Review</option>
-            </select>
-
-            <div>
-              <div>
-                <label className="text-white">Search a book:</label>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    placeholder="Search by title or author"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleSearch();
-                      }
-                    }}
-                  />
-                  <button onClick={handleSearch}>
-                    <i className="fa-solid fa-magnifying-glass"></i>
-                  </button>
-                </div>
-                {books.length > 0 && (
-                  <ul className="list-group mt-2">
-                    {books.map((book) => (
-                      <li
-                        key={book.book_id}
-                        className="list-group-item list-group-item-action d-flex"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => handleBookSelected(book)}
-                          className="dropdown-item d-flex align-items-center"
-                        >
-                          <img
-                            src={book.image}
-                            className="me-3"
-                            style={{
-                              width: '40px',
-                              height: '60px',
-                              objectFit: 'cover',
-                            }}
-                          />
-                          <div className="flex-grow-1">
-                            <h6 className="mb-1">{book.title}</h6>
-                            <small className="text-muted">{book.author}</small>
-                          </div>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </div>
-            {showContent && (
-              <>
-                {selectedOption == 'quote' && categories.length > 0 && (
-                  <div>
-                    <label htmlFor="categories">Select category:</label>
-                    <select
-                      onChange={handleOnChangeCategory}
-                      value={selectedCategory}
-                      name="categories"
-                      id="categories"
-                    >
-                      {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-                <div>
-                  <label htmlFor="content">
-                    {selectedOption == 'quote' ? 'Quote *' : 'Your Review *'}
-                  </label>
-                  <textarea
-                    id="content"
-                    placeholder={
-                      selectedOption == 'quote'
-                        ? 'Enter your favorite quote from this book...'
-                        : 'Share your thoughts about this book...'
+              <MenuItem value={'reading'}>Want to Read</MenuItem>
+              <MenuItem value={'recommendation'}>Book I've Read</MenuItem>
+              <MenuItem value={'quote'}>Favorite Quote</MenuItem>
+              <MenuItem value={'review'}>Book Review</MenuItem>
+            </Select>
+            <Box
+              sx={{
+                mt: 2,
+                height: '100px',
+                alignContent: 'center',
+              }}
+            >
+              <Box sx={{ maxHeight: '60px' }}>
+                <TextField
+                  sx={{
+                    color: 'var(--text)',
+                    width: '330px',
+                    height: '55px',
+                    mr: 0.5,
+                  }}
+                  type="search"
+                  required
+                  label="Search book by title or author"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleSearch();
                     }
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    rows="5"
-                    required
-                  />
-                </div>
-              </>
-            )}
-            <button type="submit" value="Submit">
-              Submit
-            </button>
-          </form>
-        </div>
+                  }}
+                />
+                <Button
+                  sx={{ height: '55px', bgcolor: 'var(--secondary)' }}
+                  onClick={handleSearch}
+                >
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </Button>
+              </Box>
+            </Box>
+            <Box>
+              {books.length > 0 && (
+                <List>
+                  {books.map((book) => (
+                    <ListItem key={book.book_id} sx={{ display: 'flex' }}>
+                      <Button
+                        onClick={() => handleBookSelected(book)}
+                        sx={{ display: 'flex', alignItems: 'center' }}
+                      >
+                        <img
+                          src={book.image}
+                          className="me-3"
+                          style={{
+                            width: '40px',
+                            height: '60px',
+                            objectFit: 'cover',
+                          }}
+                        />
+                        <Box>
+                          <Typography sx={{ mb: 1 }}>{book.title}</Typography>
+                          <Typography>{book.author}</Typography>
+                        </Box>
+                      </Button>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+            </Box>
+
+            <Box sx={{ mt: 2 }}>
+              {showContent && (
+                <>
+                  <Box sx={{ display: 'flex' }}>
+                    {selectedOption == 'quote' && categories.length > 0 && (
+                      <Box sx={{ mb: 2 }}>
+                        <Typography sx={{ fontWeight: 'bold', mb: 1 }}>
+                          Select a category:
+                        </Typography>
+                        <Select
+                          onChange={handleOnChangeCategory}
+                          value={selectedCategory}
+                          MenuProps={MenuProps}
+                        >
+                          {categories.map((category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                              {category.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </Box>
+                    )}
+                  </Box>
+                  <Box sx={{ mt: 2 }}>
+                    <Typography sx={{ fontWeight: 'bold', mb: 1 }}>
+                      {selectedOption == 'quote' ? 'Quote*' : 'Your Review*'}
+                    </Typography>
+                    <TextField
+                      placeholder={
+                        selectedOption == 'quote'
+                          ? 'Enter your favorite quote from this book...'
+                          : 'Share your thoughts about this book...'
+                      }
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      sx={{ width: '400px' }}
+                      multiline
+                      rows={4}
+                      required
+                    />
+                  </Box>
+                </>
+              )}
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Button
+                onClick={() => handleSubmit()}
+                variant="contained"
+                size="medium"
+                sx={{
+                  bgcolor: 'var(--chart-0)',
+                  color: 'var(--background)',
+                  '&:hover': { bgcolor: 'var(--chart-2)' },
+                }}
+              >
+                Submit
+              </Button>
+            </Box>
+          </FormControl>
+        </Box>
       </Modal>
     </>
   );
