@@ -14,12 +14,13 @@ export const Home = () => {
         }}
       >
         <Typography
-          variant="h4"
+          variant="h3"
           sx={{
             fontFamily: 'serif',
             fontWeight: 'bold',
             color: 'var(--text)',
-            mb: 2
+            mb: 2,
+            textAlign: 'center',
           }}
         >
           Share Your Reading Journey
@@ -27,11 +28,13 @@ export const Home = () => {
         <Typography
           sx={{
             color: 'var(--muted-foreground)',
-            mb: 3
+            mb: 3,
+            textAlign: 'center',
           }}
         >
           Connect with fellow book lovers, share reviews, discover new reads,
-          and celebrate the joy reading together
+          and celebrate <br></br>
+          the joy reading together
         </Typography>
         <Box>
           <CreatePosts />

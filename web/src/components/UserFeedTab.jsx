@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
 import { UserContext } from '../context/UserContext';
 import { FeedCard } from './FeedCard';
-import { Typography, Box, Tab } from '@mui/material';
+import { Typography, Box, Tab, CircularProgress } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import { useParams } from 'react-router';
 
@@ -60,7 +60,6 @@ export const UserFeedTab = () => {
     setValueTabs(newValue);
   };
 
-
   return (
     <Box>
       <TabContext value={valueTabs}>
@@ -74,7 +73,9 @@ export const UserFeedTab = () => {
           </TabList>
         </Box>
         {isLoadingFeed ? (
-          <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <CircularProgress size="3rem" color="var(--chart-0)" />
+          </Box>
         ) : userFeedData.length === 0 && !isLoadingFeed ? (
           <Box>
             <Typography variant="h5" sx={{ color: 'var(--text)' }}>

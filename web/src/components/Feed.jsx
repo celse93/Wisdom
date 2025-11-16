@@ -1,7 +1,7 @@
 import { useContext, useMemo, useEffect } from 'react';
 import { UserContext } from '../context/UserContext';
 import { FeedCard } from './FeedCard';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, CircularProgress } from '@mui/material';
 
 export const Feed = () => {
   const { feedData, isLoadingFeed, bookDetails, profileNames } =
@@ -11,9 +11,17 @@ export const Feed = () => {
 
   return (
     <>
-      <Box style={{ height: '100px' }}></Box>
+      <Box style={{ height: '50px' }}></Box>
       {isLoadingFeed ? (
-        <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+          }}
+        >
+          <CircularProgress size="3rem" color="var(--chart-0)" />
+        </Box>
       ) : posts.length === 0 && !isLoadingFeed ? (
         <Box>
           <Typography variant="h5" sx={{ color: 'var(--text)' }}>

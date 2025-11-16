@@ -7,14 +7,33 @@ import { LoginForm } from './pages/LoginForm';
 import { ProtectedNavBar } from './components/routing/ProtectedNavBar';
 import { useContext } from 'react';
 import { UserContext } from './context/UserContext';
-import { Box } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import './App.css';
 
 export const App = () => {
   const { isLoading, isLoggedIn } = useContext(UserContext);
 
   if (isLoading) {
-    return <Box>Loading session...</Box>;
+    return (
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <CircularProgress size="3rem" color="var(--chart-0)" />
+          <Typography> Loading session... </Typography>{' '}
+        </Box>
+      </Box>
+    );
   }
 
   return (
