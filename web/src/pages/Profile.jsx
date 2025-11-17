@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useMemo } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import { UserContext } from '../context/UserContext';
 import { CreatePosts } from '../components/CreatePosts';
@@ -7,57 +7,31 @@ import {
   searchProfiles,
   followUser,
   unfollowUser,
-  getUserStats,
 } from '../services/api/follows';
 import { useParams } from 'react-router';
 import {
   Box,
   TextField,
   Typography,
-  CircularProgress,
   Button,
+  List,
+  ListItem,
 } from '@mui/material';
 
 export const Profile = () => {
   const { profile } = useContext(UserContext);
   const navigate = useNavigate();
-  const [followersCount, setFollowersCount] = useState(0);
-  const [followingsCount, setFollowingsCount] = useState(0);
-  const [loadingStats, setLoadingStats] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [searching, setSearching] = useState(false);
   let { profileId } = useParams();
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        setLoadingStats(true);
-        const stats = await getUserStats(profile.id);
-        setFollowersCount(stats.followers_count);
-        setFollowingsCount(stats.followings_count);
-      } catch (error) {
-        console.error('Error fetching user stats:', error);
-      } finally {
-        setLoadingStats(false);
-      }
-    };
-    fetchStats();
-  }, []);
 
   const getProfileAvatar = () => {
     const userName = profile?.name || 'Usuario';
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=7c3aed&color=fff&size=100&bold=true&rounded=true`;
   };
 
-  const handleBlur = () => {
-    setTimeout(() => {
-      setShowDropdown(false);
-    }, 200);
-  };
-
-  const handleSearchChange = async (e) => {
+  const handleSearch = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);
 
@@ -67,55 +41,44 @@ export const Profile = () => {
       return;
     }
 
-    setSearching(true);
     try {
       const results = await searchProfiles(query);
       setSearchResults(results);
-      setShowDropdown(results.length > 0);
+      setShowDropdown(true);
     } catch (error) {
       console.error('Error searching users:', error);
       setSearchResults([]);
-    } finally {
-      setSearching(false);
     }
   };
 
   const handleFollow = async (userId, index) => {
     try {
-      setLoadingStats(true);
+      setSearchQuery('');
+      setShowDropdown(false);
       await followUser(userId);
-      const stats = await getUserStats(profile.id);
-      setFollowingsCount(stats.followings_count);
       const newResults = [...searchResults];
       newResults[index].is_following = true;
-      newResults[index].followers_count += 1;
       setSearchResults(newResults);
     } catch (error) {
       console.error('Error following user:', error);
-    } finally {
-      setLoadingStats(false);
     }
   };
 
   const handleUnfollow = async (userId, index) => {
     try {
-      setLoadingStats(true);
+      setSearchQuery('');
+      setShowDropdown(false);
       await unfollowUser(userId);
-      const stats = await getUserStats(profile.id);
-      setFollowingsCount(stats.followings_count);
       const newResults = [...searchResults];
       newResults[index].is_following = false;
-      newResults[index].followers_count -= 1;
       setSearchResults(newResults);
     } catch (error) {
       console.error('Error unfollowing user;', error);
-    } finally {
-      setLoadingStats(false);
     }
   };
 
   const getUserAvatar = (userName) => {
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=7c3aed&color=fff&size=40&bold=true&rounded=true`;
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=180f0d&color=fff&size=40&bold=true&rounded=true`;
   };
 
   return (
@@ -123,63 +86,123 @@ export const Profile = () => {
       {/* Buffer to avoid navbar from hiding content */}
       <Box sx={{ height: 150 }} />
       {parseInt(profileId) === profile.id && (
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box sx={{ display: 'flex', bgcolor: 'var(--muted)', p: 3 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              bgcolor: 'var(--card)',
+              p: 3,
+              width: 770,
+              borderRadius: 3,
+              border: '2px solid var(--border)',
+              transition: 'box-shadow 0.3s',
+              '&:hover': { boxShadow: 6 },
+            }}
+          >
             <Box sx={{ display: 'flex' }}>
-              <Box>
+              <Box
+                sx={{
+                  mr: 3,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}
+              >
                 <img
-                  src={getProfileAvatar()}
+                  src={getProfileAvatar(profile.username)}
                   alt="Avatar"
                   width="100"
                   height="100"
                   style={{ objectFit: 'cover' }}
                 />
-                <Typography>{profile?.name || 'User'}</Typography>
+                <Typography sx={{ mt: 1 }}>
+                  {profile?.username || 'User'}
+                </Typography>
               </Box>
-              <Box sx={{ display: 'flex', ml: 4 }}>
-                <Box sx={{ minWidth: 140 }}>
-                  <Box
-                    className="clickable-item"
-                    onClick={() => navigate('/my_followers')}
+              <Box sx={{ mx: 5 }}>
+                <Box
+                  sx={{
+                    border: '1px solid var(--border)',
+                    height: 50,
+                    borderRadius: 1,
+                    p: 1,
+                    mb: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    '&:hover': { bgcolor: 'var(--back-secondary)' },
+                  }}
+                  className="clickable-item"
+                  onClick={() => navigate('/my_followers')}
+                >
+                  <Typography
+                    sx={{
+                      fontWeight: 'bold',
+                    }}
                   >
-                    <Box>
-                      <Typography variant="h3">
-                        {loadingStats ? <CircularProgress /> : followersCount}
-                      </Typography>
-                      <Typography>Followers</Typography>
-                    </Box>
-                  </Box>
+                    Follower Readers{' '}
+                  </Typography>
                 </Box>
-                <Box sx={{ minWidth: 140 }}>
-                  <Box
-                    className="clickable-item"
-                    onClick={() => navigate('/my_followers')}
+                <Box
+                  sx={{
+                    border: '1px solid var(--border)',
+                    height: 50,
+                    borderRadius: 1,
+                    p: 1,
+                    mb: 2,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    '&:hover': { bgcolor: 'var(--back-secondary)' },
+                  }}
+                  className="clickable-item"
+                  onClick={() => navigate('/my_followings')}
+                >
+                  <Typography
+                    sx={{
+                      fontWeight: 'bold',
+                    }}
                   >
-                    <Box>
-                      <Typography variant="h3">
-                        {loadingStats ? <CircularProgress /> : followingsCount}
-                      </Typography>
-                      <Typography>Following</Typography>
-                    </Box>
-                  </Box>
+                    Following Readers
+                  </Typography>
                 </Box>
               </Box>
+
               {/* Profiles search bar */}
               <Box>
                 <Box>
                   <Box>
                     <TextField
+                      sx={{
+                        color: 'var(--text)',
+                        width: 250,
+                        height: 55,
+                        mr: 0.5,
+                      }}
                       type="search"
-                      placeholder="Search for readers"
+                      placeholder="Search readers"
                       value={searchQuery}
-                      onChange={handleSearchChange}
-                      onFocus={() =>
-                        searchResults.length > 0 && setShowDropdown(true)
-                      }
-                      onBlur={handleBlur}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleSearch(e);
+                        }
+                      }}
                     />
-                    {searching && <CircularProgress />}
-                    <Button onClick={() => handleSearchChange}>
+                    <Button
+                      sx={{
+                        height: 55,
+                        bgcolor: 'var(--secondary)',
+                        '&:hover': { bgcolor: 'var(--secondary-foreground)' },
+                      }}
+                      onClick={() => handleSearch()}
+                    >
                       <i className="fa-solid fa-search text-white"></i>
                     </Button>
                   </Box>
@@ -188,53 +211,60 @@ export const Profile = () => {
                   {showDropdown && (
                     <Box
                       sx={{
-                        maxHeight: 400,
+                        maxHeight: 250,
                         overflowY: 'auto',
-                        zIndex: 1050,
                       }}
                     >
-                      {searchResults.map((user) => (
-                        <Box
-                          key={user.id}
-                          className="clickable-item"
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              'rgba(124, 58, 237, 0.1)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              'transparent';
-                          }}
-                        >
-                          <img
-                            src={getUserAvatar(user.name)}
-                            alt={user.name}
-                            width="40"
-                            height="40"
-                          />
-                          <Box>
-                            <Box sx={{ fontSize: '0.9rem' }}>{user.name}</Box>
-                            <small sx={{ fontSize: '0.75rem' }}>
-                              {user.followers_count} followers
-                            </small>
-                          </Box>
-                          {user.is_following ? (
-                            <Button
-                              onClick={() => handleUnfollow(user.id)}
-                              sx={{ fontSize: '0.75rem' }}
-                            >
-                              Following
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={() => handleFollow(user.id)}
-                              sx={{ fontSize: '0.75rem' }}
-                            >
-                              Follow
-                            </Button>
-                          )}
-                        </Box>
-                      ))}
+                      <List>
+                        {searchResults.map((user) => (
+                          <ListItem
+                            sx={{
+                              maxWidth: 250,
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}
+                            key={user.id}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor =
+                                'rgba(124, 58, 237, 0.1)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor =
+                                'transparent';
+                            }}
+                          >
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <img
+                                src={getUserAvatar(user.name)}
+                                alt={user.name}
+                                width="40"
+                                height="40"
+                              />
+                              <Typography sx={{ ml: 1, fontSize: 15 }}>
+                                {user.name}
+                              </Typography>
+                            </Box>
+                            <Box>
+                              {user.is_following ? (
+                                <Button
+                                  onClick={() => handleUnfollow(user.id)}
+                                  sx={{ fontSize: '0.75rem' }}
+                                >
+                                  Following
+                                </Button>
+                              ) : (
+                                <Button
+                                  onClick={() => handleFollow(user.id)}
+                                  sx={{ fontSize: '0.75rem' }}
+                                >
+                                  Follow
+                                </Button>
+                              )}
+                            </Box>
+                          </ListItem>
+                        ))}
+                      </List>
                     </Box>
                   )}
                 </Box>

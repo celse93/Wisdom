@@ -47,9 +47,11 @@
 
 .dark {
   --background: #110907;
+  --back-secondary: #291510;
   --foreground: #f2f2f5;
   --text: #f4ede8;
-  --card: #2d2d31;
+  --card: #180f0d;
+  --avatar: #55331c;
   --card-foreground: #f2f2f5;
   --popover: #323235;
   --popover-foreground: #f2f2f5;
@@ -63,7 +65,7 @@
   --accent-foreground: #f2f2f5;
   --destructive: #b34848;
   --destructive-foreground: #f2f2f5;
-  --border: #e3ddd8;
+  --border: #281f1c;
   --input: #47464b;
   --ring: #b0a5c2;
   --book: #a37082;

@@ -79,6 +79,7 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
           height: 'auto',
           mx: 'auto',
           borderRadius: 3,
+          bgcolor: 'var(--card)',
           transition: 'box-shadow 0.3s',
           '&:hover': { boxShadow: 6 },
         }}
