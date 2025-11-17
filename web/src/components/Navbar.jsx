@@ -41,6 +41,11 @@ export const Navbar = () => {
     handleClose();
   };
 
+  const getProfileAvatar = () => {
+    const userName = profile?.username || 'user';
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=d58d63&color=f4ede8&size=100&bold=true&rounded=true`;
+  };
+
   return (
     <>
       <AppBar className="navbar">
@@ -127,11 +132,7 @@ export const Navbar = () => {
 
           {!profile ? (
             <Box>
-              <Button
-                variant="contained"
-                size="medium"
-                disabled={profile.id}
-              >
+              <Button variant="contained" size="medium" disabled={profile.id}>
                 <LoginIcon />
                 {profile ? 'Connecting...' : 'Log In'}
               </Button>
@@ -139,13 +140,12 @@ export const Navbar = () => {
           ) : (
             <Box sx={{ minWidth: 120 }}>
               <Avatar
+                src={getProfileAvatar(profile.username)}
                 alt="icon"
                 sx={{ width: 40, height: 40, color: 'var(--primary)' }}
                 className="clickable-item"
                 onClick={handleClick}
-              >
-                <AutoStoriesRoundedIcon />
-              </Avatar>
+              />
               <Menu
                 sx={{ my: 1 }}
                 anchorOrigin={{
@@ -160,9 +160,7 @@ export const Navbar = () => {
                 open={isOpen}
                 onClose={handleClose}
               >
-                <MenuItem
-                  onClick={handleClickProfile}
-                >
+                <MenuItem onClick={handleClickProfile}>
                   <PersonOutlineIcon />
                   My Profile
                 </MenuItem>

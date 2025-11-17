@@ -11,7 +11,6 @@ import {
   Box,
   Chip,
 } from '@mui/material';
-import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import StarIcon from '@mui/icons-material/Star';
@@ -69,11 +68,14 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
     }
   };
 
+  const getProfileAvatar = (userName) => {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=d58d63&color=f4ede8&size=100&bold=true&rounded=true`;
+  };
+
   return (
-    <Box>
+    <Box sx={{ mb: 2 }}>
       <Card
         sx={{
-          mb: 1,
           py: 1,
           width: 770,
           height: 'auto',
@@ -96,15 +98,13 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
               }}
             >
               <Avatar
+                src={getProfileAvatar(profile.username)}
                 alt="icon"
                 sx={{
                   width: 40,
                   height: 40,
-                  color: 'var(--primary)',
                 }}
-              >
-                <AutoStoriesRoundedIcon />
-              </Avatar>
+              />
               <Box
                 sx={{
                   display: 'flex',
@@ -141,13 +141,13 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
                     }}
                   />
                 ) : data.content_type === 'reading' ? (
-                  <BookIcon
+                  <AutoStoriesIcon
                     sx={{
                       color: 'var(--chart-1)',
                     }}
                   />
                 ) : (
-                  <AutoStoriesIcon
+                  <BookIcon
                     sx={{
                       color: 'var(--chart-1)',
                     }}
@@ -172,7 +172,7 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
               }}
             />
           }
-          sx={{ paddingBottom: 0, paddingRight: 3 }}
+          sx={{ paddingBottom: 0, paddingRight: 3, py: 1 }}
         />
         <CardContent
           sx={{
@@ -227,6 +227,10 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
               <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                 <DeleteIcon
                   className="clickable-item"
+                  sx={{
+                    color: 'var(--delete-icon-muted)',
+                    '&:hover': { color: 'var(--delete-icon)' },
+                  }}
                   onClick={() => handleDeleteClick(data)}
                 />
               </Box>
@@ -237,17 +241,20 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
               sx={{
                 p: 2,
                 borderRadius: 1,
-                border: '1px solid',
-                borderColor: 'divider',
+                border: '1px solid var(--border)',
                 borderLeft: '4px solid',
-                borderLeftColor: 'primary.main',
-                bgcolor: 'action.hover',
+                borderLeftColor: 'var(--chart-0)',
+                bgcolor: 'var(--card)',
                 fontStyle: 'italic',
               }}
             >
               <Typography
                 variant="body2"
-                sx={{ whiteSpace: 'pre-wrap', lineHeight: 'relaxed' }}
+                sx={{
+                  color: 'var(--text)',
+                  whiteSpace: 'pre-wrap',
+                  lineHeight: 'relaxed',
+                }}
               >
                 {data.text}
               </Typography>

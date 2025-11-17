@@ -217,7 +217,7 @@ export const CreatePosts = () => {
                 sx={{
                   height: 55,
                   bgcolor: 'var(--secondary)',
-                  '&:hover': { bgcolor: 'var(--secondary-foreground)' },
+                  '&:hover': { bgcolor: 'var(--muted-foreground)' },
                 }}
                 onClick={handleSearch}
               >

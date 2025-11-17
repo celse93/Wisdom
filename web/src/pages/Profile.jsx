@@ -27,8 +27,8 @@ export const Profile = () => {
   let { profileId } = useParams();
 
   const getProfileAvatar = () => {
-    const userName = profile?.name || 'Usuario';
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=7c3aed&color=fff&size=100&bold=true&rounded=true`;
+    const userName = profile?.username || 'user';
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=d58d63&color=f4ede8&size=100&bold=true&rounded=true`;
   };
 
   const handleSearch = async (e) => {
@@ -77,10 +77,6 @@ export const Profile = () => {
     }
   };
 
-  const getUserAvatar = (userName) => {
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=180f0d&color=fff&size=40&bold=true&rounded=true`;
-  };
-
   return (
     <Box>
       {/* Buffer to avoid navbar from hiding content */}
@@ -114,7 +110,7 @@ export const Profile = () => {
                 }}
               >
                 <img
-                  src={getProfileAvatar(profile.username)}
+                  src={getProfileAvatar()}
                   alt="Avatar"
                   width="100"
                   height="100"
@@ -181,7 +177,6 @@ export const Profile = () => {
                       sx={{
                         color: 'var(--text)',
                         width: 250,
-                        height: 55,
                         mr: 0.5,
                       }}
                       type="search"
@@ -199,7 +194,7 @@ export const Profile = () => {
                       sx={{
                         height: 55,
                         bgcolor: 'var(--secondary)',
-                        '&:hover': { bgcolor: 'var(--secondary-foreground)' },
+                        '&:hover': { bgcolor: 'var(--muted-foreground)' },
                       }}
                       onClick={() => handleSearch()}
                     >

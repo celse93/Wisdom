@@ -26,6 +26,8 @@
   --destructive: #aa3c3c;
   --destructive-foreground: #fbfbfc;
   --border: #281f1c;
+  --delete-icon: #ffffff;
+  --delete-icon-muted: #9d6e6562;
   --input: #d3d3d7;
   --ring: #544464;
   --book: #7c5468;
@@ -65,6 +67,8 @@
   --accent-foreground: #f2f2f5;
   --destructive: #b34848;
   --destructive-foreground: #f2f2f5;
+  --delete-icon: #ffffff;
+  --delete-icon-muted: #f7e6e362;
   --border: #281f1c;
   --input: #47464b;
   --ring: #b0a5c2;

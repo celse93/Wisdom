@@ -47,7 +47,7 @@ def books_search_routes(app):
                         "publish_year": volume_info.get("publishedDate", "N/A"),
                         "image": image_links.get("thumbnail", "N/A"),
                         "book_id": book.get("id", "N/A"),
-                        "description": volume_info.get("description", ["N/A"]),
+                        "description": volume_info.get("description", "N/A"),
                     }
                 )
             return jsonify(results), response.status_code

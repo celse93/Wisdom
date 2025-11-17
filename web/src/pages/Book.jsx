@@ -3,6 +3,10 @@ import { UserContext } from '../context/UserContext';
 import { Link } from 'react-router';
 import { useNavigate } from 'react-router';
 import { postReadingList, postRecommendations } from '../services/api/books';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import BookIcon from '@mui/icons-material/Book';
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 
 export const Book = () => {
   const { selectedBook } = useContext(UserContext);
@@ -30,52 +34,100 @@ export const Book = () => {
     navigate(-1);
   };
 
-  console.log(selectedBook);
-
   if (!selectedBook) {
-    return <p>Cargando... </p>;
+    return (
+      <Box>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
-    <div className="d-flex main-book-container justify-content-center mt-5 pt-5">
-      <div className="d-flex book-container mt-3 mb-3">
-        <div className="container book-cover-container d-flex justify-content-end pe-5">
-          <div>
-            <img
-              src={selectedBook.image}
-              className="img-fluid"
-              alt="Book cover"
-            />
-          </div>
-        </div>
-        <div className="container">
-          <div>
-            <h3>{selectedBook.title}</h3>
-          </div>
-          <div className="book-description overflow-scroll mb-3">
-            <div className="mb-3">by {selectedBook.author}</div>
-            <div className="mb-3">Published: {selectedBook.publish_year}</div>
-            <p>{selectedBook.description}</p>
-          </div>
-          <div className="mt-auto mb-2">
-            <button
-              className="btn btn-primary btn-sm w-100"
-              onClick={() => handleBookReadList(selectedBook)}
-            >
-              Want to Read
-            </button>
-          </div>
-          <div className="mt-auto mb-4">
-            <button
-              className="btn btn-primary btn-sm w-100"
-              onClick={() => handleRecommendations(selectedBook)}
-            >
-              Read
-            </button>
-          </div>
-          <Link onClick={handleGoBack}>Return</Link>
-        </div>
-      </div>
-    </div>
+    <>
+      <Box sx={{ height: 100 }} />
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', maxWidth: 700 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'end', pr: 5 }}>
+            <Box>
+              <img
+                width="200px"
+                height="300px"
+                src={selectedBook.image}
+                alt="Book cover"
+              />
+            </Box>
+          </Box>
+          <Box sx={{ maxWidth: 450 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="h3" sx={{ mb: 1 }}>
+                {selectedBook.title}
+              </Typography>
+              {selectedBook.author[0] != 'N/A' && (
+                <Typography sx={{ mb: 1 }}>by {selectedBook.author}</Typography>
+              )}
+              {selectedBook.published_date != 'N/A' && (
+                <Typography sx={{ mb: 3 }}>
+                  Published: {selectedBook.published_date}
+                </Typography>
+              )}
+              {selectedBook.description != 'N/A' && (
+                <Box
+                  sx={{
+                    mb: 3,
+                    overflowY: 'auto',
+                    width: 400,
+                    maxHeight: 450,
+                    border: '1px solid var(--border)',
+                    p: 1,
+                    borderRadius: 1,
+                  }}
+                >
+                  <Typography>{selectedBook.description}</Typography>
+                </Box>
+              )}
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ mb: 2 }}>
+                <Button
+                  sx={{
+                    background: 'var(--chart-0)',
+                    '&:hover': { bgcolor: 'var(--chart-2)' },
+                  }}
+                  variant="contained"
+                  onClick={() => handleBookReadList(selectedBook)}
+                  startIcon={<AutoStoriesIcon />}
+                >
+                  Want to Read
+                </Button>
+              </Box>
+              <Box sx={{ mb: 4 }}>
+                <Button
+                  sx={{
+                    background: 'var(--chart-0)',
+                    '&:hover': { bgcolor: 'var(--chart-2)' },
+                  }}
+                  variant="contained"
+                  onClick={() => handleRecommendations(selectedBook)}
+                  startIcon={<BookIcon />}
+                >
+                  Read
+                </Button>
+              </Box>
+
+              <ArrowBackOutlinedIcon
+                className="clickable-item"
+                sx={{
+                  bgcolor: 'var(--secondary)',
+                  '&:hover': { bgcolor: 'var(--muted-foreground)' },
+                  borderRadius: 2,
+                }}
+                fontSize="large"
+                onClick={handleGoBack}
+              />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </>
   );
 };
