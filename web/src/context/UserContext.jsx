@@ -37,7 +37,7 @@ export const UserContext = createContext({
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [profile, setProfile] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isLoadingFeed, setIsLoadingFeed] = useState(true);
   const [feedData, setFeedData] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -158,6 +158,7 @@ export const UserProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      setIsLoading(true);
       await postLogin(email, password);
 
       const [userData, profileData, categoriesList] = await Promise.all([
