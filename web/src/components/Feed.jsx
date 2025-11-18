@@ -4,10 +4,39 @@ import { FeedCard } from './FeedCard';
 import { Typography, Box, CircularProgress } from '@mui/material';
 
 export const Feed = () => {
-  const { feedData, isLoadingFeed, bookDetails, profileNames } =
-    useContext(UserContext);
+  const {
+    feedData,
+    isLoadingFeed,
+    bookDetails,
+    profileNames,
+    fetchFeedData,
+    isLoggedIn,
+  } = useContext(UserContext);
 
   const posts = useMemo(() => [...feedData], [feedData]);
+
+  useEffect(() => {
+    const hasPosts = posts.length > 0;
+    const hasLookupData = bookDetails.length > 0 && profileNames.length > 0;
+
+    // if posts exist but missing remaining data (books + profiles) 
+    // or Feed needs refresh but isn't loading, trigger fetchData
+    if (isLoggedIn && hasPosts && !hasLookupData && !isLoadingFeed) {
+      console.log('Posts exist, but lookup data is missing. Fetching...');
+      fetchFeedData();
+    }
+  }, [
+    isLoggedIn,
+    posts.length,
+    bookDetails.length,
+    profileNames.length,
+    isLoadingFeed,
+    fetchFeedData,
+  ]);
+
+  console.log(posts);
+  console.log(isLoadingFeed);
+  console.log(bookDetails);
 
   return (
     <>
@@ -31,30 +60,30 @@ export const Feed = () => {
       ) : (
         <Box>
           {posts.map((data) => {
-            {
-              /* finds the associated book to access its info */
-            }
-            const bookInfo = bookDetails.find(
-              (book) => book.book_id == data.book_id
-            );
-            {
-              /* finds the associated profile to access the username*/
-            }
-            const profile = profileNames.find(
-              (profile) => profile.id == data.user_id
-            );
-            if (!bookInfo || !profile) {
-              return null;
-            }
-            return (
-              <FeedCard
-                key={`${data.book_id}/${data.content_type}/${profile.id}`}
-                data={data}
-                bookInfo={bookInfo}
-                profile={profile}
-              />
-            );
-          })}
+              {
+                /* finds the associated book to access its info */
+              }
+              const bookInfo = bookDetails.find(
+                (book) => book.book_id == data.book_id
+              );
+              {
+                /* finds the associated profile to access the username*/
+              }
+              const profile = profileNames.find(
+                (profile) => profile.id == data.user_id
+              );
+              if (!bookInfo || !profile) {
+                return null;
+              }
+              return (
+                <FeedCard
+                  key={`${data.book_id}/${data.content_type}/${profile.id}`}
+                  data={data}
+                  bookInfo={bookInfo}
+                  profile={profile}
+                />
+              );
+            })}
         </Box>
       )}
     </>
