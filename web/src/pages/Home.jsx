@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import { CreatePosts } from '../components/CreatePosts';
 import { Feed } from '../components/Feed';
 
@@ -39,6 +39,9 @@ export const Home = () => {
         <Box>
           <CreatePosts />
         </Box>
+      </Box>
+      <Box sx={{ mt: 4 }}>
+        <Divider variant="middle" />
       </Box>
       <Feed />
     </Box>

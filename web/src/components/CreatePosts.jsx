@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -149,7 +149,7 @@ export const CreatePosts = () => {
           background: 'var(--chart-0)',
           '&:hover': { bgcolor: 'var(--chart-2)' },
         }}
-        startIcon={<AddIcon />}
+        startIcon={<AddCircleIcon />}
         variant="contained"
         onClick={handleOpen}
       >

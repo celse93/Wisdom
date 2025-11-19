@@ -79,7 +79,7 @@ export const LoginForm = () => {
 
   return (
     <Box>
-      <Card>
+      <Card sx={{ border: '1px solid var(--chart-0)' }}>
         <CardHeader
           sx={{
             textAlign: 'center',
@@ -152,8 +152,8 @@ export const LoginForm = () => {
             <Link to="/register">Create my library</Link>
           </Box>
 
-          <Box sx={{ textAlign: 'center', mt: 3 }}>
-            <Link to="/login">Go back</Link>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Link to="/login"> Go back</Link>
           </Box>
         </CardContent>
       </Card>

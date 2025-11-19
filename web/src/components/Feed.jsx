@@ -19,7 +19,7 @@ export const Feed = () => {
     const hasPosts = posts.length > 0;
     const hasLookupData = bookDetails.length > 0 && profileNames.length > 0;
 
-    // if posts exist but missing remaining data (books + profiles) 
+    // if posts exist but missing remaining data (books + profiles)
     // or Feed needs refresh but isn't loading, trigger fetchData
     if (isLoggedIn && hasPosts && !hasLookupData && !isLoadingFeed) {
       console.log('Posts exist, but lookup data is missing. Fetching...');
@@ -34,13 +34,9 @@ export const Feed = () => {
     fetchFeedData,
   ]);
 
-  console.log(posts);
-  console.log(isLoadingFeed);
-  console.log(bookDetails);
-
   return (
     <>
-      <Box style={{ height: '50px' }}></Box>
+      <Box sx={{ mt: 5 }}></Box>
       {isLoadingFeed ? (
         <Box
           sx={{
@@ -60,30 +56,30 @@ export const Feed = () => {
       ) : (
         <Box>
           {posts.map((data) => {
-              {
-                /* finds the associated book to access its info */
-              }
-              const bookInfo = bookDetails.find(
-                (book) => book.book_id == data.book_id
-              );
-              {
-                /* finds the associated profile to access the username*/
-              }
-              const profile = profileNames.find(
-                (profile) => profile.id == data.user_id
-              );
-              if (!bookInfo || !profile) {
-                return null;
-              }
-              return (
-                <FeedCard
-                  key={`${data.book_id}/${data.content_type}/${profile.id}`}
-                  data={data}
-                  bookInfo={bookInfo}
-                  profile={profile}
-                />
-              );
-            })}
+            {
+              /* finds the associated book to access its info */
+            }
+            const bookInfo = bookDetails.find(
+              (book) => book.book_id == data.book_id
+            );
+            {
+              /* finds the associated profile to access the username*/
+            }
+            const profile = profileNames.find(
+              (profile) => profile.id == data.user_id
+            );
+            if (!bookInfo || !profile) {
+              return null;
+            }
+            return (
+              <FeedCard
+                key={`${data.book_id}/${data.content_type}/${profile.id}`}
+                data={data}
+                bookInfo={bookInfo}
+                profile={profile}
+              />
+            );
+          })}
         </Box>
       )}
     </>

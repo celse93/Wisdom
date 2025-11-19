@@ -17,6 +17,8 @@ import {
   List,
   ListItem,
 } from '@mui/material';
+import PersonIcon from '@mui/icons-material/Person';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 
 export const Profile = () => {
   const { profile } = useContext(UserContext);
@@ -26,23 +28,19 @@ export const Profile = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   let { profileId } = useParams();
 
-  const getProfileAvatar = () => {
-    const userName = profile?.username || 'user';
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=d58d63&color=f4ede8&size=100&bold=true&rounded=true`;
+  const getProfileAvatar = (username) => {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=d58d63&color=f4ede8&size=100&bold=true&rounded=true`;
   };
 
-  const handleSearch = async (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-
-    if (!query.trim()) {
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
       setSearchResults([]);
       setShowDropdown(false);
       return;
     }
 
     try {
-      const results = await searchProfiles(query);
+      const results = await searchProfiles(searchQuery);
       setSearchResults(results);
       setShowDropdown(true);
     } catch (error) {
@@ -110,7 +108,7 @@ export const Profile = () => {
                 }}
               >
                 <img
-                  src={getProfileAvatar()}
+                  src={getProfileAvatar(profile.username)}
                   alt="Avatar"
                   width="100"
                   height="100"
@@ -120,52 +118,23 @@ export const Profile = () => {
                   {profile?.username || 'User'}
                 </Typography>
               </Box>
-              <Box sx={{ mx: 5 }}>
-                <Box
-                  sx={{
-                    border: '1px solid var(--border)',
-                    height: 50,
-                    borderRadius: 1,
-                    p: 1,
-                    mb: 2,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    '&:hover': { bgcolor: 'var(--back-secondary)' },
-                  }}
-                  className="clickable-item"
-                  onClick={() => navigate('/my_followers')}
-                >
-                  <Typography
+              <Box sx={{ mx: 4, width: '20%', p: 0 }}>
+                <Box sx={{ width: '100%', height: '50%' }}>
+                  <Button
                     sx={{
-                      fontWeight: 'bold',
+                      background: 'var(--chart-0)',
+                      '&:hover': { bgcolor: 'var(--chart-2)' },
+                      mb: 2,
                     }}
+                    variant="contained"
+                    onClick={() => navigate('/follows')}
+                    startIcon={<PersonIcon />}
                   >
-                    Follower Readers{' '}
-                  </Typography>
+                    Fellow Readers
+                  </Button>
                 </Box>
-                <Box
-                  sx={{
-                    border: '1px solid var(--border)',
-                    height: 50,
-                    borderRadius: 1,
-                    p: 1,
-                    mb: 2,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    '&:hover': { bgcolor: 'var(--back-secondary)' },
-                  }}
-                  className="clickable-item"
-                  onClick={() => navigate('/my_followings')}
-                >
-                  <Typography
-                    sx={{
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    Following Readers
-                  </Typography>
+                <Box sx={{ width: '100%', height: '50%' }}>
+                  <CreatePosts />
                 </Box>
               </Box>
 
@@ -186,7 +155,7 @@ export const Profile = () => {
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                           e.preventDefault();
-                          handleSearch(e);
+                          handleSearch();
                         }
                       }}
                     />
@@ -198,7 +167,7 @@ export const Profile = () => {
                       }}
                       onClick={() => handleSearch()}
                     >
-                      <i className="fa-solid fa-search text-white"></i>
+                      <PersonSearchIcon />
                     </Button>
                   </Box>
 
@@ -231,13 +200,13 @@ export const Profile = () => {
                           >
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                               <img
-                                src={getUserAvatar(user.name)}
-                                alt={user.name}
+                                src={getProfileAvatar(user.username)}
+                                alt={user.username}
                                 width="40"
                                 height="40"
                               />
                               <Typography sx={{ ml: 1, fontSize: 15 }}>
-                                {user.name}
+                                {user.username}
                               </Typography>
                             </Box>
                             <Box>
@@ -262,9 +231,6 @@ export const Profile = () => {
                       </List>
                     </Box>
                   )}
-                </Box>
-                <Box sx={{ mt: 2 }}>
-                  <CreatePosts />
                 </Box>
               </Box>
             </Box>

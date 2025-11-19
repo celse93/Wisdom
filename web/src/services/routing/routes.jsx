@@ -3,8 +3,7 @@ import { Login } from '../../pages/Login';
 import { Book } from '../../pages/Book';
 import { Profile } from '../../pages/Profile';
 import { Register } from '../../pages/Register';
-import { MyFollowers } from '../../components/MyFollowers';
-import { MyFollowings } from '../../components/MyFollowings';
+import { Follows } from '../../pages/Follows';
 import { Explore } from '../../pages/Explore';
 import { useParams } from "react-router";
 
@@ -25,13 +24,13 @@ export const routesConfig = [
     name: 'Explore',
     path: '/explore',
     component: <Explore />,
-    showInNavbar: false,
+    showInNavbar: true,
   },
   {
     name: 'Book Detail',
     path: '/book',
     component: <Book />,
-    showInNavbar: true,
+    showInNavbar: false,
   },
   {
     name: 'Profile',
@@ -46,15 +45,9 @@ export const routesConfig = [
     showInNavbar: false,
   },
   {
-    name: 'Mis Seguidores',
-    path: '/my_followers',
-    component: <MyFollowers />,
-    showInNavbar: false,
-  },
-  {
-    name: 'Siguiendo',
-    path: '/my_followings',
-    component: <MyFollowings />,
+    name: 'Follows',
+    path: '/follows',
+    component: <Follows />,
     showInNavbar: false,
   },
 ];

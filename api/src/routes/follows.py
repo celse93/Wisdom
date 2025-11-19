@@ -50,7 +50,7 @@ def follows_routes(app):
                 results.append(
                     {
                         "id": profile.id,
-                        "name": profile.username,
+                        "username": profile.username,
                         "followers_count": followers_count,
                         "followings_count": followings_count,
                         "is_following": is_following is not None,
@@ -199,5 +199,4 @@ def follows_routes(app):
             if following_profile:
                 followings.append(following_profile.serialize())
         
-        print(followings)
         return jsonify(followings), 200

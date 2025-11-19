@@ -79,6 +79,7 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
           py: 1,
           width: 770,
           height: 'auto',
+          border: '2px solid var(--chart-0)',
           mx: 'auto',
           borderRadius: 3,
           bgcolor: 'var(--card)',
