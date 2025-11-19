@@ -4,7 +4,7 @@ import { GuardedRoute } from './components/routing/GuardedRoute';
 import { LoginRedirect } from './components/routing/LoginRedirect';
 import { Register } from './pages/Register';
 import { LoginForm } from './pages/LoginForm';
-import { ProtectedNavBar } from './components/routing/ProtectedNavBar';
+import { RootLayout } from './components/routing/RootLayout';
 import { useContext } from 'react';
 import { UserContext } from './context/UserContext';
 import { Box, CircularProgress, Typography } from '@mui/material';
@@ -39,14 +39,14 @@ export const App = () => {
   return (
     <>
       <Routes>
-        {/* Public routes */}
-        <Route path="/login" element={<LoginRedirect />} />
-        <Route path="/login-form" element={<LoginForm />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<RootLayout />}>
+          {/* Public routes */}
+          <Route path="/login" element={<LoginRedirect />} />
+          <Route path="/login-form" element={<LoginForm />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Protected routes */}
-        <Route element={<GuardedRoute />}>
-          <Route path="/" element={<ProtectedNavBar />}>
+          {/* Protected routes */}
+          <Route element={<GuardedRoute />}>
             {routesConfig
               .filter(
                 (route) =>
@@ -62,19 +62,19 @@ export const App = () => {
                 />
               ))}
           </Route>
-        </Route>
 
-        {/* Common routes */}
-        <Route
-          path="*"
-          element={
-            isLoggedIn ? (
-              <Navigate to="/" replace />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+          {/* Common routes */}
+          <Route
+            path="*"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+        </Route>
       </Routes>
     </>
   );

@@ -61,7 +61,7 @@ export const ExploreFeedTab = () => {
               Explore Books
             </Typography>
             <Typography sx={{ color: 'var(--muted-foreground)' }}>
-              Discover what the community is reading and sharing
+              Discover what the community is reading and sharing by section
             </Typography>
           </Box>
         </Box>

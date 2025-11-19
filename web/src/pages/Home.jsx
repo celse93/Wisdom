@@ -34,7 +34,7 @@ export const Home = () => {
         >
           Connect with fellow book lovers, share reviews, discover new reads,
           and celebrate <br></br>
-          the joy reading together
+          the joy of reading together
         </Typography>
         <Box>
           <CreatePosts />

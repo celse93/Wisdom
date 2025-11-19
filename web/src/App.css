@@ -97,8 +97,8 @@
   padding: 1rem 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(254, 247, 242, 0.9);
-  border-color: var(--border);
+  background: var(--desctructive);
+  border: 1px solid var(--border);
   border-bottom-width: 1px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
@@ -112,9 +112,10 @@
   padding: 1rem 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(17, 9, 7, 0.9);
+  background: var(--desctructive);
   border-color: var(--border);
-  border-bottom-width: 1px;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
@@ -123,4 +124,20 @@
   cursor: pointer;
 }
 
+.footer {
+  width: 100%;
+  z-index: 10;
+  background: var(--card);
+  border-color: var(--border);
+  border-style: solid;
+  border-width: 1px 0px 0px 0px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.content-wrapper {
+  min-height: 100vh;
+  padding-bottom: 5rem; 
+}
 
