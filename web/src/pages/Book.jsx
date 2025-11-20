@@ -1,34 +1,32 @@
 import { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
 import { Link } from 'react-router';
-import { NavLink } from 'react-router';
 import { useNavigate } from 'react-router';
 import { postReadingList, postRecommendations } from '../services/api/books';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import BookIcon from '@mui/icons-material/Book';
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 
 export const Book = () => {
   const { selectedBook } = useContext(UserContext);
-  const { book, author } = selectedBook;
   const navigate = useNavigate();
-
-  if (!book || !author) {
-    return <p>Cargando... </p>;
-  }
 
   const handleBookReadList = async (book) => {
     try {
       const saveBook = await postReadingList(book.book_id);
-      alert(`Libro "${book.title}": ${saveBook['message']}`);
+      alert(`"${book.title}": ${saveBook['message']}`);
     } catch {
-      alert('¡Error! Libro ya registrado');
+      alert('Error! Book already registered');
     }
   };
 
   const handleRecommendations = async (book) => {
     try {
       const saveBook = await postRecommendations(book.book_id);
-      alert(`Libro "${book.title}": ${saveBook['message']}`);
+      alert(`"${book.title}": ${saveBook['message']}`);
     } catch {
-      alert('¡Error! Libro ya registrado');
+      alert('Error! Book already registered');
     }
   };
 
@@ -36,89 +34,100 @@ export const Book = () => {
     navigate(-1);
   };
 
-  return (
-    <div className="d-flex main-book-container justify-content-center mt-5 pt-5">
-      <div className="d-flex book-container mt-3 mb-3">
-        <div className="container book-cover-container d-flex justify-content-end pe-5">
-          <div>
-            <img
-              src={`https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`}
-              className="img-fluid"
-              alt="Book cover"
-            />
-          </div>
-        </div>
-        <div className="container">
-          <div>
-            <h3>{book.title}</h3>
-          </div>
-          <div className="book-description overflow-scroll mb-3">
-            <div className="mb-3">
-              <NavLink data-bs-toggle="modal" data-bs-target="#authorModal">
-                {author.author_name}
-              </NavLink>
-            </div>
-            <p>{book.description}</p>
-          </div>
-          <div className="mt-auto mb-2">
-            <button
-              className="btn btn-primary btn-sm w-100"
-              onClick={() => handleBookReadList(book)}
-            >
-              <i className="fa-solid fa-plus me-2"></i>
-              Agregar a biblioteca
-            </button>
-          </div>
-          <div className="mt-auto mb-4">
-            <button
-              className="btn btn-primary btn-sm w-100"
-              onClick={() => handleRecommendations(book)}
-            >
-              <i className="fa-solid fa-plus me-2"></i>
-              Agregar a leídos
-            </button>
-          </div>
-          <Link onClick={handleGoBack}>Volver</Link>
-        </div>
-      </div>
+  if (!selectedBook) {
+    return (
+      <Box>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
-      {/* Modal */}
-      <div className="modal fade" id="authorModal" tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          <div className="modal-content">
-            <div className="modal-header">
-              <div className="me-2">
-                <img
-                  src={`https://covers.openlibrary.org/a/olid/${author.author_id}-M.jpg`}
-                  className="rounded-circle"
-                  width="200"
-                  height="200"
-                  alt="Author picture"
-                />
-              </div>
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                {author.author_name}
-              </h1>
-            </div>
-            <div className="modal-body">
-              <div className="d-flex">
-                <div>
-                  <p>{author.author_bio}</p>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  return (
+    <>
+      <Box sx={{ height: 100 }} />
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', maxWidth: 700 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'end', pr: 5 }}>
+            <Box>
+              <img
+                width="200px"
+                height="300px"
+                src={selectedBook.image}
+                alt="Book cover"
+              />
+            </Box>
+          </Box>
+          <Box sx={{ maxWidth: 450 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="h3" sx={{ mb: 1 }}>
+                {selectedBook.title}
+              </Typography>
+              {selectedBook.author[0] != 'N/A' && (
+                <Typography sx={{ mb: 1 }}>by {selectedBook.author}</Typography>
+              )}
+              {selectedBook.published_date != 'N/A' && (
+                <Typography sx={{ mb: 3 }}>
+                  Published: {selectedBook.published_date}
+                </Typography>
+              )}
+              {selectedBook.description != 'N/A' && (
+                <Box
+                  sx={{
+                    mb: 3,
+                    overflowY: 'auto',
+                    width: 400,
+                    maxHeight: 450,
+                    border: '1px solid var(--border)',
+                    p: 1,
+                    borderRadius: 1,
+                  }}
+                >
+                  <Typography>{selectedBook.description}</Typography>
+                </Box>
+              )}
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ mb: 2 }}>
+                <Button
+                  sx={{
+                    background: 'var(--chart-0)',
+                    '&:hover': { bgcolor: 'var(--chart-2)' },
+                  }}
+                  variant="contained"
+                  onClick={() => handleBookReadList(selectedBook)}
+                  startIcon={<AutoStoriesIcon />}
+                >
+                  Want to Read
+                </Button>
+              </Box>
+              <Box sx={{ mb: 4 }}>
+                <Button
+                  sx={{
+                    background: 'var(--chart-0)',
+                    '&:hover': { bgcolor: 'var(--chart-2)' },
+                  }}
+                  variant="contained"
+                  onClick={() => handleRecommendations(selectedBook)}
+                  startIcon={<BookIcon />}
+                >
+                  Read
+                </Button>
+              </Box>
+
+              <ArrowBackOutlinedIcon
+                className="clickable-item"
+                sx={{
+                  bgcolor: 'var(--secondary)',
+                  '&:hover': { bgcolor: 'var(--muted-foreground)' },
+                  borderRadius: 2,
+                }}
+                fontSize="large"
+                onClick={handleGoBack}
+              />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </>
   );
 };

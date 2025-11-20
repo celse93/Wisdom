@@ -1,8 +1,17 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import { postLogin, postLogout, postRegister } from '../services/api/auth';
-import { useNavigate } from 'react-router';
-import { getAuthorDetail, getBooksDetail } from '../services/api/books';
-import { getCurrentProfile } from '../services/api/users';
+import { useNavigate } from 'react-router-dom';
+import {
+  getCurrentProfile,
+  getCurrentUser,
+  getProfileNames,
+} from '../services/api/users';
+import { getAllCategories } from '../services/api/feed';
+import {
+  getAllBooks,
+  getAllUserBooks,
+  getAllFollowBooks,
+} from '../services/api/books';
 
 export const UserContext = createContext({
   user: {},
@@ -10,31 +19,165 @@ export const UserContext = createContext({
   login: () => {},
   logout: () => {},
   selectBook: () => {},
-  selectedBook: { book: {}, author: {} },
   register: () => {},
-  isLoading: false,
+  fetchFeedData: () => {},
+  fetchUserFeed: () => {},
+  fetchFollowFeed: () => {},
+  isLoading: true,
+  isLoadingFeed: true,
+  isLoggedIn: false,
+  userFeedData: [],
+  profileNames: [],
+  bookDetails: [],
+  feedData: [],
+  selectedBook: {},
+  categories: [],
 });
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [profile, setProfile] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingFeed, setIsLoadingFeed] = useState(true);
+  const [feedData, setFeedData] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedBook, setSelectedBook] = useState({});
+  const [bookDetails, setBookDetails] = useState([]);
+  const [profileNames, setProfileNames] = useState([]);
+  const [userFeedData, setUserFeedData] = useState([]);
+  const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
-  const [selectedBook, setSelectedBook] = useState({
-    book: null,
-    author: null,
-  });
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const [userData, profile, categoriesList] = await Promise.all([
+          getCurrentUser(),
+          getCurrentProfile(),
+          getAllCategories(),
+        ]);
+        setProfile(profile);
+        setUser(userData);
+        setCategories(categoriesList);
+        setIsLoggedIn(true);
+        await fetchFeedData();
+      } catch (error) {
+        console.error('Session restoration failed, user logged out: ', error);
+        setIsLoggedIn(false);
+        setUser({});
+        setProfile({});
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkSession();
+  }, []);
+
+  const fetchFeedData = useCallback(async () => {
+    try {
+      setIsLoadingFeed(true);
+      const dataBooks = await getAllBooks();
+
+      const combinedData = [
+        ...(Array.isArray(dataBooks.tables) ? dataBooks.tables : []),
+      ];
+      combinedData.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+      setFeedData(combinedData || []);
+      setBookDetails(dataBooks.books || []);
+
+      const profileDetailsResult = await getProfileNames();
+
+      setProfileNames(profileDetailsResult || []);
+    } catch (error) {
+      console.error('Failed to fetch books data:', error);
+      setFeedData([]);
+      setBookDetails([]);
+      setProfileNames([]);
+    } finally {
+      setIsLoadingFeed(false);
+    }
+  }, [setIsLoadingFeed, setFeedData, setBookDetails, setProfileNames]);
+
+  const fetchUserFeed = useCallback(async () => {
+    try {
+      setIsLoadingFeed(true);
+      const dataBooks = await getAllUserBooks();
+
+      const combinedData = [
+        ...(Array.isArray(dataBooks.tables) ? dataBooks.tables : []),
+      ];
+      combinedData.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      setUserFeedData(combinedData || []);
+      setBookDetails(dataBooks.books || []);
+
+      const profileDetailsResult = await getProfileNames();
+
+      setProfileNames(profileDetailsResult || []);
+    } catch (error) {
+      console.error('Failed to fetch books data:', error);
+      setUserFeedData([]);
+      setBookDetails([]);
+      setProfileNames([]);
+    } finally {
+      setIsLoadingFeed(false);
+    }
+  }, [setIsLoadingFeed, setUserFeedData, setBookDetails, setProfileNames]);
+
+  const fetchFollowFeed = useCallback(
+    async (profileId) => {
+      try {
+        setIsLoadingFeed(true);
+        const dataBooks = await getAllFollowBooks(profileId);
+
+        const combinedData = [
+          ...(Array.isArray(dataBooks.tables) ? dataBooks.tables : []),
+        ];
+        combinedData.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+
+        setUserFeedData(combinedData || []);
+        setBookDetails(dataBooks.books || []);
+
+        const profileDetailsResult = await getProfileNames();
+
+        setProfileNames(profileDetailsResult || []);
+      } catch (error) {
+        console.error('Failed to fetch books data:', error);
+        setUserFeedData([]);
+        setBookDetails([]);
+        setProfileNames([]);
+      } finally {
+        setIsLoadingFeed(false);
+      }
+    },
+    [setIsLoadingFeed, setUserFeedData, setBookDetails, setProfileNames]
+  );
 
   const login = async (email, password) => {
-    setIsLoading(true);
     try {
-      const user = await postLogin(email, password);
-      setUser(user);
-      const profile = await getCurrentProfile();
-      setProfile(profile);
-      navigate('/profile');
+      setIsLoading(true)
+      await postLogin(email, password);
+
+      const [userData, profileData, categoriesList] = await Promise.all([
+        getCurrentUser(),
+        getCurrentProfile(),
+        getAllCategories(),
+      ]);
+      setUser(userData);
+      setProfile(profileData);
+      setCategories(categoriesList);
+      setIsLoggedIn(true);
+      await fetchFeedData();
+      navigate('/home');
     } catch (error) {
       console.error('Login error:', error);
+      setUser({});
       throw error;
     } finally {
       setIsLoading(false);
@@ -42,53 +185,60 @@ export const UserProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    setIsLoading(true);
     try {
       await postLogout();
-      setUser({});
-      navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
-      setUser({});
-      navigate('/login');
     } finally {
+      navigate('/');
       setIsLoading(false);
+      setIsLoggedIn(false);
+      setUser({});
+      setProfile({});
+      setFeedData([]);
+      setUserFeedData([]);
+      setCategories([]);
+      setProfileNames([]);
+      setSelectedBook({});
     }
   };
 
-  const register = async (name, email, password) => {
-    setIsLoading(true);
+  const register = async (username, email, password) => {
     try {
-      await postRegister(name, email, password);
+      setIsLoading(true);
+      await postRegister(username, email, password);
+      await postLogin(email, password);
 
-      const userData = await postLogin(email, password);
+      const [userData, profileData, categoriesList] = await Promise.all([
+        getCurrentUser(),
+        getCurrentProfile(),
+        getAllCategories(),
+      ]);
       setUser(userData);
-
-      const profileData = await getCurrentProfile();
       setProfile(profileData);
-
-      navigate('/profile');
+      setCategories(categoriesList);
+      setIsLoggedIn(true);
+      await fetchFeedData();
+      navigate('/home');
     } catch (error) {
       console.error('Register error:', error.message);
+      setUser({});
       throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const selectBook = async (bookID) => {
+  const selectBook = async (book) => {
     setIsLoading(true);
     try {
-      const bookData = await getBooksDetail(bookID);
-      const authorData = await getAuthorDetail(bookData.author_id);
-
-      setSelectedBook({ book: bookData, author: authorData });
-      setIsLoading(false);
+      setSelectedBook(book);
       return true;
     } catch (error) {
-      console.error('Failed to select book and author:', error);
-      setIsLoading(false);
+      console.error('Failed to select book', error);
       return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -105,6 +255,18 @@ export const UserProvider = ({ children }) => {
         isLoading,
         selectBook,
         selectedBook,
+        fetchFeedData,
+        feedData,
+        isLoggedIn,
+        isLoadingFeed,
+        bookDetails,
+        profileNames,
+        fetchUserFeed,
+        fetchFollowFeed,
+        userFeedData,
+        setBookDetails,
+        setProfileNames,
+        categories,
       }}
     >
       {children}

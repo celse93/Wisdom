@@ -1,100 +1,37 @@
+import { Toolbar, Box, Typography } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
 export const Footer = () => {
   return (
-    <footer
-      className="bg-dark text-white pb-2 pt-3 mt-auto"
-      style={{ backgroundColor: '#1a1a1a' }}
-    >
-      <div className="container">
-        <div className="row align-items-center mb-2">
-          <div className="col-md-6">
-            <div className="d-flex align-items-center mb-3 mb-md-0">
-              <img
-                src="/astro.jpg"
-                alt="Círculo Lectores Logo"
-                className="me-3"
-                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
-              />
-              <h3 className="mb-0 text-white fw-bold">Círculo Lectores</h3>
-            </div>
-          </div>
-
-          <div className="col-md-6">
-            <div className="d-flex justify-content-md-end gap-3">
-              <a
-                href="#"
-                className="text-light hover-text-warning text-decoration-none"
-              >
-                <i className="fa-brands fa-instagram fa-xl"></i>
-              </a>
-              <a
-                href="#"
-                className="text-light hover-text-warning text-decoration-none"
-              >
-                <i className="fa-brands fa-facebook fa-xl"></i>
-              </a>
-              <a
-                href="#"
-                className="text-light hover-text-warning text-decoration-none"
-              >
-                <i className="fa-brands fa-linkedin fa-xl"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <hr className="border-secondary my-2" />
-
-        <div className="row">
-          <div className="col-12">
-            <div className="d-flex flex-wrap justify-content-center gap-4 mb-3">
-              <a
-                href="#"
-                className="text-light text-decoration-none hover-text-warning"
-              >
-                Explorar libros
-              </a>
-              <a
-                href="#"
-                className="text-light text-decoration-none hover-text-warning"
-              >
-                Unirse a la comunidad
-              </a>
-              <a
-                href="#"
-                className="text-light text-decoration-none hover-text-warning"
-              >
-                Preguntas frecuentes
-              </a>
-              <a
-                href="#"
-                className="text-light text-decoration-none hover-text-warning"
-              >
-                Términos y condiciones
-              </a>
-              <a
-                href="#"
-                className="text-light text-decoration-none hover-text-warning"
-              >
-                Política de privacidad
-              </a>
-              <a
-                href="#"
-                className="text-light text-decoration-none hover-text-warning"
-              >
-                Contacto
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-12 text-center">
-            <p className="text-light mb-0">
-              Copyright © 2025 Círculo Lectores · Todos los derechos reservados
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <Box component="footer" className="footer">
+      <Toolbar
+        sx={{
+          margin: '0 auto',
+          width: '100%',
+          paddingX: { xs: 2, sm: 3 },
+        }}
+      >
+        <Box sx={{ textAlign: 'center', width: '100%' }}>
+          <Typography
+            variant="subtitle1"
+            component="span"
+            sx={{
+              fontFamily: 'sans-serif',
+              color: 'var(--chart-1)',
+            }}
+          >
+            © 2025. Built with{' '}
+            <FavoriteIcon
+              sx={{
+                fontFamily: 'sans-serif',
+                color: 'var(--chart-2)',
+              }}
+              fontSize="small"
+            />{' '}
+            by PASM
+          </Typography>
+        </Box>
+      </Toolbar>
+    </Box>
   );
 };

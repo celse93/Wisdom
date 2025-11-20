@@ -29,7 +29,7 @@ def categories_routes(app):
             ).scalar_one_or_none()
 
             if not user:
-                return jsonify({"error": "Not user"}), 400
+                return jsonify({"error": "Not user"}), 404
 
             new_labels = [Categories(label=label) for label in labels]
             db.session.bulk_save_objects(new_labels)
@@ -42,7 +42,7 @@ def categories_routes(app):
             categories = db.session.execute(select(Categories)).scalars().all()
 
             if not categories:
-                return jsonify({"error": "Categories list was not found."})
+                return jsonify({"error": "Categories list was not found."}), 404
 
             response_body = [category.serialize() for category in categories]
 

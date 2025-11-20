@@ -45,6 +45,7 @@ export const postLogout = async () => {
       'Content-Type': 'application/json',
     },
   }).then((data) => {
+    sessionStorage.removeItem('csrf_access_token');
     return data;
   });
 };

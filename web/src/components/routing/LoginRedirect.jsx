@@ -1,16 +1,27 @@
-import { useContext } from 'react';
-import { Navigate } from 'react-router';
+import { useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
-
 import { UserContext } from '../../context/UserContext';
 import { Login } from '../../pages/Login';
+import { Box } from '@mui/material';
 
 export const LoginRedirect = () => {
-  const { user } = useContext(UserContext);
+  const { user, isLoading } = useContext(UserContext);
+  const navigate = useNavigate();
 
-  if (!isEmpty(user)) {
-    return <Navigate to="/profile" replace />;
+  useEffect(() => {
+    if (!isLoading && !isEmpty(user)) {
+      navigate('/home', { replace: true });
+    }
+  }, [user, isLoading, navigate]);
+
+  if (isLoading) {
+    return <Box>Checking login status...</Box>;
   }
 
-  return <Login />;
+  if (isEmpty(user)) {
+    return <Login />;
+  }
+
+  return <Box>Redirecting...</Box>;
 };

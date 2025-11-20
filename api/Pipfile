@@ -23,7 +23,7 @@ ratelimit = "*"
 ruff = "*"
 
 [requires]
-python_version = "3.12"
+python_version = "3.14"
 
 [scripts]
 start="flask --app src.app run"

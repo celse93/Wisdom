@@ -35,7 +35,9 @@ def profiles_routes(app):
             profile = db.session.get(Profiles, user_id)
 
             if not profile:
-                return jsonify({"error": f"Profile with ID {user_id} was not found."})
+                return jsonify(
+                    {"error": f"Profile with ID {user_id} was not found."}
+                ), 404
 
             response_body = profile.serialize()
 
@@ -47,7 +49,7 @@ def profiles_routes(app):
         profiles = db.session.execute(select(Profiles)).scalars().all()
 
         if not profiles:
-            return jsonify({"error": "Profiles list was not found."})
+            return jsonify({"error": "Profiles list was not found."}), 404
 
         response_body = [profile.serialize() for profile in profiles]
 

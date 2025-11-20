@@ -24,7 +24,7 @@ export const getUserQuotes = async () => {
   });
 };
 
-export const getUserlReviews = async () => {
+export const getUserReviews = async () => {
   return await fetchWrapper(`${baseUrl}reviews/user`, {
     credentials: 'include',
   }).then((data) => {
@@ -58,6 +58,46 @@ export const getAllQuotes = async () => {
 
 export const getAllReviews = async () => {
   return await fetchWrapper(`${baseUrl}reviews`, {
+    credentials: 'include',
+  }).then((data) => {
+    return data;
+  });
+};
+
+export const getAllCategories = async () => {
+  return await fetchWrapper(`${baseUrl}categories`, {
+    credentials: 'include',
+  }).then((data) => {
+    return data;
+  });
+};
+
+export const getFollowRecommendations = async (profileId) => {
+  return await fetchWrapper(`${baseUrl}recommendations/follow/${profileId}`, {
+    credentials: 'include',
+  }).then((data) => {
+    return data;
+  });
+};
+
+export const getFollowReadingLists = async (profileId) => {
+  return await fetchWrapper(`${baseUrl}reading_list/follow/${profileId}`, {
+    credentials: 'include',
+  }).then((data) => {
+    return data;
+  });
+};
+
+export const getFollowQuotes = async (profileId) => {
+  return await fetchWrapper(`${baseUrl}quotes/follow/${profileId}`, {
+    credentials: 'include',
+  }).then((data) => {
+    return data;
+  });
+};
+
+export const getFollowReviews = async (profileId) => {
+  return await fetchWrapper(`${baseUrl}reviews/follow//${profileId}`, {
     credentials: 'include',
   }).then((data) => {
     return data;

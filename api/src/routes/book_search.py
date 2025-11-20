@@ -1,14 +1,24 @@
 import requests
 from flask import request, jsonify
+import os
+from flask_jwt_extended import jwt_required
 
-open_library_url = "https://openlibrary.org/"
-
+google_books_url = "https://www.googleapis.com/books/v1/"
 
 def books_search_routes(app):
+    @jwt_required()
     @app.route("/books_search/<path:path>", methods=["GET"])
     def search_books(path):
-        url = f"{open_library_url}{path}"
+        url = f"{google_books_url}{path}"
         params = dict(request.args)
+        params["printType"] = "books"
+        params["projection"] = "lite"
+        api_key = os.getenv("GOOGLE_API_KEY")
+        
+        if not api_key:
+             return jsonify({"error": "GOOGLE_API_KEY not found in environment variables."}), 500
+        
+        params["key"] = api_key
 
         try:
             response = requests.get(url, params=params, timeout=10)
@@ -16,21 +26,28 @@ def books_search_routes(app):
             if response.status_code != 200:
                 return jsonify(
                     {"error": "Failed to get the information from OpenLibrary"}
-                ), 500
+                ), response.status_code
 
             data = response.json()
-            books = data["docs"]
+            
+            if "items" not in data:
+                return jsonify({"message": "Search successful, but no books found.", "data": data}), 200
+
+            books = data["items"]
             results = []
 
-            for x in range(6):
-                book_id = books[x]["key"].split("/")[-1]
+            for book in books:
+                volume_info = book.get("volumeInfo", {})
+                image_links = volume_info.get("imageLinks", {})
+                
                 results.append(
                     {
-                        "title": books[x]["title"],
-                        "author": books[x]["author_name"][0],
-                        "first_publish_year": books[x]["first_publish_year"],
-                        "cover_id": books[x]["cover_i"],
-                        "book_id": book_id,
+                        "title": volume_info.get("title", "N/A"),
+                        "author": volume_info.get("authors", ["N/A"]),
+                        "publish_year": volume_info.get("publishedDate", "N/A"),
+                        "image": image_links.get("thumbnail", "N/A"),
+                        "book_id": book.get("id", "N/A"),
+                        "description": volume_info.get("description", "N/A"),
                     }
                 )
             return jsonify(results), response.status_code
@@ -39,5 +56,3 @@ def books_search_routes(app):
             return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
 
 
-# pruebas hechas con https://automatic-fortnight-5g54rgww9xgwh4j7r-5000.app.github.dev/books/search?q=harry+potter - SALIÓ OK
-# prueba hecha con https://automatic-fortnight-5g54rgww9xgwh4j7r-5000.app.github.dev/books/search?q=lord%20of%20the%20rings - SALIÓ OK

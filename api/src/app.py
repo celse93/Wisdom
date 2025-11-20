@@ -12,6 +12,11 @@ from src.routes.book_search import books_search_routes
 from src.routes.categories import categories_routes
 from src.routes.author_detail import author_detail_route
 from src.routes.follows import follows_routes
+from src.routes.post_book import posts_routes
+from src.routes.get_all import get_all_routes
+from src.routes.get_all_user import get_all_user_routes
+from src.routes.get_all_follow import get_all_follow_routes
+from src.routes.delete import delete_routes
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_migrate import Migrate
@@ -75,7 +80,11 @@ books_search_routes(app)
 author_detail_route(app)
 follows_routes(app)
 categories_routes(app)
-
+posts_routes(app)
+get_all_routes(app)
+get_all_user_routes(app)
+get_all_follow_routes(app)
+delete_routes(app)
 
 if __name__ == "__main__":
     PORT = int(os.environ.get("PORT", 8080))

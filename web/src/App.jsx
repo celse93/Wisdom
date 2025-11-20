@@ -1,24 +1,51 @@
-import { Routes, Route, Navigate } from 'react-router';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { routesConfig } from './services/routing/routes';
 import { GuardedRoute } from './components/routing/GuardedRoute';
 import { LoginRedirect } from './components/routing/LoginRedirect';
 import { Register } from './pages/Register';
 import { LoginForm } from './pages/LoginForm';
-import { ProtectedNavBar } from './components/routing/ProtectedNavBar';
+import { RootLayout } from './components/routing/RootLayout';
+import { useContext } from 'react';
+import { UserContext } from './context/UserContext';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import './App.css';
 
 export const App = () => {
+  const { isLoading, isLoggedIn } = useContext(UserContext);
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <CircularProgress size="3rem" color="var(--chart-0)" />
+          <Typography> Loading session... </Typography>{' '}
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <>
       <Routes>
-        {/* Rutas públicas específicas */}
-        <Route path="/login" element={<LoginRedirect />} />
-        <Route path="/login-form" element={<LoginForm />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<RootLayout />}>
+          {/* Public routes */}
+          <Route path="/" element={<LoginRedirect />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Rutas protegidas */}
-        <Route element={<GuardedRoute />}>
-          <Route path="/" element={<ProtectedNavBar />}>
+          {/* Protected routes */}
+          <Route element={<GuardedRoute />}>
             {routesConfig
               .filter(
                 (route) =>
@@ -34,10 +61,19 @@ export const App = () => {
                 />
               ))}
           </Route>
-        </Route>
 
-        {/* Ruta comodín */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+          {/* Common routes */}
+          <Route
+            path="*"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+        </Route>
       </Routes>
     </>
   );

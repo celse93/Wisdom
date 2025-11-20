@@ -1,12 +1,11 @@
 import { Outlet } from 'react-router';
-import { NavBarFinal } from '../Navbar_final';
-import { Footer } from '../Footer';
+import { Navbar } from '../Navbar';
+
 export const ProtectedNavBar = () => {
   return (
     <>
-      <NavBarFinal />
+      <Navbar />
       <Outlet />
-      <Footer />
     </>
   );
 };

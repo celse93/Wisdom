@@ -1,31 +1,78 @@
 import { useState, useContext } from 'react';
 import { Link } from 'react-router';
 import { UserContext } from '../context/UserContext';
-import { useNavigate } from 'react-router';
+import {
+  Box,
+  Card,
+  CardHeader,
+  CardContent,
+  TextField,
+  Button,
+  Typography,
+} from '@mui/material';
 
 export const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
   const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const { register } = useContext(UserContext);
-  const navigate = useNavigate();
+  const { register, isLoading } = useContext(UserContext);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleUsername = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      username: e.target.value,
     }));
 
-    if (errors[name]) {
+    if (errors[username]) {
       setErrors((prev) => ({
         ...prev,
-        [name]: '',
+        [username]: '',
+      }));
+    }
+  };
+
+  const handleEmail = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      email: e.target.value,
+    }));
+
+    if (errors[email]) {
+      setErrors((prev) => ({
+        ...prev,
+        [email]: '',
+      }));
+    }
+  };
+
+  const handlePassword = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      password: e.target.value,
+    }));
+
+    if (errors[password]) {
+      setErrors((prev) => ({
+        ...prev,
+        [password]: '',
+      }));
+    }
+  };
+
+  const handleConfirmPassword = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      confirmPassword: e.target.value,
+    }));
+
+    if (errors[confirmPassword]) {
+      setErrors((prev) => ({
+        ...prev,
+        [confirmPassword]: '',
       }));
     }
   };
@@ -33,28 +80,28 @@ export const Register = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.name) {
-      newErrors.name = 'El nombre es obligatorio';
-    } else if (formData.name.length > 10) {
-      newErrors.password = 'El nombre debe tener hasta 10 caracteres';
+    if (!formData.username) {
+      newErrors.username = 'Username is mandatory';
+    } else if (formData.username.length > 10) {
+      newErrors.username = 'Username is mandatory';
     }
 
     if (!formData.email) {
-      newErrors.email = 'El email es obligatorio';
+      newErrors.email = 'Email is mandatory';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'El email no es válido';
+      newErrors.email = "Email isn't valid";
     }
 
     if (!formData.password) {
-      newErrors.password = 'La contraseña es obligatoria';
+      newErrors.password = 'Password is mandatory';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+      newErrors.password = 'Password must contain at least 6 caracteres';
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Debes confirmar la contraseña';
+      newErrors.confirmPassword = 'Confirm password';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Las contraseñas no coinciden';
+      newErrors.confirmPassword = "Passwords don't match";
     }
 
     setErrors(newErrors);
@@ -68,10 +115,8 @@ export const Register = () => {
       return;
     }
 
-    setIsLoading(true);
     try {
-      await register(formData.name, formData.email, formData.password);
-      navigate('/profile');
+      await register(formData.username, formData.email, formData.password);
     } catch (error) {
       console.error(error);
       if (
@@ -84,145 +129,133 @@ export const Register = () => {
       } else {
         setErrors({ submit: 'Error al crear la cuenta. Intenta de nuevo.' });
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-dark">
-      <div className="row w-100 justify-content-center">
-        <div className="col-12 col-md-6 col-lg-4">
-          <div className="card bg-dark border border-secondary">
-            <div className="card-header bg-primary text-white text-center">
-              <h3 className="mb-0">Crear tu biblioteca</h3>
-              <p className="mb-0 mt-2 text-light">Únete a Círculo Lectores</p>
-            </div>
-            <div className="card-body p-4">
-              <form onSubmit={handleSubmit}>
-                {errors.submit && (
-                  <div className="alert alert-danger" role="alert">
-                    {errors.submit}
-                  </div>
-                )}
+    <>
+      <Box sx={{ height: 100 }}></Box>
+      <Box
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Card sx={{ width: '50%' }}>
+          <CardHeader
+            sx={{
+              textAlign: 'center',
+              borderBottom: 1,
+              bgcolor: 'var(--chart-2)',
+              color: 'var(--text)',
+              borderColor: 'var(--border)',
+            }}
+            title="Create your library"
+          >
+            <Typography sx={{ mb: 0, mt: 2 }}>Join the Wisdom</Typography>
+          </CardHeader>
+          <CardContent sx={{ textAlign: 'center', py: 4, px: 1 }}>
+            <Box
+              sx={{ width: '100%', mb: 4 }}
+              component="form"
+              noValidate
+              autoComplete="off"
+              onSubmit={handleSubmit}
+            >
+              {errors.submit && <Box>{errors.submit}</Box>}
 
-                <div className="mb-3">
-                  <label htmlFor="text" className="form-label text-white">
-                    Nombre *
-                  </label>
-                  <input
-                    type="text"
-                    className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Nombre"
-                    disabled={isLoading}
-                  />
-                  {errors.name && (
-                    <div className="invalid-feedback">{errors.name}</div>
-                  )}
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label text-white">
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="tu@email.com"
-                    disabled={isLoading}
-                  />
-                  {errors.email && (
-                    <div className="invalid-feedback">{errors.email}</div>
-                  )}
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label text-white">
-                    Contraseña *
-                  </label>
-                  <input
-                    type="password"
-                    className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Mínimo 6 caracteres"
-                    disabled={isLoading}
-                  />
-                  {errors.password && (
-                    <div className="invalid-feedback">{errors.password}</div>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <label
-                    htmlFor="confirmPassword"
-                    className="form-label text-white"
-                  >
-                    Confirmar contraseña *
-                  </label>
-                  <input
-                    type="password"
-                    className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    placeholder="Repite tu contraseña"
-                    disabled={isLoading}
-                  />
-                  {errors.confirmPassword && (
-                    <div className="invalid-feedback">
-                      {errors.confirmPassword}
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn btn-primary w-100 mb-3"
+              <Box sx={{ mb: 3 }}>
+                <TextField
+                  sx={{ width: '60%' }}
+                  required
+                  label="Username"
+                  type="text"
+                  id="username"
+                  value={formData.username}
+                  onChange={handleUsername}
                   disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Creando cuenta...
-                    </>
-                  ) : (
-                    'Crear mi biblioteca'
-                  )}
-                </button>
-              </form>
+                  error={errors.username}
+                  helperText={errors.username}
+                />
+                {errors.username && <Box>{errors.username}</Box>}
+              </Box>
 
-              <div className="text-center">
-                <p className="text-muted mb-2">¿Ya tienes cuenta?</p>
-                <Link to="/login-form" className="btn btn-outline-primary">
-                  Iniciar sesión
-                </Link>
-              </div>
+              <Box sx={{ mb: 3 }}>
+                <TextField
+                  sx={{ width: '60%' }}
+                  required
+                  label="Email"
+                  placeholder="email@email.com"
+                  type="text"
+                  id="email"
+                  error={errors.email}
+                  helperText={errors.email}
+                  value={formData.email}
+                  onChange={handleEmail}
+                  disabled={isLoading}
+                />
+                {errors.email && <Box>{errors.email}</Box>}
+              </Box>
 
-              <div className="text-center mt-3">
-                <Link to="/login" className="text-muted text-decoration-none">
-                  ← Volver al inicio
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <Box sx={{ mb: 3 }}>
+                <TextField
+                  sx={{ width: '60%' }}
+                  type="password"
+                  id="password"
+                  label="Password"
+                  placeholder="Minimum 6 caracteres"
+                  required
+                  value={formData.password}
+                  onChange={handlePassword}
+                  disabled={isLoading}
+                  error={errors.password}
+                  helperText={errors.password}
+                />
+                {errors.password && <Box>{errors.password}</Box>}
+              </Box>
+
+              <Box sx={{ mb: 3 }}>
+                <TextField
+                  sx={{ width: '60%' }}
+                  type="password"
+                  id="confirmPassword"
+                  label="Confirm password"
+                  placeholder="Retype your password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleConfirmPassword}
+                  disabled={isLoading}
+                  error={errors.password}
+                  helperText={errors.password}
+                />
+                {errors.password && <Box>{errors.password}</Box>}
+              </Box>
+
+              {errors.confirmPassword && <Box>{errors.confirmPassword}</Box>}
+
+              <Button
+                variant="contained"
+                size="medium"
+                sx={{
+                  bgcolor: 'var(--chart-0)',
+                  color: 'var(--background)',
+                  '&:hover': { bgcolor: 'var(--chart-2)' },
+                }}
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading ? <CircularProgress /> : 'Create my library'}
+              </Button>
+            </Box>
+
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography>Got account?</Typography>
+              <Link to="/login-form">Login</Link>
+            </Box>
+
+            <Box sx={{ textAlign: 'center', mt: 3 }}>
+              <Link to="/login">Go back</Link>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    </>
   );
 };

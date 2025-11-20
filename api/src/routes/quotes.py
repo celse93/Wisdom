@@ -1,7 +1,8 @@
 from flask import request, jsonify
 from src.db import db
 from src.models.models import Quotes
-from datetime import date
+from datetime import date, timedelta
+import datetime
 from sqlalchemy import select, and_
 from flask_jwt_extended import (
     jwt_required,
@@ -16,7 +17,7 @@ def quotes_routes(app):
         # method to save book in Quote list
         if request.method == "POST":
             data = request.get_json()
-            required_fields = ["book_id", "text"]
+            required_fields = ["book_id", "text", "category_id"]
             user_id = get_jwt_identity()
 
             if not all(field in data for field in required_fields):
@@ -24,12 +25,19 @@ def quotes_routes(app):
 
             book_id = data["book_id"]
             text = data["text"]
+            category_id = data["category_id"]
 
-            new_quote = Quotes(book_id=book_id, user_id=user_id, text=text)
+            new_quote = Quotes(
+                book_id=book_id,
+                user_id=user_id,
+                text=text,
+                category_id=category_id,
+                content_type="quote",
+            )
             db.session.add(new_quote)
             db.session.commit()
 
-            return jsonify({"message": "Cita guardada exitosamente"}), 201
+            return jsonify({"message": "Quote saved successfully"}), 201
 
         # method to delete book from Quote list
         elif request.method == "DELETE":
@@ -70,7 +78,7 @@ def quotes_routes(app):
                 .all()
             )
             if not quote_list:
-                return jsonify({"error": "Reading list not found"}), 404
+                return jsonify({"error": "Quotes list not found"}), 404
 
             response_body = [item.serialize() for item in quote_list]
             return jsonify(response_body), 200
@@ -78,13 +86,29 @@ def quotes_routes(app):
     @app.route("/quotes", methods=["GET"])
     @jwt_required()
     def all_quotes():
+        today = date.today()
+        last_week = today - timedelta(days=7)
         quote_list = (
-            db.session.execute(select(Quotes).where(Quotes.created_at == date.today()))
+            db.session.execute(select(Quotes).where(Quotes.created_at >= last_week))
             .scalars()
             .all()
         )
         if not quote_list:
-            return jsonify({"error": "Reading list not found"}), 404
+            return jsonify({"error": "Quotes list not found"}), 404
+
+        response_body = [item.serialize() for item in quote_list]
+        return jsonify(response_body), 200
+
+    @app.route("/quotes/follow/<int:followId>", methods=["GET"])
+    @jwt_required()
+    def follow_quotes(followId):
+        quote_list = (
+            db.session.execute(select(Quotes).where(Quotes.user_id == followId))
+            .scalars()
+            .all()
+        )
+        if not quote_list:
+            return jsonify({"error": "Quotes list not found"}), 404
 
         response_body = [item.serialize() for item in quote_list]
         return jsonify(response_body), 200

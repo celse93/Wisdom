@@ -1,6 +1,15 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router';
 import { UserContext } from '../context/UserContext';
+import {
+  Box,
+  Card,
+  CardHeader,
+  CardContent,
+  TextField,
+  Button,
+  Typography,
+} from '@mui/material';
 
 export const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -10,17 +19,30 @@ export const LoginForm = () => {
   const [errors, setErrors] = useState({});
   const { login, isLoading } = useContext(UserContext);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleEmail = (e) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      email: e.target.value,
     }));
 
-    if (errors[name]) {
+    if (errors) {
       setErrors((prev) => ({
         ...prev,
-        [name]: '',
+        email: '',
+      }));
+    }
+  };
+
+  const handlePassword = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      password: e.target.value,
+    }));
+
+    if (errors) {
+      setErrors((prev) => ({
+        ...prev,
+        password: '',
       }));
     }
   };
@@ -29,11 +51,11 @@ export const LoginForm = () => {
     const newErrors = {};
 
     if (!formData.email) {
-      newErrors.email = 'El email es obligatorio';
+      newErrors.email = 'Email mandatory';
     }
 
     if (!formData.password) {
-      newErrors.password = 'La contraseña es obligatoria';
+      newErrors.password = 'Password mandatory';
     }
 
     setErrors(newErrors);
@@ -51,170 +73,90 @@ export const LoginForm = () => {
       await login(formData.email, formData.password);
     } catch (error) {
       console.error(error);
-      setErrors({ submit: 'Email o contraseña incorrectos' });
+      setErrors({ submit: 'Email or password incorrect' });
     }
   };
 
   return (
-    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-dark">
-      <div className="row w-100 justify-content-center">
-        <div className="col-12 col-md-6 col-lg-4">
-          <div className="card bg-dark border border-secondary">
-            <div className="card-header bg-primary text-white text-center">
-              <h3 className="mb-0">Iniciar Sesión</h3>
-              <p className="mb-0 mt-2 text-light">Accede a tu biblioteca</p>
-            </div>
-            <div className="card-body p-4">
-              <form onSubmit={handleSubmit}>
-                {errors.submit && (
-                  <div className="alert alert-danger" role="alert">
-                    {errors.submit}
-                  </div>
-                )}
+    <Box>
+      <Card sx={{ border: '1px solid var(--chart-0)' }}>
+        <CardHeader
+          sx={{
+            textAlign: 'center',
+            borderBottom: 1,
+            bgcolor: 'var(--chart-2)',
+            color: 'var(--text)',
+            borderColor: 'var(--border)',
+          }}
+          title="Access your library"
+        ></CardHeader>
+        <CardContent sx={{ textAlign: 'center', py: 4, px: 1 }}>
+          <Box
+            sx={{ width: '100%', mb: 3 }}
+            component="form"
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSubmit}
+          >
+            {errors.submit && <Box>{errors.submit}</Box>}
 
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label text-white">
-                    Email
-                  </label>
-                  <input
-                    type="text"
-                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="tu@email.com"
-                    disabled={isLoading}
-                  />
-                  {errors.email && (
-                    <div className="invalid-feedback">{errors.email}</div>
-                  )}
-                </div>
+            <Box sx={{ mb: 3 }}>
+              <TextField
+                sx={{ width: '80%' }}
+                type="text"
+                id="email"
+                label="Email"
+                required
+                value={formData.email}
+                onChange={handleEmail}
+                disabled={isLoading}
+                error={errors.email}
+                helperText={errors.email}
+              ></TextField>
+              {errors.email && <Box>{errors.email}</Box>}
+            </Box>
 
-                <div className="mb-4">
-                  <label htmlFor="password" className="form-label text-white">
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Tu contraseña"
-                    disabled={isLoading}
-                  />
-                  {errors.password && (
-                    <div className="invalid-feedback">{errors.password}</div>
-                  )}
-                </div>
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                sx={{ width: '80%' }}
+                type="password"
+                id="password"
+                label="Password"
+                required
+                value={formData.password}
+                onChange={handlePassword}
+                disabled={isLoading}
+                error={errors.password}
+                helperText={errors.password}
+              ></TextField>
+              {errors.password && <Box>{errors.password}</Box>}
+            </Box>
 
-                <button
-                  type="submit"
-                  className="btn btn-primary w-100 mb-3"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Iniciando sesión...
-                    </>
-                  ) : (
-                    'Ingresar'
-                  )}
-                </button>
-              </form>
+            <Button
+              variant="contained"
+              size="medium"
+              sx={{
+                bgcolor: 'var(--chart-0)',
+                color: 'var(--background)',
+                '&:hover': { bgcolor: 'var(--chart-2)' },
+              }}
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? <CircularProgress /> : 'Login'}
+            </Button>
+          </Box>
 
-              <div className="text-center">
-                <p className="text-muted mb-2">¿No tienes cuenta?</p>
-                <Link to="/register" className="btn btn-outline-primary">
-                  Crear mi biblioteca
-                </Link>
-              </div>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography>Don't have account?</Typography>
+            <Link to="/register">Create my library</Link>
+          </Box>
 
-              <div className="text-center mt-3">
-                <Link to="/login" className="text-muted text-decoration-none">
-                  ← Volver al inicio
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Link to="/login"> Go back</Link>
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
-
-/*
-import { useContext, useState } from 'react';
-import { Link } from 'react-router';
-import { UserContext } from '../context/User';
-
-export const LoginForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const { login } = useContext(UserContext);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    login(email, password);
-  };
-
-  return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              <h3>Iniciar Sesión</h3>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
-                    Email
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label">
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary w-100">
-                  Ingresar
-                </button>
-              </form>
-              <div className="mt-3 text-center">
-                <Link to="/register">¿No tienes cuenta? Regístrate</Link>
-                <br />
-                <Link to="/login">Volver al inicio</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-*/

@@ -19,6 +19,9 @@ export const fetchWrapper = async (input, init) => {
     credentials: 'include',
   })
     .then((response) => {
+      if (response.status === 404) {
+        return [];
+      }
       if (response.ok) {
         return response.json();
       }

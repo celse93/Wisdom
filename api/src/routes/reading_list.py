@@ -1,7 +1,8 @@
 from flask import request, jsonify
 from src.db import db
 from src.models.models import ReadingList
-from datetime import date
+from datetime import date, timedelta
+import datetime
 from sqlalchemy import select, and_
 from flask_jwt_extended import (
     jwt_required,
@@ -20,7 +21,7 @@ def reading_list_routes(app):
             user_id = get_jwt_identity()
 
             if not book_id:
-                return jsonify({"error": "¡Error! ID de libro faltante"}), 400
+                return jsonify({"error": "Missing book ID"}), 400
 
             existing_book = db.session.execute(
                 select(ReadingList).where(
@@ -29,13 +30,15 @@ def reading_list_routes(app):
             ).scalar_one_or_none()
 
             if existing_book:
-                return jsonify({"error": "¡Error! Libro ya registrado"}), 400
+                return jsonify({"error": "Book already registered"}), 400
 
-            new_book = ReadingList(book_id=book_id, user_id=user_id)
+            new_book = ReadingList(
+                book_id=book_id, user_id=user_id, content_type="reading"
+            )
             db.session.add(new_book)
             db.session.commit()
 
-            return jsonify({"message": "Libro guardado exitosamente"}), 201
+            return jsonify({"message": "Book saved successfully"}), 201
 
         # method to delete book from ReadingList
         elif request.method == "DELETE":
@@ -80,9 +83,28 @@ def reading_list_routes(app):
     @app.route("/reading_list", methods=["GET"])
     @jwt_required()
     def all_reading_list():
+        today = date.today()
+        last_week = today - timedelta(days=7)
         reading_list = (
             db.session.execute(
-                select(ReadingList).where(ReadingList.created_at == date.today())
+                select(ReadingList).where(ReadingList.created_at >= last_week)
+            )
+            .scalars()
+            .all()
+        )
+        if not reading_list:
+            return jsonify({"error": "Reading list not found"}), 404
+
+        response_body = [item.serialize() for item in reading_list]
+
+        return jsonify(response_body), 200
+
+    @app.route("/reading_list/follow/<int:followId>", methods=["GET"])
+    @jwt_required()
+    def follow_reading_list(followId):
+        reading_list = (
+            db.session.execute(
+                select(ReadingList).where(ReadingList.user_id == followId)
             )
             .scalars()
             .all()
