@@ -17,7 +17,6 @@ from src.routes.get_all import get_all_routes
 from src.routes.get_all_user import get_all_user_routes
 from src.routes.get_all_follow import get_all_follow_routes
 from src.routes.delete import delete_routes
-from dotenv import load_dotenv
 from flask import Flask, jsonify
 from flask_migrate import Migrate
 from src.db import db
@@ -25,7 +24,6 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 
-load_dotenv()
 
 app = Flask(__name__)
 start_time = time.time()
