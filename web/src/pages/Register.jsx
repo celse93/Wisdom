@@ -1,7 +1,6 @@
 import { useState, useContext } from 'react';
 import { Link } from 'react-router';
 import { UserContext } from '../context/UserContext';
-import { useNavigate } from 'react-router';
 import {
   Box,
   Card,
@@ -21,7 +20,6 @@ export const Register = () => {
   });
   const [errors, setErrors] = useState({});
   const { register, isLoading } = useContext(UserContext);
-  const navigate = useNavigate();
 
   const handleUsername = (e) => {
     setFormData((prev) => ({
@@ -119,7 +117,6 @@ export const Register = () => {
 
     try {
       await register(formData.username, formData.email, formData.password);
-      navigate('/profile');
     } catch (error) {
       console.error(error);
       if (

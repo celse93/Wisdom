@@ -100,6 +100,8 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
             >
               <Avatar
                 src={getProfileAvatar(profile.username)}
+                className="clickable-item"
+                onClick={() => navigate(`/profile/${profile.id}`)}
                 alt="icon"
                 sx={{
                   width: 40,

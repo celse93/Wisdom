@@ -174,7 +174,7 @@ export const UserProvider = ({ children }) => {
       setCategories(categoriesList);
       setIsLoggedIn(true);
       await fetchFeedData();
-      navigate('/');
+      navigate('/home');
     } catch (error) {
       console.error('Login error:', error);
       setUser({});
@@ -187,11 +187,10 @@ export const UserProvider = ({ children }) => {
   const logout = async () => {
     try {
       await postLogout();
-      navigate('/login');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      navigate('/login');
+      navigate('/');
       setIsLoading(false);
       setIsLoggedIn(false);
       setUser({});
@@ -220,7 +219,7 @@ export const UserProvider = ({ children }) => {
       setCategories(categoriesList);
       setIsLoggedIn(true);
       await fetchFeedData();
-      navigate('/');
+      navigate('/home');
     } catch (error) {
       console.error('Register error:', error.message);
       setUser({});

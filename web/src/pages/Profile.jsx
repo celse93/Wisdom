@@ -123,7 +123,10 @@ export const Profile = () => {
                   <Button
                     sx={{
                       background: 'var(--chart-0)',
-                      '&:hover': { bgcolor: 'var(--chart-2)' },
+                      '&:hover': {
+                        bgcolor: 'var(--chart-2)',
+                        color: 'var(--chart-1)',
+                      },
                       mb: 2,
                     }}
                     variant="contained"
@@ -163,7 +166,10 @@ export const Profile = () => {
                       sx={{
                         height: 55,
                         bgcolor: 'var(--secondary)',
-                        '&:hover': { bgcolor: 'var(--muted-foreground)' },
+                        '&:hover': {
+                          bgcolor: 'var(--muted-foreground)',
+                          color: 'var(--chart-1)',
+                        },
                       }}
                       onClick={() => handleSearch()}
                     >

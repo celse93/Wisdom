@@ -10,13 +10,13 @@ import { useParams } from "react-router";
 export const routesConfig = [
   {
     name: 'Home',
-    path: '/',
+    path: '/home',
     component: <Home />,
     showInNavbar: true,
   },
   {
     name: 'Login',
-    path: '/login',
+    path: '/',
     component: <Login />,
     showInNavbar: false,
   },

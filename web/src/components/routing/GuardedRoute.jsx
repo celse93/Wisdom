@@ -15,5 +15,5 @@ export const GuardedRoute = () => {
     return <Outlet />;
   }
 
-  return <Navigate to="/login" replace />;
+  return <Navigate to="/" replace />;
 };

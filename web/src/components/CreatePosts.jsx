@@ -147,7 +147,7 @@ export const CreatePosts = () => {
       <Button
         sx={{
           background: 'var(--chart-0)',
-          '&:hover': { bgcolor: 'var(--chart-2)' },
+          '&:hover': { bgcolor: 'var(--chart-2)', color: 'var(--chart-1)' },
         }}
         startIcon={<AddCircleIcon />}
         variant="contained"

@@ -41,8 +41,7 @@ export const App = () => {
       <Routes>
         <Route element={<RootLayout />}>
           {/* Public routes */}
-          <Route path="/login" element={<LoginRedirect />} />
-          <Route path="/login-form" element={<LoginForm />} />
+          <Route path="/" element={<LoginRedirect />} />
           <Route path="/register" element={<Register />} />
 
           {/* Protected routes */}

@@ -65,7 +65,7 @@ export const Navbar = () => {
             paddingX: { xs: 2, sm: 3 },
           }}
         >
-          <Box sx={{ml: 5}}>
+          <Box sx={{ ml: 5 }}>
             <Typography
               variant="h5"
               component="span"
@@ -76,17 +76,20 @@ export const Navbar = () => {
                 color: 'var(--chart-0)',
               }}
               className="clickable-item"
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/home')}
             >
               Wisdom
             </Typography>
           </Box>
           {!isLoggedIn && (
-            <Box sx={{mr: 5}}>
+            <Box sx={{ mr: 5 }}>
               <Button
                 sx={{
                   background: 'var(--chart-0)',
-                  '&:hover': { bgcolor: 'var(--chart-2)' },
+                  '&:hover': {
+                    bgcolor: 'var(--chart-2)',
+                    color: 'var(--chart-1)',
+                  },
                 }}
                 variant="contained"
                 onClick={handleOpenModal}
@@ -119,7 +122,7 @@ export const Navbar = () => {
                     },
                   }}
                   className="clickable-item"
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate('/home')}
                 >
                   <AutoStoriesOutlinedIcon
                     sx={{

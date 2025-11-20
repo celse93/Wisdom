@@ -11,7 +11,7 @@ export const LoginRedirect = () => {
 
   useEffect(() => {
     if (!isLoading && !isEmpty(user)) {
-      navigate('/', { replace: true });
+      navigate('/home', { replace: true });
     }
   }, [user, isLoading, navigate]);
 
