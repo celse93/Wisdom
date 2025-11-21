@@ -3,7 +3,7 @@ import { routesConfig } from './services/routing/routes';
 import { GuardedRoute } from './components/routing/GuardedRoute';
 import { LoginRedirect } from './components/routing/LoginRedirect';
 import { Register } from './pages/Register';
-import { LoginForm } from './pages/LoginForm';
+import { LoginForm } from './components/LoginForm';
 import { RootLayout } from './components/routing/RootLayout';
 import { useContext } from 'react';
 import { UserContext } from './context/UserContext';

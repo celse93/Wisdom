@@ -76,175 +76,179 @@ export const Profile = () => {
   };
 
   return (
-    <Box>
-      {/* Buffer to avoid navbar from hiding content */}
+    <>
       <Box sx={{ height: 150 }} />
-      {parseInt(profileId) === profile.id && (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
+      <Box >
+        {parseInt(profileId) === profile.id && (
           <Box
             sx={{
               display: 'flex',
-              bgcolor: 'var(--card)',
-              p: 3,
-              width: 770,
-              borderRadius: 3,
-              border: '2px solid var(--border)',
-              transition: 'box-shadow 0.3s',
-              '&:hover': { boxShadow: 6 },
+              justifyContent: 'center',
             }}
           >
-            <Box sx={{ display: 'flex' }}>
-              <Box
-                sx={{
-                  mr: 3,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                <img
-                  src={getProfileAvatar(profile.username)}
-                  alt="Avatar"
-                  width="100"
-                  height="100"
-                  style={{ objectFit: 'cover' }}
-                />
-                <Typography sx={{ mt: 1 }}>
-                  {profile?.username || 'User'}
-                </Typography>
-              </Box>
-              <Box sx={{ mx: 4, width: '20%', p: 0 }}>
-                <Box sx={{ width: '100%', height: '50%' }}>
-                  <Button
-                    sx={{
-                      background: 'var(--chart-0)',
-                      '&:hover': {
-                        bgcolor: 'var(--chart-2)',
-                        color: 'var(--chart-1)',
-                      },
-                      mb: 2,
-                    }}
-                    variant="contained"
-                    onClick={() => navigate('/follows')}
-                    startIcon={<PersonIcon />}
-                  >
-                    Fellow Readers
-                  </Button>
+            <Box
+              sx={{
+                display: 'flex',
+                bgcolor: 'var(--card)',
+                p: 3,
+                width: 770,
+                borderRadius: 3,
+                border: '2px solid var(--border)',
+                transition: 'box-shadow 0.3s',
+                '&:hover': { boxShadow: 6 },
+              }}
+            >
+              <Box sx={{ display: 'flex' }}>
+                <Box
+                  sx={{
+                    mr: 3,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <img
+                    src={getProfileAvatar(profile.username)}
+                    alt="Avatar"
+                    width="100"
+                    height="100"
+                    style={{ objectFit: 'cover' }}
+                  />
+                  <Typography sx={{ mt: 1 }}>
+                    {profile?.username || 'User'}
+                  </Typography>
                 </Box>
-                <Box sx={{ width: '100%', height: '50%' }}>
-                  <CreatePosts />
-                </Box>
-              </Box>
-
-              {/* Profiles search bar */}
-              <Box>
-                <Box>
-                  <Box>
-                    <TextField
-                      sx={{
-                        color: 'var(--text)',
-                        width: 250,
-                        mr: 0.5,
-                      }}
-                      type="search"
-                      placeholder="Search readers"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          handleSearch();
-                        }
-                      }}
-                    />
+                <Box sx={{ mx: 4, width: '20%', p: 0 }}>
+                  <Box sx={{ width: '100%', height: '50%' }}>
                     <Button
                       sx={{
-                        height: 55,
-                        bgcolor: 'var(--secondary)',
+                        background: 'var(--chart-0)',
                         '&:hover': {
-                          bgcolor: 'var(--muted-foreground)',
+                          bgcolor: 'var(--chart-2)',
                           color: 'var(--chart-1)',
                         },
+                        mb: 2,
                       }}
-                      onClick={() => handleSearch()}
+                      variant="contained"
+                      onClick={() => navigate('/follows')}
+                      startIcon={<PersonIcon />}
                     >
-                      <PersonSearchIcon />
+                      Fellow Readers
                     </Button>
                   </Box>
+                  <Box sx={{ width: '100%', height: '50%' }}>
+                    <CreatePosts />
+                  </Box>
+                </Box>
 
-                  {/* Dropdown users search */}
-                  {showDropdown && (
-                    <Box
-                      sx={{
-                        maxHeight: 250,
-                        overflowY: 'auto',
-                      }}
-                    >
-                      <List>
-                        {searchResults.map((user) => (
-                          <ListItem
-                            sx={{
-                              maxWidth: 250,
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'center',
-                            }}
-                            key={user.id}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor =
-                                'rgba(124, 58, 237, 0.1)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor =
-                                'transparent';
-                            }}
-                          >
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <img
-                                src={getProfileAvatar(user.username)}
-                                alt={user.username}
-                                width="40"
-                                height="40"
-                              />
-                              <Typography sx={{ ml: 1, fontSize: 15 }}>
-                                {user.username}
-                              </Typography>
-                            </Box>
-                            <Box>
-                              {user.is_following ? (
-                                <Button
-                                  onClick={() => handleUnfollow(user.id)}
-                                  sx={{ fontSize: '0.75rem' }}
-                                >
-                                  Following
-                                </Button>
-                              ) : (
-                                <Button
-                                  onClick={() => handleFollow(user.id)}
-                                  sx={{ fontSize: '0.75rem' }}
-                                >
-                                  Follow
-                                </Button>
-                              )}
-                            </Box>
-                          </ListItem>
-                        ))}
-                      </List>
+                {/* Profiles search bar */}
+                <Box>
+                  <Box>
+                    <Box>
+                      <TextField
+                        sx={{
+                          color: 'var(--text)',
+                          width: 250,
+                          mr: 0.5,
+                        }}
+                        type="search"
+                        placeholder="Search readers"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleSearch();
+                          }
+                        }}
+                      />
+                      <Button
+                        sx={{
+                          height: 55,
+                          bgcolor: 'var(--secondary)',
+                          '&:hover': {
+                            bgcolor: 'var(--muted-foreground)',
+                            color: 'var(--chart-1)',
+                          },
+                        }}
+                        onClick={() => handleSearch()}
+                      >
+                        <PersonSearchIcon />
+                      </Button>
                     </Box>
-                  )}
+
+                    {/* Dropdown users search */}
+                    {showDropdown && (
+                      <Box
+                        sx={{
+                          maxHeight: 250,
+                          overflowY: 'auto',
+                        }}
+                      >
+                        <List>
+                          {searchResults.map((user) => (
+                            <ListItem
+                              sx={{
+                                maxWidth: 250,
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}
+                              key={user.id}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  'rgba(124, 58, 237, 0.1)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  'transparent';
+                              }}
+                            >
+                              <Box
+                                sx={{ display: 'flex', alignItems: 'center' }}
+                              >
+                                <img
+                                  src={getProfileAvatar(user.username)}
+                                  alt={user.username}
+                                  width="40"
+                                  height="40"
+                                />
+                                <Typography sx={{ ml: 1, fontSize: 15 }}>
+                                  {user.username}
+                                </Typography>
+                              </Box>
+                              <Box>
+                                {user.is_following ? (
+                                  <Button
+                                    onClick={() => handleUnfollow(user.id)}
+                                    sx={{ fontSize: '0.75rem' }}
+                                  >
+                                    Following
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    onClick={() => handleFollow(user.id)}
+                                    sx={{ fontSize: '0.75rem' }}
+                                  >
+                                    Follow
+                                  </Button>
+                                )}
+                              </Box>
+                            </ListItem>
+                          ))}
+                        </List>
+                      </Box>
+                    )}
+                  </Box>
                 </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
-      )}
-      <Box sx={{ height: 50 }} />
-      <UserFeedTab />
-    </Box>
+        )}
+        <Box sx={{ height: 50 }} />
+        <UserFeedTab />
+      </Box>
+      <Box sx={{ height: 150 }} />
+    </>
   );
 };

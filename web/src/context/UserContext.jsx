@@ -161,7 +161,7 @@ export const UserProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       await postLogin(email, password);
 
       const [userData, profileData, categoriesList] = await Promise.all([

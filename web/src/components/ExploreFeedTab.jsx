@@ -61,7 +61,14 @@ export const ExploreFeedTab = () => {
       }
     };
     load();
-  }, []);
+  }, [
+    bookDetails.length,
+    profileNames.length,
+    recommendations.length,
+    readingLists.length,
+    reviews.length,
+    quotes.length,
+  ]);
 
   const handleChangeTabs = (event, newValue) => {
     setValueTabs(newValue);

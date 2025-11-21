@@ -1,16 +1,12 @@
 import { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
-import { Link } from 'react-router';
-import { useNavigate } from 'react-router';
 import { postReadingList, postRecommendations } from '../services/api/books';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import BookIcon from '@mui/icons-material/Book';
-import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 
 export const Book = () => {
   const { selectedBook } = useContext(UserContext);
-  const navigate = useNavigate();
 
   const handleBookReadList = async (book) => {
     try {
@@ -30,10 +26,6 @@ export const Book = () => {
     }
   };
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
   if (!selectedBook) {
     return (
       <Box>
@@ -44,8 +36,8 @@ export const Book = () => {
 
   return (
     <>
-      <Box sx={{ height: 100 }} />
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ height: 50 }} />
+      <Box sx={{ mt: 5, pt: 5,  display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ display: 'flex', maxWidth: 700 }}>
           <Box sx={{ display: 'flex', justifyContent: 'end', pr: 5 }}>
             <Box>
@@ -113,21 +105,11 @@ export const Book = () => {
                   Read
                 </Button>
               </Box>
-
-              <ArrowBackOutlinedIcon
-                className="clickable-item"
-                sx={{
-                  bgcolor: 'var(--secondary)',
-                  '&:hover': { bgcolor: 'var(--muted-foreground)' },
-                  borderRadius: 2,
-                }}
-                fontSize="large"
-                onClick={handleGoBack}
-              />
             </Box>
           </Box>
         </Box>
       </Box>
+      <Box sx={{ height: 150 }} />
     </>
   );
 };

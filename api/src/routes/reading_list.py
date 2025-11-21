@@ -2,7 +2,6 @@ from flask import request, jsonify
 from src.db import db
 from src.models.models import ReadingList
 from datetime import date, timedelta
-import datetime
 from sqlalchemy import select, and_
 from flask_jwt_extended import (
     jwt_required,

@@ -15,7 +15,6 @@ import {
   CircularProgress,
 } from '@mui/material';
 
-
 export const Follows = () => {
   const [followings, setFollowings] = useState([]);
   const [followers, setFollowers] = useState([]);
@@ -174,7 +173,7 @@ export const Follows = () => {
                             variant="outlined"
                             onClick={() => handleUnfollow(following.id)}
                           >
-                            Following
+                            Unfollow
                           </Button>
                         </Box>
                       </Box>
@@ -265,6 +264,14 @@ export const Follows = () => {
                                 size="small"
                                 variant="outlined"
                                 onClick={() => handleFollow(follower.id)}
+                                sx={{
+                                  background: 'var(--chart-0)',
+                                  color: 'var(--chart-1)',
+                                  '&:hover': {
+                                    bgcolor: 'var(--chart-2)',
+                                    color: 'var(--chart-1)',
+                                  },
+                                }}
                               >
                                 Follow
                               </Button>

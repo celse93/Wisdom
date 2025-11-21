@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { UserContext } from '../context/UserContext';
-import { LoginForm } from '../pages/LoginForm';
+import { LoginForm } from './LoginForm';
 import {
   Typography,
   Box,
