@@ -1,13 +1,19 @@
-import { useState, useContext, useMemo } from 'react';
+import { useState, useContext, useMemo, useEffect } from 'react';
 import { UserContext } from '../context/UserContext';
 import { FeedCard } from './FeedCard';
-import { Typography, Box, Tab } from '@mui/material';
+import { Typography, Box, Tab, CircularProgress } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import ExploreRoundedIcon from '@mui/icons-material/ExploreRounded';
 
 export const ExploreFeedTab = () => {
-  const { feedData, isLoadingFeed, bookDetails, profileNames } =
-    useContext(UserContext);
+  const {
+    feedData,
+    isLoadingFeed,
+    bookDetails,
+    profileNames,
+    isLoggedIn,
+    fetchFeedData,
+  } = useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('recommendations');
 
   const recommendations = useMemo(
@@ -29,6 +35,33 @@ export const ExploreFeedTab = () => {
     () => feedData.filter((value) => value.content_type === 'quote'),
     [feedData]
   );
+
+  useEffect(() => {
+    const load = async () => {
+      const hasRecommendations = recommendations.length > 0;
+      const hasReadingLists = readingLists.length > 0;
+      const hasReviews = reviews.length > 0;
+      const hasQuotes = quotes.length > 0;
+      const hasLookupData = bookDetails.length > 0 && profileNames.length > 0;
+
+      // if posts exist but missing remaining data (books + profiles)
+      // or Feed needs refresh but isn't loading, trigger fetchData
+      if (
+        isLoggedIn &&
+        (hasRecommendations || hasReadingLists || hasReviews || hasQuotes) &&
+        hasLookupData &&
+        !isLoadingFeed
+      ) {
+        try {
+          console.log('Fetching posts explore...');
+          await fetchFeedData();
+        } catch (error) {
+          console.error('Data could not be fetched: ', error);
+        }
+      }
+    };
+    load();
+  }, []);
 
   const handleChangeTabs = (event, newValue) => {
     setValueTabs(newValue);
@@ -74,7 +107,15 @@ export const ExploreFeedTab = () => {
           </TabList>
         </Box>
         {isLoadingFeed ? (
-          <Typography sx={{ color: 'var(--text)' }}>Loading...</Typography>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+            }}
+          >
+            <CircularProgress size="3rem" color="var(--chart-0)" />
+          </Box>
         ) : (
           <>
             <TabPanel value="recommendations">

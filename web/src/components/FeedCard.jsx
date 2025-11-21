@@ -21,7 +21,7 @@ import { deleteBook } from '../services/api/books';
 
 export const FeedCard = ({ bookInfo, data, profile }) => {
   const navigate = useNavigate();
-  const { selectBook, fetchUserFeed } = useContext(UserContext);
+  const { selectBook, fetchUserFeed, user } = useContext(UserContext);
   let { profileId } = useParams();
 
   const handleBookClick = async (book) => {
@@ -71,6 +71,7 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
   const getProfileAvatar = (userName) => {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=d58d63&color=f4ede8&size=100&bold=true&rounded=true`;
   };
+
 
   return (
     <Box sx={{ mb: 2 }}>
@@ -226,7 +227,7 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
                 </Typography>
               )}
             </Box>
-            {profile.id == profileId && (
+            {user.user.id == profileId && (
               <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                 <DeleteIcon
                   className="clickable-item"

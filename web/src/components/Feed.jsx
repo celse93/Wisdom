@@ -16,23 +16,23 @@ export const Feed = () => {
   const posts = useMemo(() => [...feedData], [feedData]);
 
   useEffect(() => {
-    const hasPosts = posts.length > 0;
-    const hasLookupData = bookDetails.length > 0 && profileNames.length > 0;
+    const load = async () => {
+      const hasPosts = posts.length > 0;
+      const hasLookupData = bookDetails.length > 0 && profileNames.length > 0;
 
-    // if posts exist but missing remaining data (books + profiles)
-    // or Feed needs refresh but isn't loading, trigger fetchData
-    if (isLoggedIn && hasPosts && !hasLookupData && !isLoadingFeed) {
-      console.log('Posts exist, but lookup data is missing. Fetching...');
-      fetchFeedData();
-    }
-  }, [
-    isLoggedIn,
-    posts.length,
-    bookDetails.length,
-    profileNames.length,
-    isLoadingFeed,
-    fetchFeedData,
-  ]);
+      // if posts exist but missing remaining data (books + profiles)
+      // or Feed needs refresh but isn't loading, trigger fetchData
+      if (isLoggedIn && hasPosts && hasLookupData && !isLoadingFeed) {
+        try {
+          console.log('Fetching posts feed...');
+          await fetchFeedData();
+        } catch (error) {
+          console.error('Data could not be fetched: ', error);
+        }
+      }
+    };
+    load();
+  }, [posts.length, bookDetails.length, profileNames.length]);
 
   return (
     <>
