@@ -38,20 +38,14 @@ export const ExploreFeedTab = () => {
 
   useEffect(() => {
     const load = async () => {
-      const hasRecommendations = recommendations.length > 0;
-      const hasReadingLists = readingLists.length > 0;
-      const hasReviews = reviews.length > 0;
-      const hasQuotes = quotes.length > 0;
+      const hasPosts = feedData.length > 0;
       const hasLookupData = bookDetails.length > 0 && profileNames.length > 0;
+
+      console.log(hasLookupData);
 
       // if posts exist but missing remaining data (books + profiles)
       // or Feed needs refresh but isn't loading, trigger fetchData
-      if (
-        isLoggedIn &&
-        (hasRecommendations || hasReadingLists || hasReviews || hasQuotes) &&
-        hasLookupData &&
-        !isLoadingFeed
-      ) {
+      if (isLoggedIn && hasPosts && !hasLookupData && !isLoadingFeed) {
         try {
           console.log('Fetching posts explore...');
           await fetchFeedData();
@@ -61,18 +55,14 @@ export const ExploreFeedTab = () => {
       }
     };
     load();
-  }, [
-    bookDetails.length,
-    profileNames.length,
-    recommendations.length,
-    readingLists.length,
-    reviews.length,
-    quotes.length,
-  ]);
+  }, [bookDetails.length, profileNames.length, feedData.length]);
 
   const handleChangeTabs = (event, newValue) => {
     setValueTabs(newValue);
   };
+
+  console.log(bookDetails);
+  console.log(profileNames);
 
   return (
     <Box>

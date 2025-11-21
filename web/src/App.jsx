@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { routesConfig } from './services/routing/routes';
 import { GuardedRoute } from './components/routing/GuardedRoute';
 import { LoginRedirect } from './components/routing/LoginRedirect';
-import { Register } from './pages/Register';
+import { Register } from './components/Register';
 import { LoginForm } from './components/LoginForm';
 import { RootLayout } from './components/routing/RootLayout';
 import { useContext } from 'react';

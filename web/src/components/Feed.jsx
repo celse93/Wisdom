@@ -22,7 +22,7 @@ export const Feed = () => {
 
       // if posts exist but missing remaining data (books + profiles)
       // or Feed needs refresh but isn't loading, trigger fetchData
-      if (isLoggedIn && hasPosts && hasLookupData && !isLoadingFeed) {
+      if (isLoggedIn && hasPosts && !hasLookupData && !isLoadingFeed) {
         try {
           console.log('Fetching posts feed...');
           await fetchFeedData();

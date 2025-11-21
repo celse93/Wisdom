@@ -29,6 +29,7 @@ export const UserContext = createContext({
   userFeedData: [],
   profileNames: [],
   bookDetails: [],
+  bookDetailsProfile: [],
   feedData: [],
   selectedBook: {},
   categories: [],
@@ -43,6 +44,7 @@ export const UserProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedBook, setSelectedBook] = useState({});
   const [bookDetails, setBookDetails] = useState([]);
+  const [bookDetailsProfile, setBookDetailsProfile] = useState([]);
   const [profileNames, setProfileNames] = useState([]);
   const [userFeedData, setUserFeedData] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -113,7 +115,7 @@ export const UserProvider = ({ children }) => {
       );
 
       setUserFeedData(combinedData || []);
-      setBookDetails(dataBooks.books || []);
+      setBookDetailsProfile(dataBooks.books || []);
 
       const profileDetailsResult = await getProfileNames();
 
@@ -121,12 +123,12 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error('Failed to fetch books data:', error);
       setUserFeedData([]);
-      setBookDetails([]);
+      setBookDetailsProfile([]);
       setProfileNames([]);
     } finally {
       setIsLoadingFeed(false);
     }
-  }, [setIsLoadingFeed, setUserFeedData, setBookDetails, setProfileNames]);
+  }, [setIsLoadingFeed, setUserFeedData, setBookDetailsProfile, setProfileNames]);
 
   const fetchFollowFeed = useCallback(
     async (profileId) => {
@@ -142,7 +144,7 @@ export const UserProvider = ({ children }) => {
         );
 
         setUserFeedData(combinedData || []);
-        setBookDetails(dataBooks.books || []);
+        setBookDetailsProfile(dataBooks.books || []);
 
         const profileDetailsResult = await getProfileNames();
 
@@ -150,13 +152,13 @@ export const UserProvider = ({ children }) => {
       } catch (error) {
         console.error('Failed to fetch books data:', error);
         setUserFeedData([]);
-        setBookDetails([]);
+        setBookDetailsProfile([]);
         setProfileNames([]);
       } finally {
         setIsLoadingFeed(false);
       }
     },
-    [setIsLoadingFeed, setUserFeedData, setBookDetails, setProfileNames]
+    [setIsLoadingFeed, setUserFeedData, setBookDetailsProfile, setProfileNames]
   );
 
   const login = async (email, password) => {
@@ -267,6 +269,8 @@ export const UserProvider = ({ children }) => {
         setBookDetails,
         setProfileNames,
         categories,
+        bookDetailsProfile,
+        setBookDetailsProfile,
       }}
     >
       {children}

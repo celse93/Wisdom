@@ -2,7 +2,7 @@ import { Home } from '../../pages/Home';
 import { Login } from '../../pages/Login';
 import { Book } from '../../pages/Book';
 import { Profile } from '../../pages/Profile';
-import { Register } from '../../pages/Register';
+import { Register } from '../../components/Register';
 import { Follows } from '../../pages/Follows';
 import { Explore } from '../../pages/Explore';
 import { useParams } from "react-router";

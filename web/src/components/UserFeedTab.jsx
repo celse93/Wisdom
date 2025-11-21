@@ -10,7 +10,7 @@ export const UserFeedTab = () => {
     profile,
     fetchUserFeed,
     userFeedData,
-    bookDetails,
+    bookDetailsProfile,
     profileNames,
     fetchFollowFeed,
     isLoadingFeed,
@@ -91,7 +91,7 @@ export const UserFeedTab = () => {
                     {
                       /* finds the associated book to access its description and coverId */
                     }
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id == data.book_id
                     );
                     {
@@ -123,7 +123,7 @@ export const UserFeedTab = () => {
                   </Box>
                 ) : (
                   userRecommendations.map((data) => {
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id === data.book_id
                     );
                     const profile = profileNames.find(
@@ -152,7 +152,7 @@ export const UserFeedTab = () => {
                   </Box>
                 ) : (
                   userReadingLists.map((data) => {
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id == data.book_id
                     );
                     const profile = profileNames.find(
@@ -181,7 +181,7 @@ export const UserFeedTab = () => {
                   </Box>
                 ) : (
                   userReviews.map((data) => {
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id == data.book_id
                     );
                     const profile = profileNames.find(
@@ -210,7 +210,7 @@ export const UserFeedTab = () => {
                   </Box>
                 ) : (
                   userQuotes.map((data) => {
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id == data.book_id
                     );
                     const profile = profileNames.find(
