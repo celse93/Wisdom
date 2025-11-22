@@ -2,15 +2,9 @@ import os
 import time
 from src.utils import generate_sitemap
 from src.routes.auth import auth_routes
-from src.routes.book_detail import book_detail_route
 from src.routes.profiles import profiles_routes
-from src.routes.reading_list import reading_list_routes
-from src.routes.recommendations import recommendations_routes
-from src.routes.reviews import reviews_routes
-from src.routes.quotes import quotes_routes
 from src.routes.book_search import books_search_routes
 from src.routes.categories import categories_routes
-from src.routes.author_detail import author_detail_route
 from src.routes.follows import follows_routes
 from src.routes.post_book import posts_routes
 from src.routes.get_all import get_all_routes
@@ -22,6 +16,7 @@ from flask_migrate import Migrate
 from src.db import db
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+
 
 
 app = Flask(__name__)
@@ -67,14 +62,8 @@ def health_check():
 
 
 auth_routes(app)
-book_detail_route(app)
 profiles_routes(app)
-reading_list_routes(app)
-recommendations_routes(app)
-reviews_routes(app)
-quotes_routes(app)
 books_search_routes(app)
-author_detail_route(app)
 follows_routes(app)
 categories_routes(app)
 posts_routes(app)

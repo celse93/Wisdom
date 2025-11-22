@@ -37,14 +37,6 @@ export const unfollowUser = async (userId) => {
   });
 };
 
-export const getUserStats = async () => {
-  return await fetchWrapper(`${baseUrl}profiles_stats/`, {
-    credentials: 'include',
-  }).then((data) => {
-    return data;
-  });
-};
-
 export const getFollowers = async () => {
   return await fetchWrapper(`${baseUrl}followers/`, {
     credentials: 'include',

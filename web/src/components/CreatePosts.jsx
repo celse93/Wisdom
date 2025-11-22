@@ -88,8 +88,7 @@ export const CreatePosts = () => {
       setOpen(false);
       const saveBook = await postBook(updatedBook);
       alert(`${saveBook['message']}`);
-      await fetchUserFeed();
-      await fetchFeedData();
+      await Promise.all([fetchUserFeed(), fetchFeedData()]);
     } catch (error) {
       console.error('Error: ', error);
     } finally {

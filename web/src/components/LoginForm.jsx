@@ -1,5 +1,4 @@
 import { useContext, useState } from 'react';
-import { Link } from 'react-router';
 import { UserContext } from '../context/UserContext';
 import {
   Box,

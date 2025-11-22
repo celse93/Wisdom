@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
 import { UserContext } from '../context/UserContext';
 import { FeedCard } from './FeedCard';
-import { Typography, Box, Tab, CircularProgress, Alert } from '@mui/material';
+import { Box, Tab, CircularProgress, Alert } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import { useParams } from 'react-router';
 import ImportContactsSharpIcon from '@mui/icons-material/ImportContactsSharp';

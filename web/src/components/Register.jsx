@@ -1,5 +1,4 @@
 import { useState, useContext } from 'react';
-import { Link } from 'react-router';
 import { UserContext } from '../context/UserContext';
 import {
   Box,
@@ -75,27 +74,27 @@ export const Register = ({ handleOpenLoginModal }) => {
         [confirmPassword]: '',
       }));
     }
-  };
+  }
 
   const validateForm = () => {
     const newErrors = {};
 
     if (!formData.username) {
       newErrors.username = 'Username is mandatory';
-    } else if (formData.username.length > 10) {
-      newErrors.username = 'Username is mandatory';
+    } else if (formData.username.length > 20) {
+      newErrors.username = 'Username must have less than 20 caracteres';
     }
 
     if (!formData.email) {
       newErrors.email = 'Email is mandatory';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email isn't valid";
+      newErrors.email = "Email is invalid";
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is mandatory';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must contain at least 6 caracteres';
+      newErrors.password = 'Password must have at least 6 caracteres';
     }
 
     if (!formData.confirmPassword) {
@@ -124,10 +123,10 @@ export const Register = ({ handleOpenLoginModal }) => {
         error?.message?.toLowerCase().includes('email')
       ) {
         setErrors({
-          submit: 'Este email ya está registrado. Por favor inicia sesión.',
+          submit: 'Email already registed. Login instead.',
         });
       } else {
-        setErrors({ submit: 'Error al crear la cuenta. Intenta de nuevo.' });
+        setErrors({ submit: 'Error while creating account. Try again.' });
       }
     }
   };
@@ -203,7 +202,6 @@ export const Register = ({ handleOpenLoginModal }) => {
                   error={errors.password}
                   helperText={errors.password}
                 />
-                {errors.password && <Box>{errors.password}</Box>}
               </Box>
 
               <Box sx={{ mb: 3 }}>
@@ -220,10 +218,7 @@ export const Register = ({ handleOpenLoginModal }) => {
                   error={errors.password}
                   helperText={errors.password}
                 />
-                {errors.password && <Box>{errors.password}</Box>}
               </Box>
-
-              {errors.confirmPassword && <Box>{errors.confirmPassword}</Box>}
 
               <Button
                 variant="contained"
