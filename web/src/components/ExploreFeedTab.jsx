@@ -1,9 +1,10 @@
 import { useState, useContext, useMemo, useEffect } from 'react';
 import { UserContext } from '../context/UserContext';
 import { FeedCard } from './FeedCard';
-import { Typography, Box, Tab, CircularProgress } from '@mui/material';
+import { Typography, Box, Tab, CircularProgress, Alert } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import ExploreRoundedIcon from '@mui/icons-material/ExploreRounded';
+import ImportContactsSharpIcon from '@mui/icons-material/ImportContactsSharp';
 
 export const ExploreFeedTab = () => {
   const {
@@ -41,8 +42,6 @@ export const ExploreFeedTab = () => {
       const hasPosts = feedData.length > 0;
       const hasLookupData = bookDetails.length > 0 && profileNames.length > 0;
 
-      console.log(hasLookupData);
-
       // if posts exist but missing remaining data (books + profiles)
       // or Feed needs refresh but isn't loading, trigger fetchData
       if (isLoggedIn && hasPosts && !hasLookupData && !isLoadingFeed) {
@@ -60,9 +59,6 @@ export const ExploreFeedTab = () => {
   const handleChangeTabs = (event, newValue) => {
     setValueTabs(newValue);
   };
-
-  console.log(bookDetails);
-  console.log(profileNames);
 
   return (
     <Box>
@@ -115,11 +111,34 @@ export const ExploreFeedTab = () => {
           </Box>
         ) : (
           <>
+            <Box sx={{ height: 20 }} />
             <TabPanel value="recommendations">
               <Box>
                 {recommendations.length === 0 ? (
-                  <Box>
-                    <Typography variant="h5">No books yet</Typography>
+                  <Box
+                    sx={{
+                      width: 770,
+                      height: 'auto',
+                      mx: 'auto',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Alert
+                      icon={
+                        <ImportContactsSharpIcon
+                          sx={{ color: 'var(--chart-0)' }}
+                          fontSize="inherit"
+                        />
+                      }
+                      variant="outlined"
+                      sx={{
+                        border: '1px solid var(--border)',
+                        color: 'var(--tex)',
+                      }}
+                    >
+                      No posts in this category this week.
+                    </Alert>
                   </Box>
                 ) : (
                   recommendations.map((data) => {
@@ -147,8 +166,30 @@ export const ExploreFeedTab = () => {
             <TabPanel value="readingList">
               <Box>
                 {readingLists.length === 0 ? (
-                  <Box>
-                    <Typography variant="h5">No books yet</Typography>
+                  <Box
+                    sx={{
+                      width: 770,
+                      height: 'auto',
+                      mx: 'auto',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Alert
+                      icon={
+                        <ImportContactsSharpIcon
+                          sx={{ color: 'var(--chart-0)' }}
+                          fontSize="inherit"
+                        />
+                      }
+                      variant="outlined"
+                      sx={{
+                        border: '1px solid var(--border)',
+                        color: 'var(--tex)',
+                      }}
+                    >
+                      No posts in this category this week.
+                    </Alert>
                   </Box>
                 ) : (
                   readingLists.map((data) => {
@@ -176,8 +217,30 @@ export const ExploreFeedTab = () => {
             <TabPanel value="reviews">
               <Box>
                 {reviews.length === 0 ? (
-                  <Box>
-                    <Typography variant="h5">No reviews yet</Typography>
+                  <Box
+                    sx={{
+                      width: 770,
+                      height: 'auto',
+                      mx: 'auto',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Alert
+                      icon={
+                        <ImportContactsSharpIcon
+                          sx={{ color: 'var(--chart-0)' }}
+                          fontSize="inherit"
+                        />
+                      }
+                      variant="outlined"
+                      sx={{
+                        border: '1px solid var(--border)',
+                        color: 'var(--tex)',
+                      }}
+                    >
+                      No reviews this week.
+                    </Alert>
                   </Box>
                 ) : (
                   reviews.map((data) => {
@@ -205,8 +268,30 @@ export const ExploreFeedTab = () => {
             <TabPanel value="quotes">
               <Box>
                 {quotes.length === 0 ? (
-                  <Box>
-                    <Typography variant="h5">No quotes yet</Typography>
+                  <Box
+                    sx={{
+                      width: 770,
+                      height: 'auto',
+                      mx: 'auto',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Alert
+                      icon={
+                        <ImportContactsSharpIcon
+                          sx={{ color: 'var(--chart-0)' }}
+                          fontSize="inherit"
+                        />
+                      }
+                      variant="outlined"
+                      sx={{
+                        border: '1px solid var(--border)',
+                        color: 'var(--tex)',
+                      }}
+                    >
+                      No quotes this week.
+                    </Alert>
                   </Box>
                 ) : (
                   quotes.map((data) => {
