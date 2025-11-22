@@ -39,13 +39,15 @@ def books_search_routes(app):
             for book in books:
                 volume_info = book.get("volumeInfo", {})
                 image_links = volume_info.get("imageLinks", {})
+                image_link = image_links.get("thumbnail", "N/A")
+                image = image_link.replace("http", "https")
                 
                 results.append(
                     {
                         "title": volume_info.get("title", "N/A"),
                         "author": volume_info.get("authors", ["N/A"]),
                         "publish_year": volume_info.get("publishedDate", "N/A"),
-                        "image": image_links.get("thumbnail", "N/A"),
+                        "image": image,
                         "book_id": book.get("id", "N/A"),
                         "description": volume_info.get("description", "N/A"),
                     }

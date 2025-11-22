@@ -6,11 +6,11 @@ import {
   getCurrentUser,
   getProfileNames,
 } from '../services/api/users';
-import { getAllCategories } from '../services/api/feed';
 import {
   getAllBooks,
   getAllUserBooks,
   getAllFollowBooks,
+  getAllCategories,
 } from '../services/api/books';
 
 export const UserContext = createContext({

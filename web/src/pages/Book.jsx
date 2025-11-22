@@ -1,27 +1,26 @@
 import { useContext } from 'react';
 import { UserContext } from '../context/UserContext';
-import { postReadingList, postRecommendations } from '../services/api/books';
+import { postBook } from '../services/api/books';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import BookIcon from '@mui/icons-material/Book';
 
 export const Book = () => {
-  const { selectedBook } = useContext(UserContext);
+  const { selectedBook, fetchUserFeed, fetchFeedData } =
+    useContext(UserContext);
 
-  const handleBookReadList = async (book) => {
+  const handleOnClick = async (e, book) => {
+    const updatedBook = {
+      ...book,
+      type: e.target.id,
+    };
+    console.log(updatedBook);
     try {
-      const saveBook = await postReadingList(book.book_id);
-      alert(`"${book.title}": ${saveBook['message']}`);
-    } catch {
-      alert('Error! Book already registered');
-    }
-  };
-
-  const handleRecommendations = async (book) => {
-    try {
-      const saveBook = await postRecommendations(book.book_id);
-      alert(`"${book.title}": ${saveBook['message']}`);
-    } catch {
+      const saveBook = await postBook(updatedBook);
+      alert(`${saveBook['message']}`);
+      await Promise.all([fetchUserFeed(), fetchFeedData()]);
+    } catch (error) {
+      console.error('Error: ', error);
       alert('Error! Book already registered');
     }
   };
@@ -37,7 +36,7 @@ export const Book = () => {
   return (
     <>
       <Box sx={{ height: 50 }} />
-      <Box sx={{ mt: 5, pt: 5,  display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ mt: 5, pt: 5, display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ display: 'flex', maxWidth: 700 }}>
           <Box sx={{ display: 'flex', justifyContent: 'end', pr: 5 }}>
             <Box>
@@ -81,12 +80,13 @@ export const Book = () => {
             <Box sx={{ mb: 2 }}>
               <Box sx={{ mb: 2 }}>
                 <Button
+                  id="reading"
                   sx={{
                     background: 'var(--chart-0)',
                     '&:hover': { bgcolor: 'var(--chart-2)' },
                   }}
                   variant="contained"
-                  onClick={() => handleBookReadList(selectedBook)}
+                  onClick={(e) => handleOnClick(e, selectedBook)}
                   startIcon={<AutoStoriesIcon />}
                 >
                   Want to Read
@@ -94,12 +94,13 @@ export const Book = () => {
               </Box>
               <Box sx={{ mb: 4 }}>
                 <Button
+                  id="recommendation"
                   sx={{
                     background: 'var(--chart-0)',
                     '&:hover': { bgcolor: 'var(--chart-2)' },
                   }}
                   variant="contained"
-                  onClick={() => handleRecommendations(selectedBook)}
+                  onClick={(e) => handleOnClick(e, selectedBook)}
                   startIcon={<BookIcon />}
                 >
                   Read

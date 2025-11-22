@@ -5,7 +5,6 @@ import { Profile } from '../../pages/Profile';
 import { Register } from '../../components/Register';
 import { Follows } from '../../pages/Follows';
 import { Explore } from '../../pages/Explore';
-import { useParams } from "react-router";
 
 export const routesConfig = [
   {
