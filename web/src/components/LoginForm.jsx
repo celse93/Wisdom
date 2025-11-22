@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 
-export const LoginForm = () => {
+export const LoginForm = ({ handleOpenRegisterModal }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -149,11 +149,17 @@ export const LoginForm = () => {
 
           <Box sx={{ textAlign: 'center' }}>
             <Typography>Don't have account?</Typography>
-            <Link to="/register">Create my library</Link>
-          </Box>
-
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Link to="/login"> Go back</Link>
+            <Button
+              sx={{
+                '&:hover': {
+                  bgcolor: 'var(--chart-0)',
+                  color: 'var(--background)',
+                },
+              }}
+              onClick={() => handleOpenRegisterModal()}
+            >
+              Create my library
+            </Button>
           </Box>
         </CardContent>
       </Card>

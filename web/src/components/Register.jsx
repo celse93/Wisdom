@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 
-export const Register = () => {
+export const Register = ({ handleOpenLoginModal }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -134,11 +134,8 @@ export const Register = () => {
 
   return (
     <>
-      <Box sx={{ height: 100 }}></Box>
-      <Box
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-      >
-        <Card sx={{ width: '50%' }}>
+      <Box>
+        <Card sx={{ border: '1px solid var(--chart-0)' }}>
           <CardHeader
             sx={{
               textAlign: 'center',
@@ -148,12 +145,10 @@ export const Register = () => {
               borderColor: 'var(--border)',
             }}
             title="Create your library"
-          >
-            <Typography sx={{ mb: 0, mt: 2 }}>Join the Wisdom</Typography>
-          </CardHeader>
+          ></CardHeader>
           <CardContent sx={{ textAlign: 'center', py: 4, px: 1 }}>
             <Box
-              sx={{ width: '100%', mb: 4 }}
+              sx={{ width: '100%', mb: 3 }}
               component="form"
               noValidate
               autoComplete="off"
@@ -163,7 +158,7 @@ export const Register = () => {
 
               <Box sx={{ mb: 3 }}>
                 <TextField
-                  sx={{ width: '60%' }}
+                  sx={{ width: '80%' }}
                   required
                   label="Username"
                   type="text"
@@ -177,9 +172,9 @@ export const Register = () => {
                 {errors.username && <Box>{errors.username}</Box>}
               </Box>
 
-              <Box sx={{ mb: 3 }}>
+              <Box sx={{ mb: 2 }}>
                 <TextField
-                  sx={{ width: '60%' }}
+                  sx={{ width: '80%' }}
                   required
                   label="Email"
                   placeholder="email@email.com"
@@ -196,7 +191,7 @@ export const Register = () => {
 
               <Box sx={{ mb: 3 }}>
                 <TextField
-                  sx={{ width: '60%' }}
+                  sx={{ width: '80%' }}
                   type="password"
                   id="password"
                   label="Password"
@@ -213,7 +208,7 @@ export const Register = () => {
 
               <Box sx={{ mb: 3 }}>
                 <TextField
-                  sx={{ width: '60%' }}
+                  sx={{ width: '80%' }}
                   type="password"
                   id="confirmPassword"
                   label="Confirm password"
@@ -247,11 +242,17 @@ export const Register = () => {
 
             <Box sx={{ textAlign: 'center' }}>
               <Typography>Got account?</Typography>
-              <Link to="/login-form">Login</Link>
-            </Box>
-
-            <Box sx={{ textAlign: 'center', mt: 3 }}>
-              <Link to="/login">Go back</Link>
+              <Button
+                sx={{
+                  '&:hover': {
+                    bgcolor: 'var(--chart-0)',
+                    color: 'var(--background)',
+                  },
+                }}
+                onClick={() => handleOpenLoginModal()}
+              >
+                Login
+              </Button>
             </Box>
           </CardContent>
         </Card>

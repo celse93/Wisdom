@@ -2,7 +2,6 @@ from flask import request, jsonify
 from src.db import db
 from src.models.models import Recommendations, Books
 from datetime import date, timedelta
-import datetime
 from sqlalchemy import select, and_
 from flask_jwt_extended import (
     jwt_required,
@@ -17,17 +16,11 @@ def recommendations_routes(app):
         # method to save book in Recommendation
         if request.method == "POST":
             data = request.get_json()
-            required_fields = ["book_id"]
-            user_id = get_jwt_identity()
-            if not any(field in data for field in required_fields):
-                return jsonify({"error": "Missing required fields"}), 400
-            
             book_id = data["book_id"]
-            title = data["title"]
-            author = data["author"]
-            description = data['description']
-            date = data['date']
-            image = data['image']
+            user_id = get_jwt_identity()
+            
+            if not book_id:
+                return jsonify({"error": "Missing book ID"}), 400
 
             existing_recom = db.session.execute(
                 select(Recommendations).where(
@@ -49,37 +42,6 @@ def recommendations_routes(app):
             db.session.commit()
             
             return jsonify({"message": "Book saved successfully"}), 201
-            
-            '''
-            existing_book = db.session.execute(
-                select(Books).where(
-                        Books.book_id == book_id,
-                )
-            ).scalar_one_or_none()
-            
-            # if book exists in Books table save data only in Recom table
-            if existing_book:
-                new_recom = Recommendations(
-                    book_id=book_id, user_id=user_id, content_type="recommendation"
-                )
-                db.session.add(new_recom)
-                db.session.commit()
-                return jsonify({"message": "Book saved successfully"}), 201
-            
-            if not existing_book:
-                new_book = Books(
-                    book_id=book_id, title=title, author=author, description=description,
-                    published_date=date, image=image
-                )
-                
-                new_recom = Recommendations(
-                    book_id=book_id, user_id=user_id, content_type="recommendation"
-                )
-                db.session.add(new_book)
-                db.session.add(new_recom)
-                db.session.commit()
-                return jsonify({"message": "Book saved successfully"}), 201
-            '''
             
         # method to delete book from Recommendation
         elif request.method == "DELETE":

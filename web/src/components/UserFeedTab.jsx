@@ -1,16 +1,17 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
 import { UserContext } from '../context/UserContext';
 import { FeedCard } from './FeedCard';
-import { Typography, Box, Tab, CircularProgress } from '@mui/material';
+import { Typography, Box, Tab, CircularProgress, Alert } from '@mui/material';
 import { TabList, TabPanel, TabContext } from '@mui/lab';
 import { useParams } from 'react-router';
+import ImportContactsSharpIcon from '@mui/icons-material/ImportContactsSharp';
 
 export const UserFeedTab = () => {
   const {
     profile,
     fetchUserFeed,
     userFeedData,
-    bookDetails,
+    bookDetailsProfile,
     profileNames,
     fetchFollowFeed,
     isLoadingFeed,
@@ -77,10 +78,30 @@ export const UserFeedTab = () => {
             <CircularProgress size="3rem" color="var(--chart-0)" />
           </Box>
         ) : userFeedData.length === 0 && !isLoadingFeed ? (
-          <Box>
-            <Typography variant="h5" sx={{ color: 'var(--text)' }}>
-              No posts yet
-            </Typography>
+          <Box
+            sx={{
+              width: 770,
+              height: 'auto',
+              mx: 'auto',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <Alert
+              icon={
+                <ImportContactsSharpIcon
+                  sx={{ color: 'var(--chart-0)' }}
+                  fontSize="inherit"
+                />
+              }
+              variant="outlined"
+              sx={{
+                border: '1px solid var(--border)',
+                color: 'var(--tex)',
+              }}
+            >
+              No posts yet. Share your first book!
+            </Alert>
           </Box>
         ) : (
           <>
@@ -91,7 +112,7 @@ export const UserFeedTab = () => {
                     {
                       /* finds the associated book to access its description and coverId */
                     }
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id == data.book_id
                     );
                     {
@@ -118,12 +139,34 @@ export const UserFeedTab = () => {
             <TabPanel value="recommendations">
               <Box>
                 {userRecommendations.length === 0 ? (
-                  <Box>
-                    <Typography variant="h5">No books yet</Typography>
+                  <Box
+                    sx={{
+                      width: 770,
+                      height: 'auto',
+                      mx: 'auto',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Alert
+                      icon={
+                        <ImportContactsSharpIcon
+                          sx={{ color: 'var(--chart-0)' }}
+                          fontSize="inherit"
+                        />
+                      }
+                      variant="outlined"
+                      sx={{
+                        border: '1px solid var(--border)',
+                        color: 'var(--tex)',
+                      }}
+                    >
+                      No posts in this category yet.
+                    </Alert>
                   </Box>
                 ) : (
                   userRecommendations.map((data) => {
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id === data.book_id
                     );
                     const profile = profileNames.find(
@@ -147,12 +190,34 @@ export const UserFeedTab = () => {
             <TabPanel value="readingList">
               <Box>
                 {userReadingLists.length === 0 ? (
-                  <Box>
-                    <Typography variant="h5">No books yet</Typography>
+                  <Box
+                    sx={{
+                      width: 770,
+                      height: 'auto',
+                      mx: 'auto',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Alert
+                      icon={
+                        <ImportContactsSharpIcon
+                          sx={{ color: 'var(--chart-0)' }}
+                          fontSize="inherit"
+                        />
+                      }
+                      variant="outlined"
+                      sx={{
+                        border: '1px solid var(--border)',
+                        color: 'var(--tex)',
+                      }}
+                    >
+                      No posts in this category yet.
+                    </Alert>
                   </Box>
                 ) : (
                   userReadingLists.map((data) => {
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id == data.book_id
                     );
                     const profile = profileNames.find(
@@ -176,12 +241,34 @@ export const UserFeedTab = () => {
             <TabPanel value="reviews">
               <Box>
                 {userReviews.length === 0 ? (
-                  <Box>
-                    <Typography variant="h5">No reviews yet</Typography>
+                  <Box
+                    sx={{
+                      width: 770,
+                      height: 'auto',
+                      mx: 'auto',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Alert
+                      icon={
+                        <ImportContactsSharpIcon
+                          sx={{ color: 'var(--chart-0)' }}
+                          fontSize="inherit"
+                        />
+                      }
+                      variant="outlined"
+                      sx={{
+                        border: '1px solid var(--border)',
+                        color: 'var(--tex)',
+                      }}
+                    >
+                      No reviews yet.
+                    </Alert>
                   </Box>
                 ) : (
                   userReviews.map((data) => {
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id == data.book_id
                     );
                     const profile = profileNames.find(
@@ -205,12 +292,34 @@ export const UserFeedTab = () => {
             <TabPanel value="quotes">
               <Box>
                 {userQuotes.length === 0 ? (
-                  <Box>
-                    <Typography variant="h5">No quotes yet</Typography>
+                  <Box
+                    sx={{
+                      width: 770,
+                      height: 'auto',
+                      mx: 'auto',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Alert
+                      icon={
+                        <ImportContactsSharpIcon
+                          sx={{ color: 'var(--chart-0)' }}
+                          fontSize="inherit"
+                        />
+                      }
+                      variant="outlined"
+                      sx={{
+                        border: '1px solid var(--border)',
+                        color: 'var(--tex)',
+                      }}
+                    >
+                      No quotes yet.
+                    </Alert>
                   </Box>
                 ) : (
                   userQuotes.map((data) => {
-                    const bookInfo = bookDetails.find(
+                    const bookInfo = bookDetailsProfile.find(
                       (book) => book.book_id == data.book_id
                     );
                     const profile = profileNames.find(

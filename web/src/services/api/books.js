@@ -60,7 +60,7 @@ export const postReadingList = async (bookId) => {
 
 export const postRecommendations = async (bookId) => {
   if (bookId == '') return alert('No book!');
-  return await fetchWrapper(`${baseUrl}/recommendations/user`, {
+  return await fetchWrapper(`${baseUrl}recommendations/user`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

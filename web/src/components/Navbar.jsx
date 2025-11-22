@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { UserContext } from '../context/UserContext';
-import { LoginForm } from '../pages/LoginForm';
+import { LoginForm } from './LoginForm';
+import { Register } from './Register';
 import {
   Typography,
   Box,
@@ -23,13 +24,26 @@ export const Navbar = () => {
   const { logout, profile, isLoggedIn } = useContext(UserContext);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [openModal, setOpenModal] = useState(false);
+  const [openLoginModal, setOpenLoginModal] = useState(false);
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
   const isOpen = Boolean(anchorEl);
 
-  const handleOpenModal = () => setOpenModal(true);
+  const handleOpenLoginModal = () => {
+    setOpenLoginModal(true);
+    setOpenRegisterModal(false);
+  };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
+  const handleCloseLoginModal = () => {
+    setOpenLoginModal(false);
+  };
+
+  const handleOpenRegisterModal = () => {
+    setOpenRegisterModal(true);
+    setOpenLoginModal(false);
+  };
+
+  const handleCloseRegisterModal = () => {
+    setOpenRegisterModal(false);
   };
 
   const handleClick = (e) => {
@@ -92,7 +106,7 @@ export const Navbar = () => {
                   },
                 }}
                 variant="contained"
-                onClick={handleOpenModal}
+                onClick={handleOpenLoginModal}
                 startIcon={<LoginIcon />}
               >
                 Login
@@ -205,7 +219,7 @@ export const Navbar = () => {
           )}
         </Toolbar>
       </AppBar>
-      <Modal open={openModal} onClose={handleCloseModal}>
+      <Modal open={openLoginModal} onClose={handleCloseLoginModal}>
         <Box
           sx={{
             position: 'absolute',
@@ -219,7 +233,24 @@ export const Navbar = () => {
             boxShadow: 24,
           }}
         >
-          <LoginForm />
+          <LoginForm handleOpenRegisterModal={handleOpenRegisterModal} />
+        </Box>
+      </Modal>
+      <Modal open={openRegisterModal} onClose={handleCloseRegisterModal}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            width: '40%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'var(--background)',
+            border: '1px solid var(--border)',
+            borderRadius: '15px',
+            boxShadow: 24,
+          }}
+        >
+          <Register handleOpenLoginModal={handleOpenLoginModal} />
         </Box>
       </Modal>
     </>
