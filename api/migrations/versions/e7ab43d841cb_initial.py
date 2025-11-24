@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 62325957c83f
+Revision ID: e7ab43d841cb
 Revises: 
-Create Date: 2025-11-03 23:08:21.168291
+Create Date: 2025-11-22 22:33:29.987362
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '62325957c83f'
+revision = 'e7ab43d841cb'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -58,12 +58,12 @@ def upgrade():
     )
     op.create_table('quotes',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('text', sa.String(length=500), nullable=False),
+    sa.Column('text', sa.String(length=1500), nullable=False),
     sa.Column('book_id', sa.String(length=50), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('category_id', sa.Integer(), nullable=False),
+    sa.Column('category_id', sa.Integer(), nullable=True),
     sa.Column('content_type', sa.String(length=50), nullable=False),
-    sa.Column('created_at', sa.Date(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['categories.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['profiles.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -73,7 +73,7 @@ def upgrade():
     sa.Column('book_id', sa.String(length=50), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('content_type', sa.String(length=50), nullable=False),
-    sa.Column('created_at', sa.Date(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['profiles.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -82,17 +82,17 @@ def upgrade():
     sa.Column('book_id', sa.String(length=50), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('content_type', sa.String(length=50), nullable=False),
-    sa.Column('created_at', sa.Date(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['profiles.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('reviews',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('text', sa.String(length=500), nullable=False),
+    sa.Column('text', sa.String(length=1500), nullable=False),
     sa.Column('book_id', sa.String(length=50), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('content_type', sa.String(length=50), nullable=False),
-    sa.Column('created_at', sa.Date(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['profiles.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('book_id')

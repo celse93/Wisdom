@@ -8,6 +8,7 @@ import ImportContactsSharpIcon from '@mui/icons-material/ImportContactsSharp';
 
 export const UserFeedTab = () => {
   const {
+    user,
     profile,
     fetchUserFeed,
     userFeedData,
@@ -78,33 +79,38 @@ export const UserFeedTab = () => {
             <CircularProgress size="3rem" color="var(--chart-0)" />
           </Box>
         ) : userFeedData.length === 0 && !isLoadingFeed ? (
-          <Box
-            sx={{
-              width: 770,
-              height: 'auto',
-              mx: 'auto',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <Alert
-              icon={
-                <ImportContactsSharpIcon
-                  sx={{ color: 'var(--chart-0)' }}
-                  fontSize="inherit"
-                />
-              }
-              variant="outlined"
+          <>
+            <Box sx={{ height: 20 }} />
+            <Box
               sx={{
-                border: '1px solid var(--border)',
-                color: 'var(--tex)',
+                width: 770,
+                height: 'auto',
+                mx: 'auto',
+                display: 'flex',
+                justifyContent: 'center',
               }}
             >
-              No posts yet. Share your first book!
-            </Alert>
-          </Box>
+              <Alert
+                icon={
+                  <ImportContactsSharpIcon
+                    sx={{ color: 'var(--chart-0)' }}
+                    fontSize="inherit"
+                  />
+                }
+                variant="outlined"
+                sx={{
+                  border: '1px solid var(--border)',
+                  color: 'var(--tex)',
+                }}
+              >
+                No posts yet.{' '}
+                {user.user.id == profileId ? 'Share your first book!' : ''}
+              </Alert>
+            </Box>
+          </>
         ) : (
           <>
+            <Box sx={{ height: 20 }} />
             <TabPanel value="all">
               <Box>
                 <Box>
