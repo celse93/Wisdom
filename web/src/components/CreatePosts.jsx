@@ -329,7 +329,7 @@ export const CreatePosts = () => {
                 '&:hover': { bgcolor: 'var(--chart-2)' },
               }}
             >
-              Submit
+              Save
             </Button>
           </Box>
         </Box>

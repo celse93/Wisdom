@@ -57,12 +57,13 @@ export const UserProvider = ({ children }) => {
           getCurrentUser(),
           getCurrentProfile(),
           getAllCategories(),
+          fetchFeedData(),
+          fetchUserFeed(),
         ]);
+        setIsLoggedIn(true);
         setProfile(profile);
         setUser(userData);
         setCategories(categoriesList);
-        setIsLoggedIn(true);
-        await fetchFeedData();
       } catch (error) {
         console.error('Session restoration failed, user logged out: ', error);
         setIsLoggedIn(false);
@@ -78,8 +79,10 @@ export const UserProvider = ({ children }) => {
   const fetchFeedData = useCallback(async () => {
     try {
       setIsLoadingFeed(true);
-      const dataBooks = await getAllBooks();
-
+      const [dataBooks, profileDetailsResult] = await Promise.all([
+        getAllBooks(),
+        getProfileNames()
+      ]);
       const combinedData = [
         ...(Array.isArray(dataBooks.tables) ? dataBooks.tables : []),
       ];
@@ -88,9 +91,6 @@ export const UserProvider = ({ children }) => {
       );
       setFeedData(combinedData || []);
       setBookDetails(dataBooks.books || []);
-
-      const profileDetailsResult = await getProfileNames();
-
       setProfileNames(profileDetailsResult || []);
     } catch (error) {
       console.error('Failed to fetch books data:', error);
@@ -105,7 +105,10 @@ export const UserProvider = ({ children }) => {
   const fetchUserFeed = useCallback(async () => {
     try {
       setIsLoadingFeed(true);
-      const dataBooks = await getAllUserBooks();
+      const [dataBooks, profileDetailsResult] = await Promise.all([
+        getAllUserBooks(),
+        getProfileNames()
+      ]);
 
       const combinedData = [
         ...(Array.isArray(dataBooks.tables) ? dataBooks.tables : []),
@@ -116,9 +119,6 @@ export const UserProvider = ({ children }) => {
 
       setUserFeedData(combinedData || []);
       setBookDetailsProfile(dataBooks.books || []);
-
-      const profileDetailsResult = await getProfileNames();
-
       setProfileNames(profileDetailsResult || []);
     } catch (error) {
       console.error('Failed to fetch books data:', error);
@@ -128,7 +128,12 @@ export const UserProvider = ({ children }) => {
     } finally {
       setIsLoadingFeed(false);
     }
-  }, [setIsLoadingFeed, setUserFeedData, setBookDetailsProfile, setProfileNames]);
+  }, [
+    setIsLoadingFeed,
+    setUserFeedData,
+    setBookDetailsProfile,
+    setProfileNames,
+  ]);
 
   const fetchFollowFeed = useCallback(
     async (profileId) => {
@@ -170,12 +175,13 @@ export const UserProvider = ({ children }) => {
         getCurrentUser(),
         getCurrentProfile(),
         getAllCategories(),
+        fetchFeedData(),
+        fetchUserFeed(),
       ]);
       setUser(userData);
       setProfile(profileData);
       setCategories(categoriesList);
       setIsLoggedIn(true);
-      await fetchFeedData();
       navigate('/home');
     } catch (error) {
       console.error('Login error:', error);
@@ -215,12 +221,13 @@ export const UserProvider = ({ children }) => {
         getCurrentUser(),
         getCurrentProfile(),
         getAllCategories(),
+        fetchFeedData(),
+        fetchUserFeed(),
       ]);
       setUser(userData);
       setProfile(profileData);
       setCategories(categoriesList);
       setIsLoggedIn(true);
-      await fetchFeedData();
       navigate('/home');
     } catch (error) {
       console.error('Register error:', error.message);
