@@ -16,6 +16,7 @@ export const UserFeedTab = () => {
     profileNames,
     fetchFollowFeed,
     isLoadingFeed,
+    isLoggedIn,
   } = useContext(UserContext);
   const [valueTabs, setValueTabs] = useState('all');
   let { profileId } = useParams();
@@ -26,7 +27,17 @@ export const UserFeedTab = () => {
         {
           /* Fecthing data of the logged user */
         }
-        await fetchUserFeed();
+        const hasPosts = posts.length > 0;
+        const hasLookupData =
+          bookDetailsProfile.length > 0 && profileNames.length > 0;
+
+        if (isLoggedIn && hasPosts && !hasLookupData && !isLoadingFeed) {
+          try {
+            await fetchUserFeed();
+          } catch (error) {
+            console.error('Data could not be fetched: ', error);
+          }
+        }
       } else {
         {
           /* Fecthing data from another user */
@@ -36,6 +47,8 @@ export const UserFeedTab = () => {
     };
     initialLoad();
   }, [profileId]);
+
+  const posts = useMemo(() => [...userFeedData], [userFeedData]);
 
   const userRecommendations = useMemo(
     () =>
@@ -78,7 +91,7 @@ export const UserFeedTab = () => {
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
             <CircularProgress size="3rem" color="var(--chart-0)" />
           </Box>
-        ) : userFeedData.length === 0 && !isLoadingFeed ? (
+        ) : posts.length === 0 && !isLoadingFeed ? (
           <>
             <Box sx={{ height: 20 }} />
             <Box
@@ -114,7 +127,7 @@ export const UserFeedTab = () => {
             <TabPanel value="all">
               <Box>
                 <Box>
-                  {userFeedData.map((data) => {
+                  {posts.map((data) => {
                     {
                       /* finds the associated book to access its description and coverId */
                     }

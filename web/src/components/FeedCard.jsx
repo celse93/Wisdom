@@ -18,10 +18,12 @@ import BookIcon from '@mui/icons-material/Book';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useParams } from 'react-router';
 import { deleteBook } from '../services/api/books';
+import { UserFeedTab } from './UserFeedTab';
 
 export const FeedCard = ({ bookInfo, data, profile }) => {
   const navigate = useNavigate();
-  const { selectBook, fetchUserFeed, user } = useContext(UserContext);
+  const { selectBook, fetchUserFeed, fetchFeedData, user } =
+    useContext(UserContext);
   let { profileId } = useParams();
 
   const handleBookClick = async (book) => {
@@ -48,7 +50,7 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
       text: data.text,
     };
     await deleteBook(book);
-    await fetchUserFeed();
+    await Promise.all([fetchUserFeed(), fetchFeedData()]);
   };
 
   const handleAuthors = (array) => {
@@ -71,7 +73,6 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
   const getProfileAvatar = (userName) => {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=d58d63&color=f4ede8&size=100&bold=true&rounded=true`;
   };
-
 
   return (
     <Box sx={{ mb: 2 }}>

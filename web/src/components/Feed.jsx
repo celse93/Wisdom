@@ -26,7 +26,6 @@ export const Feed = () => {
       // or Feed needs refresh but isn't loading, trigger fetchData
       if (isLoggedIn && hasPosts && !hasLookupData && !isLoadingFeed) {
         try {
-          console.log('Fetching posts feed...');
           await fetchFeedData();
         } catch (error) {
           console.error('Data could not be fetched: ', error);
