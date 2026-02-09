@@ -8,7 +8,7 @@ export function ThemeWrapper({ children }) {
   const theme = useMemo(() => getTheme(mode), [mode]);
 
   useEffect(() => {
-    // Add or remove the 'dark' class from the document root based on the theme mode state.
+    // Add or remove the 'dark' class based on theme mode state
     document.documentElement.classList.remove('light', 'dark');
     document.documentElement.classList.add(mode);
   }, [mode]);

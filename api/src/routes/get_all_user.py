@@ -1,9 +1,7 @@
 from flask import request, jsonify
 from src.db import db
 from src.models.models import Recommendations, Books, Reviews, Quotes, ReadingList
-from datetime import date, timedelta
-import datetime
-from sqlalchemy import select, and_
+from sqlalchemy import select
 from flask_jwt_extended import (
     jwt_required,
     get_jwt_identity,
