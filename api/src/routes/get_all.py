@@ -2,24 +2,22 @@ from flask import request, jsonify
 from src.db import db
 from src.models.models import Recommendations, Books, Reviews, Quotes, ReadingList
 from datetime import date, timedelta
-import datetime
-from sqlalchemy import select, and_
+from sqlalchemy import select
 from flask_jwt_extended import (
-    jwt_required,
-    get_jwt_identity,
+    jwt_required
 )
 
 def get_all_routes(app):
     @app.route("/get_all", methods=["GET"])
     @jwt_required()
     def get_all():
-        # method to get all data from all tables from the last 7 days
+        # method to get all data from all tables from the last 30 days
         if request.method == "GET":
             today = date.today()
-            last_week = today - timedelta(days=7)
+            last_month = today - timedelta(days=30)
             reviews = (
                 db.session.execute(
-                    select(Reviews).where(Reviews.created_at >= last_week)
+                    select(Reviews).where(Reviews.created_at >= last_month)
                 )
                 .scalars()
                 .all()
@@ -27,20 +25,20 @@ def get_all_routes(app):
             recommendations = (
                 db.session.execute(
                     select(Recommendations).where(
-                        Recommendations.created_at >= last_week
+                        Recommendations.created_at >= last_month
                     )
                 )
                 .scalars()
                 .all()
             )
             quotes = (
-                db.session.execute(select(Quotes).where(Quotes.created_at >= last_week))
+                db.session.execute(select(Quotes).where(Quotes.created_at >= last_month))
                 .scalars()
                 .all()
             )
             reading_list = (
                 db.session.execute(
-                    select(ReadingList).where(ReadingList.created_at >= last_week)
+                    select(ReadingList).where(ReadingList.created_at >= last_month)
                 )
                 .scalars()
                 .all()

@@ -68,7 +68,7 @@ export const Feed = () => {
             variant="outlined"
             sx={{ border: '1px solid var(--border)', color: 'var(--tex)' }}
           >
-            No posts this week. Be the first to share!
+            No posts this month. Be the first to share!
           </Alert>
         </Box>
       ) : (
@@ -107,7 +107,7 @@ export const Feed = () => {
                   color: 'var(--muted-foreground)',
                 }}
               >
-                See what the community is reading this week
+                See what the community is reading this month
               </Typography>
             </Box>
           </Box>

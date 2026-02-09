@@ -137,7 +137,7 @@ export const ExploreFeedTab = () => {
                         color: 'var(--tex)',
                       }}
                     >
-                      No posts in this category this week.
+                      No posts in this category this month.
                     </Alert>
                   </Box>
                 ) : (
@@ -188,7 +188,7 @@ export const ExploreFeedTab = () => {
                         color: 'var(--tex)',
                       }}
                     >
-                      No posts in this category this week.
+                      No posts in this category this month.
                     </Alert>
                   </Box>
                 ) : (
@@ -239,7 +239,7 @@ export const ExploreFeedTab = () => {
                         color: 'var(--tex)',
                       }}
                     >
-                      No reviews this week.
+                      No reviews this month.
                     </Alert>
                   </Box>
                 ) : (
@@ -290,7 +290,7 @@ export const ExploreFeedTab = () => {
                         color: 'var(--tex)',
                       }}
                     >
-                      No quotes this week.
+                      No quotes this month.
                     </Alert>
                   </Box>
                 ) : (
