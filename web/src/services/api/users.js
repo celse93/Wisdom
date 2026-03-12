@@ -25,7 +25,7 @@ export const getCurrentProfile = async () => {
 };
 
 export const updateProfile = async (username) => {
-  if (username == '') return alert('¡Sin nombre!');
+  if (username == '') return alert('No username');
   return await fetchWrapper(`${baseUrl}profiles/user`, {
     method: 'PATCH',
     headers: {
