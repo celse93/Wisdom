@@ -18,7 +18,6 @@ import BookIcon from '@mui/icons-material/Book';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useParams } from 'react-router';
 import { deleteBook } from '../services/api/books';
-import { UserFeedTab } from './UserFeedTab';
 
 export const FeedCard = ({ bookInfo, data, profile }) => {
   const navigate = useNavigate();
@@ -36,11 +35,10 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
   };
 
   const totalDays = (date) => {
-    const daysMilisec = new Date(
-      new Date().getTime() - new Date(date).getTime()
-    );
-    const daysNumber = daysMilisec.getDate() - 1;
-    return daysNumber;
+    const diffInMilisec = new Date().getTime() - new Date(date).getTime();
+    const milisecInDay = 1000 * 60 * 60 * 24;
+    const numberOfDays = Math.floor(diffInMilisec / milisecInDay);
+    return numberOfDays;
   };
 
   const handleDeleteClick = async (data) => {
@@ -124,7 +122,10 @@ export const FeedCard = ({ bookInfo, data, profile }) => {
                     ? 'today'
                     : totalDays(data.created_at) === 1
                       ? totalDays(data.created_at) + ' day ago'
-                      : totalDays(data.created_at) + ' days ago'}
+                      : totalDays(data.created_at) > 1 &&
+                          totalDays(data.created_at) < 30
+                        ? totalDays(data.created_at) + ' days ago'
+                        : 'over 1 month ago'}
                 </Typography>
               </Box>
             </Link>
