@@ -11,13 +11,13 @@ def get_all_routes(app):
     @app.route("/get_all", methods=["GET"])
     @jwt_required()
     def get_all():
-        # method to get all data from all tables from the last 30 days
+        # method to get all data from all tables from the last 3 months
         if request.method == "GET":
             today = date.today()
-            last_month = today - timedelta(days=30)
+            last_three_months = today - timedelta(days=90)
             reviews = (
                 db.session.execute(
-                    select(Reviews).where(Reviews.created_at >= last_month)
+                    select(Reviews).where(Reviews.created_at >= last_three_months)
                 )
                 .scalars()
                 .all()
@@ -25,20 +25,20 @@ def get_all_routes(app):
             recommendations = (
                 db.session.execute(
                     select(Recommendations).where(
-                        Recommendations.created_at >= last_month
+                        Recommendations.created_at >= last_three_months
                     )
                 )
                 .scalars()
                 .all()
             )
             quotes = (
-                db.session.execute(select(Quotes).where(Quotes.created_at >= last_month))
+                db.session.execute(select(Quotes).where(Quotes.created_at >= last_three_months))
                 .scalars()
                 .all()
             )
             reading_list = (
                 db.session.execute(
-                    select(ReadingList).where(ReadingList.created_at >= last_month)
+                    select(ReadingList).where(ReadingList.created_at >= last_three_months)
                 )
                 .scalars()
                 .all()
@@ -54,7 +54,7 @@ def get_all_routes(app):
             for item in all_tables:
                 book_ids.append(item.book_id)  
             
-                # to remove duplicated book IDs
+            # to remove duplicated book IDs
             books_set = set((book_ids)) 
             
             all_books = []
